@@ -30,8 +30,8 @@ public class App {
 
 
     public static void main(String[] args) {
-
-        init(args);
+        
+        if (!init(args)) return;
 
         try {
             open_ontology();
@@ -53,7 +53,12 @@ public class App {
     }
 
 
-    private static void init(String[] args) {
+    /**
+     *
+     * @param args commandline parameter given to main
+     * @return success status - if false, most likely the input parsing went wrong
+     */
+    private static boolean init(String[] args) {
         ConstantValues.start_timer("program_init");
 
         /*
@@ -96,7 +101,7 @@ public class App {
 
             HelpFormatter formatter = new HelpFormatter();
             formatter.printHelp("subs", options, true);
-            return;
+            return false;
         }
 
 
@@ -121,14 +126,14 @@ public class App {
         if (decide_subsumption_relation && calculate_subsumerset) {
             System.out.println("You can't use -c1, -c2 and -S at the same time");
             System.out.println("This program either decides subsumption between two given concepts (-c1, -c2) or calculates the subsumer set of a single given concept (-S)");
-            return;
+            return false;
         } else if (decide_subsumption_relation) {
             root_concept = subsumed;
         } else if (calculate_subsumerset) {
             root_concept = subsumerset_of;
         } else {
             System.out.println("Please use (-c1 and -c2) or (-S)");
-            return;
+            return false;
         }
 
         //fill Constant values
@@ -140,6 +145,8 @@ public class App {
 
 
         ConstantValues.stop_timer("program_init");
+
+        return true;
     }
 
     /**
