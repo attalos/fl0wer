@@ -1,0 +1,139 @@
+<?xml version="1.0"?>
+<rdf:RDF xmlns="http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#"
+     xml:base="http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology"
+     xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+     xmlns:owl="http://www.w3.org/2002/07/owl#"
+     xmlns:xml="http://www.w3.org/XML/1998/namespace"
+     xmlns:xsd="http://www.w3.org/2001/XMLSchema#"
+     xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#">
+    <owl:Ontology rdf:about="http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Object Properties
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#r0 -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#r0"/>
+    
+
+
+    <!-- http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#r1 -->
+
+    <owl:ObjectProperty rdf:about="http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#r1"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // Classes
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    
+
+
+    <!-- http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#A -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#A"/>
+    
+
+
+    <!-- http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#B -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#B">
+        <rdfs:subClassOf>
+            <owl:Class>
+                <owl:intersectionOf rdf:parseType="Collection">
+                    <rdf:Description rdf:about="http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#B"/>
+                    <rdf:Description rdf:about="http://www.w3.org/2002/07/owl#Thing"/>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#r0"/>
+                        <owl:allValuesFrom rdf:resource="http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#C"/>
+                    </owl:Restriction>
+                </owl:intersectionOf>
+            </owl:Class>
+        </rdfs:subClassOf>
+        <rdfs:subClassOf>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#r0"/>
+                <owl:allValuesFrom>
+                    <owl:Restriction>
+                        <owl:onProperty rdf:resource="http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#r1"/>
+                        <owl:allValuesFrom>
+                            <owl:Class>
+                                <owl:intersectionOf rdf:parseType="Collection">
+                                    <rdf:Description rdf:about="http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#B"/>
+                                    <owl:Restriction>
+                                        <owl:onProperty rdf:resource="http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#r0"/>
+                                        <owl:allValuesFrom rdf:resource="http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#C"/>
+                                    </owl:Restriction>
+                                </owl:intersectionOf>
+                            </owl:Class>
+                        </owl:allValuesFrom>
+                    </owl:Restriction>
+                </owl:allValuesFrom>
+            </owl:Restriction>
+        </rdfs:subClassOf>
+    </owl:Class>
+    
+
+
+    <!-- http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#C -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#C"/>
+    
+
+
+    <!-- http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#D -->
+
+    <owl:Class rdf:about="http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#D"/>
+    
+
+
+    <!-- 
+    ///////////////////////////////////////////////////////////////////////////////////////
+    //
+    // General axioms
+    //
+    ///////////////////////////////////////////////////////////////////////////////////////
+     -->
+
+    <owl:Class>
+        <owl:intersectionOf rdf:parseType="Collection">
+            <rdf:Description rdf:about="http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#C"/>
+            <rdf:Description rdf:about="http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#D"/>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#r1"/>
+                <owl:allValuesFrom rdf:resource="http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#B"/>
+            </owl:Restriction>
+        </owl:intersectionOf>
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#A"/>
+    </owl:Class>
+    <owl:Restriction>
+        <owl:onProperty rdf:resource="http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#r1"/>
+        <owl:allValuesFrom>
+            <owl:Restriction>
+                <owl:onProperty rdf:resource="http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#r0"/>
+                <owl:allValuesFrom rdf:resource="http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#C"/>
+            </owl:Restriction>
+        </owl:allValuesFrom>
+        <rdfs:subClassOf rdf:resource="http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#D"/>
+    </owl:Restriction>
+</rdf:RDF>
+
+
+
+<!-- Generated by the OWL API (version 4.2.8.20170104-2310) https://github.com/owlcs/owlapi -->
+
