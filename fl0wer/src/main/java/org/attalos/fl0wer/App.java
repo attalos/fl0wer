@@ -18,28 +18,41 @@ import org.apache.commons.cli.*;
 
 
 public class App {
+    private static OWLDataFactory factory;
+
     private static String inputFilePath;
-    private static OWLOntology ontology_owl;
 
     private static boolean decide_subsumption_relation;
 
     private static String root_concept;
-    private static OWLClass root_concept_owl;
     private static String subsumer;
-    private static OWLClass subsumer_owl;
 
 
     public static void main(String[] args) {
 
         if (!init(args)) return;
 
+        OWLOntology ontology_owl = null;
         try {
-            open_ontology();
+            ontology_owl = open_ontology();
         } catch (Exception e) {
             System.out.println("Something went wrong and an Exception was thrown: " + e.getMessage());
             e.printStackTrace();
         }
 
+        /* get owl class of input classes */
+        OWLClass root_concept_owl = factory.getOWLClass(IRI.create(root_concept));
+        Concept_Factory.getInstance().get_concept_from_owl_class(root_concept_owl);     //make sure it has a number representation
+
+        OWLClass subsumer_owl;
+        if (decide_subsumption_relation) {
+            subsumer_owl = factory.getOWLClass(IRI.create(subsumer));
+            Concept_Factory.getInstance().get_concept_from_owl_class(subsumer_owl);         //make sure it has a number representation
+        } else {
+            subsumer_owl = null;
+        }
+
+        //the important part :)
         ConstantValues.start_timer("initialisation");
         FL_0_subsumption fl_0_subsumption = new FL_0_subsumption(ontology_owl, root_concept_owl, subsumer_owl);
         ConstantValues.stop_timer("initialisation");
@@ -155,30 +168,22 @@ public class App {
      * @throws org.semanticweb.owlapi.model.OWLOntologyCreationException
      * originating from OWLOntologyManager.loadOntologyFromOntologyDocument(...)
      */
-    private static void open_ontology() throws org.semanticweb.owlapi.model.OWLOntologyCreationException {
+    private static OWLOntology open_ontology() throws org.semanticweb.owlapi.model.OWLOntologyCreationException {
         ConstantValues.start_timer("open_ontology");
 
         /* owl init */
         OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-        OWLDataFactory factory = manager.getOWLDataFactory();
+        factory = manager.getOWLDataFactory();
         OWLOntologyManager m = OWLManager.createOWLOntologyManager();
 
         /* open ontology */
         ConstantValues.debug_info("opening ontologie with the owl-api", 0);
         File ontology_file = new File(inputFilePath);
-        ontology_owl = m.loadOntologyFromOntologyDocument(ontology_file);
+        OWLOntology ontology_owl = m.loadOntologyFromOntologyDocument(ontology_file);
 
-        /* get owl class of input classes */
-        root_concept_owl = factory.getOWLClass(IRI.create(root_concept));
-        Concept_Factory.getInstance().get_concept_from_owl_class(root_concept_owl);     //make sure it has a number representation
-
-        if (decide_subsumption_relation) {
-            subsumer_owl = factory.getOWLClass(IRI.create(subsumer));
-            Concept_Factory.getInstance().get_concept_from_owl_class(subsumer_owl);         //make sure it has a number representation
-        } else {
-            subsumer_owl = null;
-        }
         ConstantValues.stop_timer("open_ontology");
+
+        return ontology_owl;
     }
 
 
