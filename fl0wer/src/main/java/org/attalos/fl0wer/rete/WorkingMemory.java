@@ -23,7 +23,7 @@ public class WorkingMemory {
      */
     protected WorkingMemoryMultipleInputNodeData get_multipleInputNode_memory_at(int node_id, int incomming_path_count) {
         WorkingMemoryMultipleInputNodeData requested_memory = multipleInputNode_memory.get(node_id);
-        if (requested_memory == null) {git
+        if (requested_memory == null) {
             requested_memory = new WorkingMemoryMultipleInputNodeData(incomming_path_count);
             multipleInputNode_memory.set(node_id, requested_memory);
         }
