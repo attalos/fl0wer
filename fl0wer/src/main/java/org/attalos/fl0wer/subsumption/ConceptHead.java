@@ -4,6 +4,7 @@ import org.attalos.fl0wer.normalization.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Objects;
 import java.util.StringJoiner;
 
 /**
@@ -117,6 +118,20 @@ public class ConceptHead implements Comparable<ConceptHead> {
             }
         }
         return "(" + outer_joiner.toString() + ")";
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ConceptHead that = (ConceptHead) o;
+        return Objects.equals(head_array, that.head_array);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(head_array);
     }
 
     @Override
