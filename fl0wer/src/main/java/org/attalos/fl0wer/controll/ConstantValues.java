@@ -31,6 +31,11 @@ public class ConstantValues {
         initialised = true;
     }
 
+    public static void purge() {
+        initialised = false;
+        timer_map = new HashMap<>();
+    }
+
     public static boolean debug(Integer debug_level) {
         if (!initialised) {
             throw new RuntimeException("ConstantValues accessed before initialisation");
