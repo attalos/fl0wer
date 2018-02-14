@@ -4,6 +4,7 @@ import org.attalos.fl0wer.App;
 import org.attalos.fl0wer.normalization.Concept_Factory;
 import org.attalos.fl0wer.normalization.Ontology;
 import org.attalos.fl0wer.rete.ReteNetwork;
+import org.attalos.fl0wer.rete.WorkingMemory;
 import org.attalos.fl0wer.subsumption.ApplicableRule;
 import org.attalos.fl0wer.subsumption.ConceptHead;
 import org.attalos.fl0wer.subsumption.HeadOntology;
@@ -20,6 +21,7 @@ import java.util.List;
 public class FL_0_subsumption {
     private SmallestFunctionalModelTree subsumption_tree;
     private ReteNetwork rete_network;
+    private WorkingMemory workingmemory;
 
     private Integer subsumer;
     private Integer subsumed;
@@ -79,6 +81,7 @@ public class FL_0_subsumption {
         ConstantValues.debug_info("creating rete network out of normalized ontology", 0);
         ConstantValues.start_timer("create_rete_network");
         this.rete_network = new ReteNetwork(head_ontology, num_of_concepts, num_of_roles);
+        this.workingmemory = rete_network.generate_new_WorkingMemory();
         ConstantValues.stop_timer("create_rete_network");
 
         //dot graph of rete network
@@ -91,7 +94,7 @@ public class FL_0_subsumption {
 
         //propagate first element
         ConstantValues.debug_info("propagating root throw rete netwrok", 0);
-        this.rete_network.propagate_domain_elem(0L, this.subsumption_tree.get_concepts_of_elem(0L).getConcepts());
+        this.rete_network.propagate_domain_elem(0L, this.subsumption_tree.get_concepts_of_elem(0L).getConcepts(), this.workingmemory);
 
     }
 
@@ -114,7 +117,7 @@ public class FL_0_subsumption {
                 }
             }
 
-            ApplicableRule applicable_rule = this.rete_network.get_next_rule_to_fire();
+            ApplicableRule applicable_rule = this.rete_network.get_next_rule_to_fire(this.workingmemory);
 
             if (applicable_rule == null) {
                 break;
@@ -182,7 +185,7 @@ public class FL_0_subsumption {
     private void add_concepts_to_elem(Long elem_id, ArrayList<Integer> new_concepts) {
         if (this.subsumption_tree.update_node(elem_id, new_concepts)) {
             ConstantValues.start_timer("rete_propagation");
-            this.rete_network.propagate_domain_elem(elem_id, subsumption_tree.get_concepts_of_elem(elem_id).getConcepts());
+            this.rete_network.propagate_domain_elem(elem_id, subsumption_tree.get_concepts_of_elem(elem_id).getConcepts(), this.workingmemory);
             ConstantValues.stop_timer("rete_propagation");
         }
     }
@@ -193,7 +196,7 @@ public class FL_0_subsumption {
 
     protected void reenter_rules_to_queue(Collection<ApplicableRule> applicable_rules) {
         for (ApplicableRule applicable_rule : applicable_rules) {
-            this.rete_network.reenter_rule_to_queue(applicable_rule);
+            this.rete_network.reenter_rule_to_queue(applicable_rule, this.workingmemory);
         }
     }
 }

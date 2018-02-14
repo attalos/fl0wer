@@ -10,10 +10,27 @@ public class WorkingMemory {
     private ArrayList<WorkingMemoryMultipleInputNodeData> multipleInputNode_memory;
     private ArrayList<WorkingMemoryFinalNodeData> finalNode_memory;
 
-    public WorkingMemory(int num_of_multipleInputNodes, int num_of_finalNodes) {
+    protected WorkingMemory(int num_of_multipleInputNodes, int num_of_finalNodes) {
         rule_queue = new PriorityQueue<>();
         multipleInputNode_memory = new ArrayList<>(num_of_multipleInputNodes);
-        multipleInputNode_memory = new ArrayList<>(num_of_finalNodes);
+        finalNode_memory = new ArrayList<>(num_of_finalNodes);
+    }
+
+    /**
+     *
+     * @return highest priority rule
+     */
+    protected ApplicableRule poll_rule () {
+        return  rule_queue.poll();
+    }
+
+    /**
+     *
+     * @param rule to insert
+     * @return see java.util.PriorityQueue.offer( ... )
+     */
+    protected boolean offer_rule(ApplicableRule rule) {
+        return rule_queue.offer(rule);      //is the same as PriorityQueue.add( ... )
     }
 
     /**

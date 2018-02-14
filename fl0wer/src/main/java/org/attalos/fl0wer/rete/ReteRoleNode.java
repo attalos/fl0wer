@@ -32,11 +32,11 @@ public class ReteRoleNode implements ReteNode {
     }
 
     @Override
-    public void propagate_domain_elem(Long elem_index, int rolename, Collection<Integer> domain_elem, int num_of_roles) {
+    public void propagate_domain_elem(Long elem_index, int rolename, Collection<Integer> domain_elem, int num_of_roles, WorkingMemory wm) {
         if (rolename == this.required_rolename) {
-            successors.forEach(successor -> successor.propagate_domain_elem((elem_index - rolename - 1) / num_of_roles, rolename, domain_elem, num_of_roles));
+            successors.forEach(successor -> successor.propagate_domain_elem((elem_index - rolename - 1) / num_of_roles, rolename, domain_elem, num_of_roles, wm));
         } else if (this.required_rolename == -1) {
-            successors.forEach(successor -> successor.propagate_domain_elem(elem_index, -1, domain_elem, num_of_roles));
+            successors.forEach(successor -> successor.propagate_domain_elem(elem_index, -1, domain_elem, num_of_roles, wm));
         }
     }
 

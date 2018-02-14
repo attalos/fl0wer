@@ -35,7 +35,7 @@ public class ReteMultipleInput implements  ReteNode {
     }
 
     @Override
-    public void propagate_domain_elem(Long elem_index, int rolename, Collection<Integer> domain_elem, int num_of_roles) {
+    public void propagate_domain_elem(Long elem_index, int rolename, Collection<Integer> domain_elem, int num_of_roles, WorkingMemory wm) {
 
         int index_of_role = predecessor_identifier.indexOf(rolename);
         if (index_of_role == -1) {
@@ -55,7 +55,7 @@ public class ReteMultipleInput implements  ReteNode {
 
         // all path are full filled
         if (current_element.stream().allMatch(Boolean::booleanValue)) {
-            successor.propagate_domain_elem(elem_index, -1, null, num_of_roles);
+            successor.propagate_domain_elem(elem_index, -1, null, num_of_roles, wm);
             this.current_elements.remove(elem_index);
         }
     }

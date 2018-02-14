@@ -13,21 +13,19 @@ import java.util.*;
  */
 public class ReteNetwork {
     private ArrayList<ReteNode> top_level_nodes;
-    private PriorityQueue<ApplicableRule> rule_queue;
-    //private BlockingCondition blockingCondition;
+
     private int num_of_roles;
 
     public ReteNetwork(HeadOntology headOntology, int num_of_concepts, int num_of_roles) {
         this.top_level_nodes = new ArrayList<>(Collections.nCopies(num_of_concepts + 1, null));
-        this.rule_queue = new PriorityQueue<>();
-        //this.blockingCondition = new BlockingCondition();
+
         this.num_of_roles = num_of_roles;
 
         headOntology.get_gcis().forEach((HeadGCI head_gci) -> {
             ArrayList<Integer> used_roles = head_gci.get_subConceptHead().get_not_null_sucessor_rolenames();
 
 
-            ReteFinalNode final_node = new ReteFinalNode(head_gci.get_superConceptHead(), rule_queue);
+            ReteFinalNode final_node = new ReteFinalNode(head_gci.get_superConceptHead());
 
             if (used_roles.size() == 0) {
                 //TODO (top concept)
@@ -61,7 +59,7 @@ public class ReteNetwork {
         }
     }
 
-    public void propagate_domain_elem(Long elem_id, Set<Integer> elem_concepts) {
+    public void propagate_domain_elem(Long elem_id, Set<Integer> elem_concepts, WorkingMemory wm) {
         //void propagate_domain_elem(Long elem_index, int rolename, ArrayList<Long> domain_elem, int num_of_roles);
 
         int rolename = Math.toIntExact((elem_id - 1) % num_of_roles);
@@ -69,20 +67,24 @@ public class ReteNetwork {
         for (Integer node_index : elem_concepts) {
             ReteNode rete_node = this.top_level_nodes.get(node_index);
             if (rete_node != null) {
-                rete_node.propagate_domain_elem(elem_id, rolename, elem_concepts, this.num_of_roles);
+                rete_node.propagate_domain_elem(elem_id, rolename, elem_concepts, this.num_of_roles, wm);
             }
         }
+    }
+
+    public WorkingMemory generate_new_WorkingMemory() {
+        return new WorkingMemory(1, 2);
     }
 
     /**
      *
      * @return the applicable rule with the highest priority or null if no rule is applicable
      */
-    public ApplicableRule get_next_rule_to_fire() {
-        return this.rule_queue.poll();
+    public ApplicableRule get_next_rule_to_fire(WorkingMemory wm) {
+        return wm.poll_rule();
     }
 
-    public void reenter_rule_to_queue(ApplicableRule ar) { this.rule_queue.offer(ar); }
+    public void reenter_rule_to_queue(ApplicableRule ar, WorkingMemory wm) { wm.offer_rule(ar); }
 
     public String to_dot_graph() {
         String dot_string = "digraph g {\n";

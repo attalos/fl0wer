@@ -10,13 +10,11 @@ import java.util.*;
  */
 public class ReteFinalNode implements ReteNode {
     private ConceptHead fired_result;
-    private PriorityQueue<ApplicableRule> rule_queue;
     private Set<ApplicableRule> already_fired_rules;
 
 
-    public ReteFinalNode(ConceptHead fired_result, PriorityQueue<ApplicableRule> rule_queue) {
+    public ReteFinalNode(ConceptHead fired_result) {
         this.fired_result = fired_result;
-        this.rule_queue = rule_queue;
         this.already_fired_rules = new HashSet<>();
     }
 
@@ -31,10 +29,10 @@ public class ReteFinalNode implements ReteNode {
     }
 
     @Override
-    public void propagate_domain_elem(Long elem_index, int rolename, Collection<Integer> domain_elem, int num_of_roles) {
+    public void propagate_domain_elem(Long elem_index, int rolename, Collection<Integer> domain_elem, int num_of_roles, WorkingMemory wm) {
         ApplicableRule resulting_applicable_rule = new ApplicableRule(elem_index, fired_result);
         if (already_fired_rules.add(resulting_applicable_rule)) {
-            rule_queue.add(resulting_applicable_rule);
+            wm.offer_rule(resulting_applicable_rule);
         }
     }
 
