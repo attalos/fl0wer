@@ -158,6 +158,24 @@ public class ReteNetworkTest {
         assertNull("Every rule should only be found once per dom elem", resulting_Rule);
     }
 
+    @Test
+    public void testRete_reuse() {
+        WorkingMemory wm1 = rete_network.generate_new_WorkingMemory();
+        WorkingMemory wm2 = rete_network.generate_new_WorkingMemory();
+
+        Set<Integer> input_concept_set = new HashSet<>();
+        input_concept_set.add(class_C);
+
+        ApplicableRule resulting_Rule;
+        rete_network.propagate_domain_elem(0L, input_concept_set, wm1);
+        resulting_Rule = rete_network.get_next_rule_to_fire(wm1);
+        assertNotNull("Something went completly wrong. (See testSimple_rule_detection)", resulting_Rule);
+
+        rete_network.propagate_domain_elem(0L, input_concept_set, wm2);
+        resulting_Rule = rete_network.get_next_rule_to_fire(wm2);
+        assertNotNull("Working with one wm had an effekt von working with another", resulting_Rule);
+    }
+
     @AfterClass
     public static void run_once_after_Class() {
         ConstantValues.purge();

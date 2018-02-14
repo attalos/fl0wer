@@ -1,6 +1,7 @@
 package org.attalos.fl0wer.controll;
 
 import org.attalos.fl0wer.blocking.BlockingCondition;
+import org.attalos.fl0wer.rete.WorkingMemory;
 
 import java.util.*;
 
@@ -19,9 +20,11 @@ public class SmallestFunctionalModelTree {
         model_tree = new TreeMap<>();
         ArrayList<Integer> root_concepts = new ArrayList<>();
         root_concepts.add(start_concept);
-        //FunctionalElement root = new FunctionalElement(root_concepts);
-        //model_tree.put(0L, root);
-        this.update_node(0L, root_concepts);
+
+        FunctionalElement root_func_elem = new FunctionalElement(root_concepts);
+        this.model_tree.put(0L, root_func_elem);
+        this.blocking_condition.insert_blocking_element(0L, root_func_elem.getConcepts());
+
     }
 
     public FunctionalElement get_concepts_of_elem(Long elem_id) {
@@ -34,7 +37,7 @@ public class SmallestFunctionalModelTree {
      * @param new_concepts which should get added
      * @return true, if something changed. False otherwise
      */
-    public boolean update_node(Long node, ArrayList<Integer> new_concepts) {
+    public boolean update_node(Long node, ArrayList<Integer> new_concepts, WorkingMemory wm) {
         FunctionalElement elem_to_change = model_tree.get(node);
 
         if (elem_to_change != null) {
@@ -48,7 +51,7 @@ public class SmallestFunctionalModelTree {
             ConstantValues.start_timer("blocking");
             SortedSet<Long> blocking_element = this.blocking_condition.get_blocking_elements(elem_to_change.getConcepts());
             if (this.blocking_condition.remove_blocking_element(node, elem_to_change.getConcepts())) {
-                this.handle_blocking_element(blocking_element);
+                this.handle_blocking_element(blocking_element, wm);
             }
             ConstantValues.stop_timer("blocking");
         } else {
@@ -63,7 +66,7 @@ public class SmallestFunctionalModelTree {
                 if (parent == null) {
                     throw new RuntimeException("parent should never be null");
                 } else if (parent.is_blocked()) {
-                    elem_to_change.set_indirectly_blocked(true);
+                    elem_to_change.set_indirectly_blocked(true, wm);
                 }
             }
 
@@ -80,75 +83,75 @@ public class SmallestFunctionalModelTree {
         ConstantValues.start_timer("blocking");
         if (this.blocking_condition.insert_blocking_element(node, elem_to_change.getConcepts())) {
             SortedSet<Long> blocking_element = this.blocking_condition.get_blocking_elements(elem_to_change.getConcepts());
-            this.handle_blocking_element(blocking_element);
+            this.handle_blocking_element(blocking_element, wm);
         }
         ConstantValues.stop_timer("blocking");
 
         return true;
     }
 
-    public void block_element_directly(Long elem_id) {
+    public void block_element_directly(Long elem_id, WorkingMemory wm) {
         FunctionalElement func_elem = this.model_tree.get(elem_id);
         if (func_elem == null) {
             throw new RuntimeException("tried to block no existing element - in SmallestFunctionalModel");
         }
 
-        func_elem.set_directly_blocked(true);
+        func_elem.set_directly_blocked(true, wm);
 
         /*
          * block successors indirectly
          */
         for(Long child = this.num_of_roles * elem_id + 1; child <= this.num_of_roles * elem_id + this.num_of_roles; child++) {
-            block_element_indirectly(child);
+            block_element_indirectly(child, wm);
         }
     }
 
-    public void unblock_element_directly(Long elem_id) {
+    public void unblock_element_directly(Long elem_id, WorkingMemory wm) {
         FunctionalElement func_elem = this.model_tree.get(elem_id);
         if (func_elem == null) {
             throw new RuntimeException("tried to unblock no existing element - in SmallestFunctionalModel");
         }
 
-        func_elem.set_directly_blocked(false);
+        func_elem.set_directly_blocked(false, wm);
 
         /*
          * unblock successors indirectly
          */
         if (!func_elem.is_indirectly_blocked()) {
             for (Long child = this.num_of_roles * elem_id + 1; child <= this.num_of_roles * elem_id + this.num_of_roles; child++) {
-                unblock_element_indirectly(child);
+                unblock_element_indirectly(child, wm);
             }
         }
     }
 
-    private void block_element_indirectly(Long elem_id) {
+    private void block_element_indirectly(Long elem_id, WorkingMemory wm) {
         FunctionalElement func_elem = this.model_tree.get(elem_id);
         if (func_elem == null || func_elem.is_indirectly_blocked()) {
             return;
         }
 
-        func_elem.set_indirectly_blocked(true);
+        func_elem.set_indirectly_blocked(true, wm);
 
         if (func_elem.is_directly_blocking()) {
-            handle_blocking_element(this.blocking_condition.get_blocking_elements(func_elem.getConcepts()));
+            handle_blocking_element(this.blocking_condition.get_blocking_elements(func_elem.getConcepts()), wm);
         }
 
         /*
          * block successors indirectly
          */
         for(Long child = this.num_of_roles * elem_id + 1; child <= this.num_of_roles * elem_id + this.num_of_roles; child++) {
-            block_element_indirectly(child);
+            block_element_indirectly(child, wm);
         }
     }
 
-    private void unblock_element_indirectly(Long elem_id) {
+    private void unblock_element_indirectly(Long elem_id, WorkingMemory wm) {
         FunctionalElement func_elem = this.model_tree.get(elem_id);
         if (func_elem == null) {
             return;
         }
 
         if (func_elem.is_directly_blocking()) {
-            handle_blocking_element(this.blocking_condition.get_blocking_elements(func_elem.getConcepts()));
+            handle_blocking_element(this.blocking_condition.get_blocking_elements(func_elem.getConcepts()), wm);
         }
 
         /*
@@ -156,13 +159,13 @@ public class SmallestFunctionalModelTree {
          */
         if (!func_elem.is_directly_blocked()) {
             for (Long child = this.num_of_roles * elem_id + 1; child <= this.num_of_roles * elem_id + this.num_of_roles; child++) {
-                unblock_element_indirectly(child);
+                unblock_element_indirectly(child, wm);
             }
         }
 
     }
 
-    private void handle_blocking_element(SortedSet<Long> blocking_element) {
+    private void handle_blocking_element(SortedSet<Long> blocking_element, WorkingMemory wm) {
         Iterator<Long> iterator = blocking_element.iterator();
 
         /*
@@ -181,7 +184,7 @@ public class SmallestFunctionalModelTree {
 
             //unblock
             if (elem.is_directly_blocked()) {
-                this.unblock_element_directly(elem_id);
+                this.unblock_element_directly(elem_id, wm);
             }
 
             //find blocking element
@@ -199,7 +202,7 @@ public class SmallestFunctionalModelTree {
 
             elem.set_directly_blocking(false);
             if (!elem.is_directly_blocked()) {
-                this.block_element_directly(elem_id);
+                this.block_element_directly(elem_id, wm);
             }
         }
     }

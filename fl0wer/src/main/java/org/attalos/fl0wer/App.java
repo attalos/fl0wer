@@ -54,11 +54,15 @@ public class App {
 
         //the important part :)
         ConstantValues.start_timer("initialisation");
-        FL_0_subsumption fl_0_subsumption = new FL_0_subsumption(ontology_owl, root_concept_owl, subsumer_owl);
+        FL_0_subsumption fl_0_subsumption = new FL_0_subsumption(ontology_owl);
         ConstantValues.stop_timer("initialisation");
 
         ConstantValues.start_timer("subsumption");
-        fl_0_subsumption.decide_subsumption();
+        if (ConstantValues.is_subsumption()) {
+            fl_0_subsumption.decide_subsumption(root_concept_owl, subsumer_owl);
+        } else {
+            fl_0_subsumption.calculate_subsumerset(root_concept_owl);
+        }
         ConstantValues.stop_timer("subsumption");
 
         ConstantValues.print_times();

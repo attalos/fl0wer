@@ -20,6 +20,7 @@ import static org.junit.Assert.*;
 public class FL_0_subsumptionTest {
     private FL_0_subsumption fl_0_subsumption;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+    private OWLClass root_concept_owl;
 
     @BeforeClass
     public static void runOnceBeforeClass() {
@@ -43,10 +44,10 @@ public class FL_0_subsumptionTest {
         OWLOntology ontology_owl = ontology_owl = m.loadOntologyFromOntologyDocument(ontology_file);
 
         /* get owl class of input classes */
-        OWLClass root_concept_owl = factory.getOWLClass(IRI.create("http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#B"));
+        root_concept_owl = factory.getOWLClass(IRI.create("http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#B"));
         Concept_Factory.getInstance().get_concept_from_owl_class(root_concept_owl);     //make sure it has a number representation
 
-        fl_0_subsumption = new FL_0_subsumption(ontology_owl, root_concept_owl, null);
+        fl_0_subsumption = new FL_0_subsumption(ontology_owl);
 
         //read output stream
         System.setOut(new PrintStream(outContent));
@@ -54,7 +55,7 @@ public class FL_0_subsumptionTest {
 
     @Test
     public void decide_subsumption() {
-        fl_0_subsumption.decide_subsumption();
+        fl_0_subsumption.calculate_subsumerset(root_concept_owl);
         String given_answer = outContent.toString().replace("\n", "");
         String corret_answer = "<http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#E><http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#B>";
 

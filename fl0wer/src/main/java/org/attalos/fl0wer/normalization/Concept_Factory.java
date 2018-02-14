@@ -29,12 +29,28 @@ public class Concept_Factory {
         return new NamedConcept(concept_counter++);
     }
 
+    /**
+     * gives corresponding named concept back - if it doesn't exist yet, it will be created
+     *
+     * @param owl_class to translate
+     * @return resulting named concept
+     */
     public synchronized NamedConcept get_concept_from_owl_class(OWLClass owl_class) {
         if ( !concept_map.containsKey(owl_class) ) {
             concept_map.put(owl_class, new NamedConcept(concept_counter++));
         }
 
         return concept_map.get(owl_class);
+    }
+
+    /**
+     * gives corresponding named concept back or null if it doesn't exist
+     *
+     * @param owl_class to translate
+     * @return resulting named concept or null if it wasn't found
+     */
+    public NamedConcept translate_owl_class_to_named_concept(OWLClass owl_class) {
+        return this.concept_map.get(owl_class);
     }
 
     public synchronized Role get_role_from_owl_property(OWLObjectPropertyExpression owl_property) {
@@ -53,9 +69,6 @@ public class Concept_Factory {
         return concept_counter;
     }
 
-    public NamedConcept translate_owl_class_to_named_concept(OWLClass owl_class) {
-        return this.concept_map.get(owl_class);
-    }
 
     public List<OWLClass> translate_int_to_OWLClass(Collection<Integer> int_collection) {
         List<OWLClass> return_set = new ArrayList<>();

@@ -1,5 +1,6 @@
 package org.attalos.fl0wer.controll;
 
+import org.attalos.fl0wer.rete.WorkingMemory;
 import org.attalos.fl0wer.subsumption.ApplicableRule;
 
 import java.util.*;
@@ -35,17 +36,17 @@ public class FunctionalElement {
         this.concepts.addAll(new_concepts);
     }
 
-    protected void set_directly_blocked(boolean directly_blocked) {
+    protected void set_directly_blocked(boolean directly_blocked, WorkingMemory wm) {
         this.directly_blocked = directly_blocked;
         if (!this.is_blocked()) {
-            this.release_rules();
+            this.release_rules(wm);
         }
     }
 
-    protected void set_indirectly_blocked(boolean indirectly_blocked) {
+    protected void set_indirectly_blocked(boolean indirectly_blocked, WorkingMemory wm) {
         this.indirectly_blocked = indirectly_blocked;
         if (!this.is_blocked()) {
-            this.release_rules();
+            this.release_rules(wm);
         }
     }
 
@@ -81,9 +82,9 @@ public class FunctionalElement {
         this.hold_back_rules.add(rule_to_hold_back);
     }
 
-    private void release_rules() {
+    private void release_rules(WorkingMemory wm) {
         if (hold_back_rules != null) {
-            FL_0_subsumption.get_instance().reenter_rules_to_queue(hold_back_rules);
+            FL_0_subsumption.get_instance().reenter_rules_to_queue(hold_back_rules, wm);
             hold_back_rules = null;
         }
     }
