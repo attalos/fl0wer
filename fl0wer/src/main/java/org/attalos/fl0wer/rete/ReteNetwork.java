@@ -15,6 +15,8 @@ public class ReteNetwork {
     private ArrayList<ReteNode> top_level_nodes;
 
     private int num_of_roles;
+    private int num_of_multipleInputNodes = 0;
+    private int num_of_finalNodes = 0;
 
     public ReteNetwork(HeadOntology headOntology, int num_of_concepts, int num_of_roles) {
         this.top_level_nodes = new ArrayList<>(Collections.nCopies(num_of_concepts + 1, null));
@@ -25,7 +27,7 @@ public class ReteNetwork {
             ArrayList<Integer> used_roles = head_gci.get_subConceptHead().get_not_null_sucessor_rolenames();
 
 
-            ReteFinalNode final_node = new ReteFinalNode(head_gci.get_superConceptHead());
+            ReteFinalNode final_node = new ReteFinalNode(head_gci.get_superConceptHead(), num_of_finalNodes++);
 
             if (used_roles.size() == 0) {
                 //TODO (top concept)
@@ -35,7 +37,7 @@ public class ReteNetwork {
                 //top_level_nodes.add(new ReteIntraElemNode(used_role, needed_concepts, final_node));
                 add_rete_node(used_role, needed_concepts, final_node);
             } else {
-                ReteMultipleInput collector = new ReteMultipleInput(used_roles, final_node);
+                ReteMultipleInput collector = new ReteMultipleInput(used_roles, final_node, num_of_multipleInputNodes++);
                 for (Integer used_role : used_roles) {
                     ArrayList<Integer> needed_concepts = head_gci.get_subConceptHead().get_concept_set_at(used_role + 1);
                     if (used_role == -1) {
@@ -73,7 +75,7 @@ public class ReteNetwork {
     }
 
     public WorkingMemory generate_new_WorkingMemory() {
-        return new WorkingMemory(1, 2);
+        return new WorkingMemory(num_of_multipleInputNodes, num_of_finalNodes);
     }
 
     /**

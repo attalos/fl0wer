@@ -3,7 +3,7 @@ package org.attalos.fl0wer.rete;
 import java.util.*;
 
 public class WorkingMemoryMultipleInputNodeData {
-    int incomming_path_count;
+    private int incomming_path_count;
     private Map<Long, List<Boolean>> current_elements;
 
     protected WorkingMemoryMultipleInputNodeData(int incomming_path_count) {
