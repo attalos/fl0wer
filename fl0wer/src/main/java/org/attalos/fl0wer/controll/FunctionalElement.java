@@ -4,6 +4,7 @@ import org.attalos.fl0wer.rete.WorkingMemory;
 import org.attalos.fl0wer.subsumption.ApplicableRule;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 /**
  * Created by attalos on 7/2/17.
@@ -36,17 +37,17 @@ public class FunctionalElement {
         this.concepts.addAll(new_concepts);
     }
 
-    protected void set_directly_blocked(boolean directly_blocked, WorkingMemory wm) {
+    protected void set_directly_blocked(boolean directly_blocked, Consumer<List<ApplicableRule>> rule_release_function) {
         this.directly_blocked = directly_blocked;
         if (!this.is_blocked()) {
-            this.release_rules(wm);
+            this.release_rules(rule_release_function);
         }
     }
 
-    protected void set_indirectly_blocked(boolean indirectly_blocked, WorkingMemory wm) {
+    protected void set_indirectly_blocked(boolean indirectly_blocked, Consumer<List<ApplicableRule>> rule_release_function) {
         this.indirectly_blocked = indirectly_blocked;
         if (!this.is_blocked()) {
-            this.release_rules(wm);
+            this.release_rules(rule_release_function);
         }
     }
 
@@ -82,9 +83,10 @@ public class FunctionalElement {
         this.hold_back_rules.add(rule_to_hold_back);
     }
 
-    private void release_rules(WorkingMemory wm) {
+    private void release_rules(Consumer<List<ApplicableRule>> rule_release_function) {
         if (hold_back_rules != null) {
-            FL_0_subsumption.get_instance().reenter_rules_to_queue(hold_back_rules, wm);
+            rule_release_function.accept(hold_back_rules);
+            //FL_0_subsumption.get_instance().reenter_rules_to_queue(hold_back_rules, wm);
             hold_back_rules = null;
         }
     }

@@ -283,7 +283,7 @@ public class FL_0_subsumption {
 //    }
 
     private void add_concepts_to_elem(Long elem_id, ArrayList<Integer> new_concepts, SmallestFunctionalModelTree subsumption_tree, WorkingMemory wm) {
-        if (subsumption_tree.update_node(elem_id, new_concepts, wm)) {
+        if (subsumption_tree.update_node(elem_id, new_concepts, applicable_rules -> reenter_rules_to_queue(applicable_rules, wm))) {
             ConstantValues.start_timer("rete_propagation");
             this.rete_network.propagate_domain_elem(elem_id, subsumption_tree.get_concepts_of_elem(elem_id).getConcepts(), wm);
             ConstantValues.stop_timer("rete_propagation");
@@ -294,7 +294,7 @@ public class FL_0_subsumption {
         return instance;
     }
 
-    protected void reenter_rules_to_queue(Collection<ApplicableRule> applicable_rules, WorkingMemory wm) {
+    private void reenter_rules_to_queue(Collection<ApplicableRule> applicable_rules, WorkingMemory wm) {
         for (ApplicableRule applicable_rule : applicable_rules) {
             this.rete_network.reenter_rule_to_queue(applicable_rule, wm);
         }
