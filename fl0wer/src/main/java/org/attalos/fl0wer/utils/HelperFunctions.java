@@ -1,6 +1,5 @@
 package org.attalos.fl0wer.utils;
 
-import org.attalos.fl0wer.App;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.*;
 

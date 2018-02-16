@@ -1,4 +1,4 @@
-package org.attalos.fl0wer.controll;
+package org.attalos.fl0wer.utils;
 
 public class Timer {
     private long total;

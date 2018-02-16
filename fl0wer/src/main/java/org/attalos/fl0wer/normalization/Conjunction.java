@@ -1,6 +1,5 @@
 package org.attalos.fl0wer.normalization;
 
-import org.attalos.fl0wer.App;
 import org.attalos.fl0wer.utils.HelperFunctions;
 import org.attalos.fl0wer.utils.OwlToInternalTranslator;
 import org.semanticweb.owlapi.model.OWLObjectIntersectionOf;

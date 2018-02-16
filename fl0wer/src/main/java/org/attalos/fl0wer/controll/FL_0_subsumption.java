@@ -1,6 +1,5 @@
 package org.attalos.fl0wer.controll;
 
-import org.attalos.fl0wer.App;
 import org.attalos.fl0wer.normalization.Ontology;
 import org.attalos.fl0wer.rete.ReteNetwork;
 import org.attalos.fl0wer.rete.WorkingMemory;
