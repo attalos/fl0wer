@@ -8,13 +8,15 @@ import org.attalos.fl0wer.rete.WorkingMemory;
 import org.attalos.fl0wer.subsumption.ApplicableRule;
 import org.attalos.fl0wer.subsumption.ConceptHead;
 import org.attalos.fl0wer.subsumption.HeadOntology;
+import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLOntology;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * Created by attalos on 7/1/17.
@@ -22,6 +24,7 @@ import java.util.function.Function;
 public class FL_0_subsumption {
     //private SmallestFunctionalModelTree subsumption_tree;
     private ReteNetwork rete_network;
+    private Stream<OWLClass> input_owl_classes;
     //private WorkingMemory workingmemory;
 
     //private Integer subsumer;
@@ -33,6 +36,9 @@ public class FL_0_subsumption {
     //private static FL_0_subsumption instance;
 
     public FL_0_subsumption(OWLOntology owl_ontology) {
+        //get input classes
+        OWLClass owl_top = OWLManager.createOWLOntologyManager().getOWLDataFactory().getOWLThing();
+        input_owl_classes = owl_ontology.classesInSignature().filter(class_owl -> !class_owl.equals(owl_top));
 
         //internal ontology representation
         ConstantValues.debug_info("creating internal ontology representation", 0);
@@ -194,6 +200,15 @@ public class FL_0_subsumption {
         }
 
         return subsumerset;
+    }
+
+    public Map<OWLClass, Collection<OWLClass>> classify() {
+        Map<OWLClass, Collection<OWLClass>> classificatoin_map = new HashMap<>();
+
+        input_owl_classes.forEach(class_owl -> {
+            classificatoin_map.put(class_owl, calculate_subsumerset(class_owl));
+        });
+        return classificatoin_map;
     }
 
 //    /**
