@@ -8,6 +8,7 @@ import org.attalos.fl0wer.subsumption.ApplicableRule;
 import org.attalos.fl0wer.subsumption.ConceptHead;
 import org.attalos.fl0wer.subsumption.HeadOntology;
 import org.attalos.fl0wer.utils.ConstantValues;
+import org.attalos.fl0wer.utils.HelperFunctions;
 import org.attalos.fl0wer.utils.OwlToInternalTranslator;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLClass;
@@ -173,7 +174,7 @@ public class FL_0_subsumption {
         List<OWLClass> subsumerset = owlToInternalTranslator.translate_reverse(subsumption_tree.get_concepts_of_elem(0L).getConcepts());
         ConstantValues.stop_timer("backtranslation");
         for (OWLClass subsumer : subsumerset) {
-            System.out.println(App.toString_expression(subsumer));
+            System.out.println(HelperFunctions.toString_expression(subsumer));
         }
 
         return subsumerset;

@@ -1,6 +1,7 @@
 package org.attalos.fl0wer.normalization;
 
 import org.attalos.fl0wer.App;
+import org.attalos.fl0wer.utils.HelperFunctions;
 import org.attalos.fl0wer.utils.OwlToInternalTranslator;
 import org.semanticweb.owlapi.model.OWLObjectAllValuesFrom;
 
@@ -35,7 +36,7 @@ public class ValueRestriction implements  Node_Res{
             //System.out.println("problem while value restriction");
             System.out.println(concept);
             System.out.println(owl_valueRes);
-            System.out.println(App.toString_expression(owl_valueRes));
+            System.out.println(HelperFunctions.toString_expression(owl_valueRes));
             throw new RuntimeException("Problem while creating ValueRestricton from owl");
         }
     }

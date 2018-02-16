@@ -183,67 +183,15 @@ public class App {
         /* owl init */
         OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
         factory = manager.getOWLDataFactory();
-        OWLOntologyManager m = OWLManager.createOWLOntologyManager();
 
         /* open ontology */
         ConstantValues.debug_info("opening ontologie with the owl-api", 0);
         File ontology_file = new File(inputFilePath);
-        OWLOntology ontology_owl = m.loadOntologyFromOntologyDocument(ontology_file);
+        OWLOntology ontology_owl = manager.loadOntologyFromOntologyDocument(ontology_file);
 
         ConstantValues.stop_timer("open_ontology");
 
         return ontology_owl;
-    }
-
-
-    //TODO rework this one
-    private static void print_ontology(OWLOntology ontology) {
-        Stream<OWLAxiom> axioms = ontology.axioms();
-
-        axioms.forEach(ax -> {
-            if (ax instanceof OWLSubClassOfAxiom) {
-                OWLSubClassOfAxiom sub_ax = (OWLSubClassOfAxiom) ax;
-                System.out.println(toString_expression(sub_ax.getSubClass()) + " \u2291 " + toString_expression(sub_ax.getSuperClass()));
-            } else if (ax instanceof  OWLEquivalentClassesAxiom) {
-                OWLEquivalentClassesAxiom equ_ax = (OWLEquivalentClassesAxiom) ax;
-                //System.out.println(toString_expression(equ_ax.classExpressions()));
-                //conjuncts.stream().map(Object::toString).collect(Collectors.joining(" \u2293 "))
-                System.out.println(equ_ax.classExpressions().map(App::toString_expression).collect(Collectors.joining(" \u2261 ")));
-            } else {
-                System.out.println("Axiom is not SubClassAxiom");
-            }
-
-        });
-        //System.out.println("\u2200");
-        //System.out.println("\u2293");
-        //System.out.println(ontology.toString());
-    }
-
-    //TODO rework or delete this one
-    public static String toString_expression(OWLClassExpression exp) {
-        OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-        OWLDataFactory factory = manager.getOWLDataFactory();
-
-        if (exp instanceof OWLClass) {
-            if(exp.equals(factory.getOWLThing())) {
-                return "\u22A4";
-            }
-            return exp.toString();
-        } else if (exp instanceof OWLObjectIntersectionOf) {
-            return "("
-                    + exp.conjunctSet()
-                    .map(App::toString_expression)
-                    .collect(Collectors.joining(" \u2293 "))
-                    + ")";
-        } else if (exp instanceof OWLObjectAllValuesFrom) {
-            OWLObjectAllValuesFrom value_restriction = (OWLObjectAllValuesFrom) exp;
-            //String role_name = value_restriction.getProperty().toString().split("#")[1];
-            String role_name = value_restriction.getProperty().toString();
-            //role_name = role_name.substring(0, role_name.length() -1);
-            return "\u2200" + role_name + "." + toString_expression(value_restriction.getFiller());
-        }
-
-        return "#################";
     }
 }
 

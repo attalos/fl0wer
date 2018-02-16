@@ -1,6 +1,7 @@
 package org.attalos.fl0wer.normalization;
 
 import org.attalos.fl0wer.App;
+import org.attalos.fl0wer.utils.HelperFunctions;
 import org.attalos.fl0wer.utils.OwlToInternalTranslator;
 import org.semanticweb.owlapi.model.OWLObjectIntersectionOf;
 
@@ -58,7 +59,7 @@ public class Conjunction implements Node_Con {
             } else {
                 System.out.println(concept);
                 System.out.println(owl_intersection);
-                System.out.println(App.toString_expression(owl_intersection));
+                System.out.println(HelperFunctions.toString_expression(owl_intersection));
                 throw new RuntimeException("Problem while creating Conjunction from owl");
                 //System.out.println("problem while creating conjunction");
             }
