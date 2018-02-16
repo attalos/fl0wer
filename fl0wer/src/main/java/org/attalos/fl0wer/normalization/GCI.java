@@ -1,5 +1,7 @@
 package org.attalos.fl0wer.normalization;
 
+import org.attalos.fl0wer.utils.OwlToInternalTranslator;
+
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -33,11 +35,11 @@ public class GCI {
         this.subClass = subClass;
     }
 
-    public void normalize (Ontology ontology) {
+    public void normalize (Ontology ontology, OwlToInternalTranslator o2iTranslator) {
         normalize_nf11_to_nf13();
         normalize_nf14();
-        normalize_nf21(ontology);
-        normalize_nf22(ontology);
+        normalize_nf21(ontology, o2iTranslator);
+        normalize_nf22(ontology, o2iTranslator);
     }
 
     private void normalize_nf11_to_nf13() {
@@ -78,21 +80,19 @@ public class GCI {
     }
     */
 
-    private void normalize_nf21(Ontology o) {
+    private void normalize_nf21(Ontology o, OwlToInternalTranslator o2iTranslator) {
         if(! (subClass instanceof NamedConcept || subClass instanceof  Top) ) {
-            normalize_nf2((Conjunction) this.subClass, o, true);
+            normalize_nf2((Conjunction) this.subClass, o, true, o2iTranslator);
         }
     }
 
-    private void normalize_nf22(Ontology o) {
+    private void normalize_nf22(Ontology o, OwlToInternalTranslator o2iTranslator) {
         if(! (superClass instanceof NamedConcept || superClass instanceof  Top) ) {
-            normalize_nf2((Conjunction) this.superClass, o, false);
+            normalize_nf2((Conjunction) this.superClass, o, false, o2iTranslator);
         }
     }
 
-    private void normalize_nf2(Conjunction conjunction, Ontology ontology, boolean is_nf21) {
-        Concept_Factory factory = Concept_Factory.getInstance();
-
+    private void normalize_nf2(Conjunction conjunction, Ontology ontology, boolean is_nf21, OwlToInternalTranslator o2iTranslator) {
         Iterator<Node_Res> iterator = conjunction.getConjuncts().iterator();
         Conjunction new_conjuncts = new Conjunction();
 
@@ -117,7 +117,7 @@ public class GCI {
 
                     for (int i = role_word.size(); i > 1; i--) {
                         new_concept2 = new_concept1;
-                        new_concept1 = factory.get_new_concept();
+                        new_concept1 = o2iTranslator.get_new();
                         Role role = role_word.remove(role_word.size() - 1);
                         ConceptDescription val_res_concept = new ValueRestriction(role, new_concept2);
 

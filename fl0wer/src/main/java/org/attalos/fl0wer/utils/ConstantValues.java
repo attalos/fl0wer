@@ -1,4 +1,6 @@
-package org.attalos.fl0wer.controll;
+package org.attalos.fl0wer.utils;
+
+import org.attalos.fl0wer.controll.Timer;
 
 import java.util.HashMap;
 import java.util.Map;

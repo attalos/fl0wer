@@ -3,7 +3,7 @@ package org.attalos.fl0wer.controll;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.attalos.fl0wer.normalization.Concept_Factory;
+import org.attalos.fl0wer.utils.ConstantValues;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -48,7 +48,6 @@ public class FL_0_subsumptionTest {
 
         /* get owl class of input classes */
         root_concept_owl = factory.getOWLClass(IRI.create("http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#B"));
-        Concept_Factory.getInstance().get_concept_from_owl_class(root_concept_owl);     //make sure it has a number representation
 
         fl_0_subsumption = new FL_0_subsumption(ontology_owl);
     }

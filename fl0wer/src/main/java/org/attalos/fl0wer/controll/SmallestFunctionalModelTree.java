@@ -1,8 +1,8 @@
 package org.attalos.fl0wer.controll;
 
 import org.attalos.fl0wer.blocking.BlockingCondition;
-import org.attalos.fl0wer.rete.WorkingMemory;
 import org.attalos.fl0wer.subsumption.ApplicableRule;
+import org.attalos.fl0wer.utils.ConstantValues;
 
 import java.util.*;
 import java.util.function.Consumer;

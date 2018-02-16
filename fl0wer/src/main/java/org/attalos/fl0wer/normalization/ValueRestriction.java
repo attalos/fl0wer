@@ -1,6 +1,7 @@
 package org.attalos.fl0wer.normalization;
 
 import org.attalos.fl0wer.App;
+import org.attalos.fl0wer.utils.OwlToInternalTranslator;
 import org.semanticweb.owlapi.model.OWLObjectAllValuesFrom;
 
 import java.util.LinkedList;
@@ -19,12 +20,12 @@ public class ValueRestriction implements  Node_Res{
         this.concept = concept;
     }
 
-    public ValueRestriction(OWLObjectAllValuesFrom owl_valueRes) {
+    public ValueRestriction(OWLObjectAllValuesFrom owl_valueRes, OwlToInternalTranslator o2iTranslator) {
         role_word = new LinkedList<>();
         //role_word.add(new Role(owl_valueRes.getProperty()));
-        role_word.add(Concept_Factory.getInstance().get_role_from_owl_property(owl_valueRes.getProperty()));
+        role_word.add(o2iTranslator.translate(owl_valueRes.getProperty()));
 
-        ConceptDescription concept_description = Ontology.owlClass_to_conceptDescription(owl_valueRes.getFiller());
+        ConceptDescription concept_description = Ontology.owlClass_to_conceptDescription(owl_valueRes.getFiller(), o2iTranslator);
         if (concept_description instanceof ValueRestriction) {
             role_word.addAll(((ValueRestriction) concept_description).getRole_word());
             concept = ((ValueRestriction) concept_description).getConcept();

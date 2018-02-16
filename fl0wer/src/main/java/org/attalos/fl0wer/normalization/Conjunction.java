@@ -1,6 +1,7 @@
 package org.attalos.fl0wer.normalization;
 
 import org.attalos.fl0wer.App;
+import org.attalos.fl0wer.utils.OwlToInternalTranslator;
 import org.semanticweb.owlapi.model.OWLObjectIntersectionOf;
 
 import java.util.HashSet;
@@ -42,13 +43,13 @@ public class Conjunction implements Node_Con {
         this.conjuncts = conjuncts;
     }
 
-    public Conjunction (OWLObjectIntersectionOf owl_intersection) {
+    public Conjunction (OWLObjectIntersectionOf owl_intersection, OwlToInternalTranslator o2iTranslator) {
         /*if(owl_intersection instanceof OWLClass) {
             return owlNamedConcept_toNamedConcept((OWLClass) owl_intersection);
         }*/
         conjuncts = new HashSet<>();
         owl_intersection.conjunctSet().forEach(conjunct -> {
-            ConceptDescription concept = Ontology.owlClass_to_conceptDescription(conjunct);
+            ConceptDescription concept = Ontology.owlClass_to_conceptDescription(conjunct, o2iTranslator);
 
             if(concept instanceof Conjunction) {
                 conjuncts.addAll(((Conjunction) concept).getConjuncts());

@@ -1,5 +1,6 @@
 package org.attalos.fl0wer.normalization;
 
+import org.attalos.fl0wer.utils.OwlToInternalTranslator;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.*;
 
@@ -20,6 +21,8 @@ public class Ontology {
     private static OWLDataFactory owl_factory = owl_manager.getOWLDataFactory();
     private static OWLClass owl_top =  owl_factory.getOWLThing();
 
+    private OwlToInternalTranslator o2iTranslator;
+
     public Ontology() {
 
         assertions = new HashSet<>();
@@ -32,7 +35,9 @@ public class Ontology {
         new_assertions = new HashSet<>();
     }
 
-    public Ontology(OWLOntology ontology) {
+    public Ontology(OWLOntology ontology, OwlToInternalTranslator o2iTranslator) {
+        this.o2iTranslator = o2iTranslator;
+
         assertions = new HashSet<>();
         new_assertions = new HashSet<>();
 
@@ -43,8 +48,8 @@ public class Ontology {
         axioms.parallel().forEach(ax -> {
             if (ax instanceof OWLSubClassOfAxiom) {
                 OWLSubClassOfAxiom sub_ax = (OWLSubClassOfAxiom) ax;
-                ConceptDescription subClass = owlClass_to_conceptDescription(sub_ax.getSubClass());
-                ConceptDescription superClass = owlClass_to_conceptDescription(sub_ax.getSuperClass());
+                ConceptDescription subClass = owlClass_to_conceptDescription(sub_ax.getSubClass(), o2iTranslator);
+                ConceptDescription superClass = owlClass_to_conceptDescription(sub_ax.getSuperClass(), o2iTranslator);
                 assertions.add(new GCI(subClass, superClass));
                 //System.out.println(toString_expression(sub_ax.getSubClass()) + " \u2291 " + toString_expression(sub_ax.getSuperClass()));
             } else if (ax instanceof  OWLEquivalentClassesAxiom) {
@@ -56,15 +61,15 @@ public class Ontology {
                     throw new RuntimeException("there should be exactly 2 classes in OWLEquivalentClassAxiom but the was: 0");
                 }
                 OWLClassExpression owl_class_1 = iterator.next();
-                ConceptDescription class_1_0 = owlClass_to_conceptDescription(owl_class_1);
-                ConceptDescription class_1_1 = owlClass_to_conceptDescription(owl_class_1);
+                ConceptDescription class_1_0 = owlClass_to_conceptDescription(owl_class_1, o2iTranslator);
+                ConceptDescription class_1_1 = owlClass_to_conceptDescription(owl_class_1, o2iTranslator);
 
                 if (!iterator.hasNext()) {
                     throw new RuntimeException("there should be exactly 2 classes in OWLEquivalentClassAxiom but the was: 1");
                 }
                 OWLClassExpression owl_class_2 = iterator.next();
-                ConceptDescription class_2_0 = owlClass_to_conceptDescription(owl_class_2);
-                ConceptDescription class_2_1 = owlClass_to_conceptDescription(owl_class_2);
+                ConceptDescription class_2_0 = owlClass_to_conceptDescription(owl_class_2, o2iTranslator);
+                ConceptDescription class_2_1 = owlClass_to_conceptDescription(owl_class_2, o2iTranslator);
 
                 if (iterator.hasNext()) {
                     throw new RuntimeException("there should be exactly 2 classes in OWLEquivalentClassAxiom but the was: 3 or more");
@@ -86,7 +91,7 @@ public class Ontology {
         });
     }
 
-    public static ConceptDescription owlClass_to_conceptDescription(OWLClassExpression owl_exp) {
+    public static ConceptDescription owlClass_to_conceptDescription(OWLClassExpression owl_exp, OwlToInternalTranslator o2iTranslator) {
         //OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
         //OWLDataFactory factory = manager.getOWLDataFactory();
 
@@ -95,11 +100,11 @@ public class Ontology {
                 return Top.getInstance();
             }
             //return new NamedConcept((OWLClass) owl_exp);
-            return Concept_Factory.getInstance().get_concept_from_owl_class((OWLClass) owl_exp);
+            return o2iTranslator.translate((OWLClass) owl_exp);
         } else if (owl_exp instanceof OWLObjectIntersectionOf) {
-            return new Conjunction((OWLObjectIntersectionOf) owl_exp);
+            return new Conjunction((OWLObjectIntersectionOf) owl_exp, o2iTranslator);
         } else if (owl_exp instanceof OWLObjectAllValuesFrom) {
-            return new ValueRestriction((OWLObjectAllValuesFrom) owl_exp);
+            return new ValueRestriction((OWLObjectAllValuesFrom) owl_exp, o2iTranslator);
         }
 
         System.out.println("Error while parsing input");
@@ -116,38 +121,8 @@ public class Ontology {
     }
 
     public void normalize() {
-        assertions.forEach(gci -> gci.normalize(this));
+        assertions.forEach(gci -> gci.normalize(this, o2iTranslator));
         assertions.addAll(new_assertions);
-    }
-
-    /**
-     *
-     * @return current num of concepts used in ontology
-     */
-    public int get_num_of_concepts() {
-        return Concept_Factory.getInstance().get_concept_num();
-    }
-
-    /**
-     *
-     * @return total num of roles used in ontology
-     */
-    public int get_num_of_roles() {
-        return Concept_Factory.getInstance().get_role_num();
-    }
-
-    /**
-     *
-     * @param owl_class
-     * @return internal representation or -1 if class was not found
-     */
-    public int get_internal_representation_of(OWLClass owl_class) {
-        NamedConcept concept = Concept_Factory.getInstance().translate_owl_class_to_named_concept(owl_class);
-        if (concept == null) {
-            return -1;
-        }
-
-        return concept.getConcept_name();
     }
 
     @Override

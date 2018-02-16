@@ -1,6 +1,5 @@
 package org.attalos.fl0wer.subsumption;
 
-import org.attalos.fl0wer.normalization.Concept_Factory;
 import org.attalos.fl0wer.normalization.GCI;
 import org.attalos.fl0wer.normalization.Ontology;
 
@@ -15,11 +14,10 @@ import java.util.stream.Collectors;
 public class HeadOntology {
     ArrayList<HeadGCI> gcis;
 
-    public HeadOntology(Ontology ontology) {
+    public HeadOntology(Ontology ontology, int num_of_roles) {
         gcis = new ArrayList<>();
 
         Set<GCI> assertions = ontology.getAssertions();
-        int num_of_roles = Concept_Factory.getInstance().get_role_num();
 
         assertions.forEach(assertion -> {
             gcis.add(new HeadGCI(assertion, num_of_roles));

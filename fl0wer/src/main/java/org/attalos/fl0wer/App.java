@@ -3,9 +3,8 @@ package org.attalos.fl0wer;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.attalos.fl0wer.controll.ConstantValues;
+import org.attalos.fl0wer.utils.ConstantValues;
 import org.attalos.fl0wer.controll.FL_0_subsumption;
-import org.attalos.fl0wer.normalization.Concept_Factory;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.*;
@@ -42,12 +41,10 @@ public class App {
 
         /* get owl class of input classes */
         OWLClass root_concept_owl = factory.getOWLClass(IRI.create(root_concept));
-        Concept_Factory.getInstance().get_concept_from_owl_class(root_concept_owl);     //make sure it has a number representation
 
         OWLClass subsumer_owl;
         if (decide_subsumption_relation) {
             subsumer_owl = factory.getOWLClass(IRI.create(subsumer));
-            Concept_Factory.getInstance().get_concept_from_owl_class(subsumer_owl);         //make sure it has a number representation
         } else {
             subsumer_owl = null;
         }

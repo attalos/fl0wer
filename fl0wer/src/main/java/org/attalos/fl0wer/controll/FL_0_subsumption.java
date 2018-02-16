@@ -1,18 +1,17 @@
 package org.attalos.fl0wer.controll;
 
 import org.attalos.fl0wer.App;
-import org.attalos.fl0wer.normalization.Concept_Factory;
 import org.attalos.fl0wer.normalization.Ontology;
 import org.attalos.fl0wer.rete.ReteNetwork;
 import org.attalos.fl0wer.rete.WorkingMemory;
 import org.attalos.fl0wer.subsumption.ApplicableRule;
 import org.attalos.fl0wer.subsumption.ConceptHead;
 import org.attalos.fl0wer.subsumption.HeadOntology;
+import org.attalos.fl0wer.utils.ConstantValues;
+import org.attalos.fl0wer.utils.OwlToInternalTranslator;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 import java.util.*;
 import java.util.function.Function;
@@ -22,28 +21,21 @@ import java.util.stream.Stream;
  * Created by attalos on 7/1/17.
  */
 public class FL_0_subsumption {
-    //private SmallestFunctionalModelTree subsumption_tree;
     private ReteNetwork rete_network;
     private Stream<OWLClass> input_owl_classes;
-    //private WorkingMemory workingmemory;
+    OwlToInternalTranslator owlToInternalTranslator = new OwlToInternalTranslator();
 
-    //private Integer subsumer;
-    //private Integer subsumed;
-
-    private int num_of_roles;
-
-    //not a nice solution - but FunctionalElements net access to this because of the rete network
-    //private static FL_0_subsumption instance;
 
     public FL_0_subsumption(OWLOntology owl_ontology) {
         //get input classes
         OWLClass owl_top = OWLManager.createOWLOntologyManager().getOWLDataFactory().getOWLThing();
         input_owl_classes = owl_ontology.classesInSignature().filter(class_owl -> !class_owl.equals(owl_top));
+        owlToInternalTranslator.initialize_original_owl_classes(input_owl_classes);
 
         //internal ontology representation
         ConstantValues.debug_info("creating internal ontology representation", 0);
         ConstantValues.start_timer("internal_representation");
-        Ontology ontology = new Ontology(owl_ontology);
+        Ontology ontology = new Ontology(owl_ontology, owlToInternalTranslator);
         ConstantValues.stop_timer("internal_representation");
         if (ConstantValues.debug(2)) {
             ConstantValues.debug_info(ontology.toString() + "\n" + "###################", 2);
@@ -58,34 +50,23 @@ public class FL_0_subsumption {
             ConstantValues.debug_info(ontology.toString() + "\n" + "###################", 2);
         }
 
-        //get some needed values
-//        this.subsumer = ontology.get_internal_representation_of(subsumer);
-//        this.subsumed = ontology.get_internal_representation_of(subsumed);
+        //lock OwlToInternalTranslator
+        owlToInternalTranslator.lock();
 
-        this.num_of_roles = ontology.get_num_of_roles();
-
-//        if (this.subsumed == -1) {
-//            throw new RuntimeException("given concept not found");
-//        }
-
-        if (this.num_of_roles < 1) {
+        if (owlToInternalTranslator.get_role_count() < 1) {
             throw new RuntimeException("at least one role needed");
         }
 
         //head ontology representation
         ConstantValues.debug_info("creating headontology out of normalized ontology", 0);
         ConstantValues.start_timer("head_ontology");
-        HeadOntology head_ontology = new HeadOntology(ontology);
+        HeadOntology head_ontology = new HeadOntology(ontology, owlToInternalTranslator.get_role_count());
         ConstantValues.stop_timer("head_ontology");
-
-//        //smallest functional model representation
-//        this.subsumption_tree = new SmallestFunctionalModelTree(this.subsumed, num_of_roles);
 
         //rete network
         ConstantValues.debug_info("creating rete network out of normalized ontology", 0);
         ConstantValues.start_timer("create_rete_network");
-        this.rete_network = new ReteNetwork(head_ontology, ontology.get_num_of_concepts(), num_of_roles);
-//        this.workingmemory = rete_network.generate_new_WorkingMemory();
+        this.rete_network = new ReteNetwork(head_ontology, owlToInternalTranslator.get_concept_count(), owlToInternalTranslator.get_role_count());
         ConstantValues.stop_timer("create_rete_network");
 
         //dot graph of rete network
@@ -95,10 +76,6 @@ public class FL_0_subsumption {
             this.rete_network.write_dot_graph();
             ConstantValues.stop_timer("create_dots");
         }
-
-//        //propagate first element
-//        ConstantValues.debug_info("propagating root throw rete netwrok", 0);
-//        this.rete_network.propagate_domain_elem(0L, this.subsumption_tree.get_concepts_of_elem(0L).getConcepts(), this.workingmemory);
 
     }
 
@@ -143,7 +120,7 @@ public class FL_0_subsumption {
                 successors_with_changes.remove(0);
             }
 
-            Long first_successor = this.num_of_roles * elem_id + 1;
+            Long first_successor = owlToInternalTranslator.get_role_count() * elem_id + 1; //TODO remove math "magic"
             for (Integer rolename : successors_with_changes) {      //update direct successors
                 add_concepts_to_elem(first_successor + rolename, new_concepts.get_concept_set_at(rolename + 1), subsumption_tree, workingmemory);
             }
@@ -164,14 +141,14 @@ public class FL_0_subsumption {
     public boolean decide_subsumption(OWLClass subsumed, OWLClass subsumer) {
         //get some needed values
         //TODO do not use Concept_Factory directly!
-        int subsumer_int = Concept_Factory.getInstance().translate_owl_class_to_named_concept(subsumer).getConcept_name();
-        int subsumed_int = Concept_Factory.getInstance().translate_owl_class_to_named_concept(subsumed).getConcept_name();
+        int subsumer_int = owlToInternalTranslator.translate(subsumer).getConcept_name();
+        int subsumed_int = owlToInternalTranslator.translate(subsumed).getConcept_name();
         if (subsumed_int == -1 || subsumer_int == -1) {
             throw new RuntimeException("given concept not found");
         }
 
         //smallest functional model representation
-        SmallestFunctionalModelTree subsumption_tree = new SmallestFunctionalModelTree(subsumed_int, num_of_roles);
+        SmallestFunctionalModelTree subsumption_tree = new SmallestFunctionalModelTree(subsumed_int, owlToInternalTranslator.get_role_count());
 
         //main part
         return general_subsumerset_calculation_with_break_condition(subsumption_tree, func_elem -> func_elem.getConcepts().contains(subsumer));
@@ -180,20 +157,20 @@ public class FL_0_subsumption {
     public List<OWLClass> calculate_subsumerset(OWLClass subsumed) {
         //get some needed values
         //TODO do not use Concept_Factory directly!
-        int subsumed_int = Concept_Factory.getInstance().translate_owl_class_to_named_concept(subsumed).getConcept_name();
+        int subsumed_int = owlToInternalTranslator.translate(subsumed).getConcept_name();
         if (subsumed_int == -1) {
             throw new RuntimeException("given concept not found");
         }
 
         //smallest functional model representation
-        SmallestFunctionalModelTree subsumption_tree = new SmallestFunctionalModelTree(subsumed_int, num_of_roles);
+        SmallestFunctionalModelTree subsumption_tree = new SmallestFunctionalModelTree(subsumed_int, owlToInternalTranslator.get_role_count());
 
         //main part
         general_subsumerset_calculation_with_break_condition(subsumption_tree, func_elem -> false);
 
         //backtranslation
         ConstantValues.start_timer("backtranslation");
-        List<OWLClass> subsumerset = Concept_Factory.getInstance().translate_int_to_OWLClass(subsumption_tree.get_concepts_of_elem(0L).getConcepts());
+        List<OWLClass> subsumerset = owlToInternalTranslator.translate_reverse(subsumption_tree.get_concepts_of_elem(0L).getConcepts());
         ConstantValues.stop_timer("backtranslation");
         for (OWLClass subsumer : subsumerset) {
             System.out.println(App.toString_expression(subsumer));

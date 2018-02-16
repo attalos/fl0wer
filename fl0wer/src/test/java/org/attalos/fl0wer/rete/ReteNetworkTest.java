@@ -3,11 +3,11 @@ package org.attalos.fl0wer.rete;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.attalos.fl0wer.controll.ConstantValues;
-import org.attalos.fl0wer.normalization.Concept_Factory;
+import org.attalos.fl0wer.utils.ConstantValues;
 import org.attalos.fl0wer.normalization.Ontology;
 import org.attalos.fl0wer.subsumption.ApplicableRule;
 import org.attalos.fl0wer.subsumption.HeadOntology;
+import org.attalos.fl0wer.utils.OwlToInternalTranslator;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -46,35 +46,35 @@ public class ReteNetworkTest {
         /* owl init */
         OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
         OWLDataFactory factory = manager.getOWLDataFactory();
-        OWLOntologyManager m = OWLManager.createOWLOntologyManager();
 
 
         /* open ontology */
         ConstantValues.debug_info("opening ontologie with the owl-api", 0);
         File ontology_file = new File("src/test/resources/reteTestOntology.owl");
-        OWLOntology ontology_owl = m.loadOntologyFromOntologyDocument(ontology_file);
-        class_A = Concept_Factory.getInstance().get_concept_from_owl_class(factory.getOWLClass(IRI.create("http://www.semanticweb.org/attalos/ontologies/2018/1/reteTestOntology#A"))).getConcept_name();
-        class_B = Concept_Factory.getInstance().get_concept_from_owl_class(factory.getOWLClass(IRI.create("http://www.semanticweb.org/attalos/ontologies/2018/1/reteTestOntology#B"))).getConcept_name();
-        class_C = Concept_Factory.getInstance().get_concept_from_owl_class(factory.getOWLClass(IRI.create("http://www.semanticweb.org/attalos/ontologies/2018/1/reteTestOntology#C"))).getConcept_name();
-        class_D = Concept_Factory.getInstance().get_concept_from_owl_class(factory.getOWLClass(IRI.create("http://www.semanticweb.org/attalos/ontologies/2018/1/reteTestOntology#D"))).getConcept_name();
+        OWLOntology ontology_owl = manager.loadOntologyFromOntologyDocument(ontology_file);
+
+        OwlToInternalTranslator o2iTranslator = new OwlToInternalTranslator();
+        o2iTranslator.initialize_original_owl_classes(ontology_owl.classesInSignature());
+        class_A = o2iTranslator.translate(factory.getOWLClass(IRI.create("http://www.semanticweb.org/attalos/ontologies/2018/1/reteTestOntology#A"))).getConcept_name();
+        class_B = o2iTranslator.translate(factory.getOWLClass(IRI.create("http://www.semanticweb.org/attalos/ontologies/2018/1/reteTestOntology#B"))).getConcept_name();
+        class_C = o2iTranslator.translate(factory.getOWLClass(IRI.create("http://www.semanticweb.org/attalos/ontologies/2018/1/reteTestOntology#C"))).getConcept_name();
+        class_D = o2iTranslator.translate(factory.getOWLClass(IRI.create("http://www.semanticweb.org/attalos/ontologies/2018/1/reteTestOntology#D"))).getConcept_name();
         roll_r = 0;
 
         //internal ontology representation
-        Ontology ontology = new Ontology(ontology_owl);
+        Ontology ontology = new Ontology(ontology_owl, o2iTranslator);
 
         //normalize
         ontology.normalize();
 
+        //lock translator
+        o2iTranslator.lock();
+
         //head ontology representation
-        HeadOntology head_ontology = new HeadOntology(ontology);
+        HeadOntology head_ontology = new HeadOntology(ontology, o2iTranslator.get_role_count());
 
         //rete network
-        int num_of_concepts = ontology.get_num_of_concepts();
-        int num_of_roles = ontology.get_num_of_roles();
-        this.rete_network = new ReteNetwork(head_ontology, num_of_concepts, num_of_roles);
-        this.rete_network.write_dot_graph();
-
-
+        this.rete_network = new ReteNetwork(head_ontology, o2iTranslator.get_concept_count(), o2iTranslator.get_role_count());
     }
 
     @Test
