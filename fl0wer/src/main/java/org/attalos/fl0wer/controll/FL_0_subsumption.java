@@ -30,11 +30,9 @@ public class FL_0_subsumption {
     private int num_of_roles;
 
     //not a nice solution - but FunctionalElements net access to this because of the rete network
-    private static FL_0_subsumption instance;
+    //private static FL_0_subsumption instance;
 
     public FL_0_subsumption(OWLOntology owl_ontology) {
-
-        instance = this;
 
         //internal ontology representation
         ConstantValues.debug_info("creating internal ontology representation", 0);
@@ -288,10 +286,6 @@ public class FL_0_subsumption {
             this.rete_network.propagate_domain_elem(elem_id, subsumption_tree.get_concepts_of_elem(elem_id).getConcepts(), wm);
             ConstantValues.stop_timer("rete_propagation");
         }
-    }
-
-    protected static FL_0_subsumption get_instance() {
-        return instance;
     }
 
     private void reenter_rules_to_queue(Collection<ApplicableRule> applicable_rules, WorkingMemory wm) {
