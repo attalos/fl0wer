@@ -67,6 +67,14 @@ public class App {
 
         ConstantValues.print_times();
 
+//        fl_0_subsumption.classify().forEach((subsumed_class, subsumer_classes) -> {
+//            System.out.println(subsumed_class + " is subsumed by:");
+//            subsumer_classes.forEach(subsumer_class -> {
+//                System.out.println("\t\t" + subsumer_class.toString());
+//            });
+//            System.out.println("");
+//        });
+
     }
 
 
