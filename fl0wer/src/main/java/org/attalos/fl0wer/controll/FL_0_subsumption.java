@@ -15,6 +15,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -22,6 +23,7 @@ import java.util.stream.Stream;
  * Created by attalos on 7/1/17.
  */
 public class FL_0_subsumption {
+    private final static Logger LOGGER = Logger.getLogger(FL_0_subsumption.class.getName());
     private ReteNetwork rete_network;
     private Collection<OWLClass> input_owl_classes;
     OwlToInternalTranslator owlToInternalTranslator = new OwlToInternalTranslator();
@@ -34,22 +36,26 @@ public class FL_0_subsumption {
         owlToInternalTranslator.initialize_original_owl_classes(input_owl_classes.stream());
 
         //internal ontology representation
-        ConstantValues.debug_info("creating internal ontology representation", 0);
+//        ConstantValues.debug_info("creating internal ontology representation", 0);
+        LOGGER.info("creating internal ontology representation");
         ConstantValues.start_timer("internal_representation");
         Ontology ontology = new Ontology(owl_ontology, owlToInternalTranslator);
         ConstantValues.stop_timer("internal_representation");
-        if (ConstantValues.debug(2)) {
-            ConstantValues.debug_info(ontology.toString() + "\n" + "###################", 2);
-        }
+        LOGGER.finest(ontology.toString() + "\n" + "###################");
+//        if (ConstantValues.debug(2)) {
+//            ConstantValues.debug_info(ontology.toString() + "\n" + "###################", 2);
+//        }
 
         //normalize
-        ConstantValues.debug_info("normalizing ontology", 0);
+//        ConstantValues.debug_info("normalizing ontology", 0);
+        LOGGER.info("normalizing ontology");
         ConstantValues.start_timer("normalisation");
         ontology.normalize();
         ConstantValues.stop_timer("normalisation");
-        if (ConstantValues.debug(2)) {
-            ConstantValues.debug_info(ontology.toString() + "\n" + "###################", 2);
-        }
+        LOGGER.finest(ontology.toString() + "\n" + "###################");
+//        if (ConstantValues.debug(2)) {
+//            ConstantValues.debug_info(ontology.toString() + "\n" + "###################", 2);
+//        }
 
         //lock OwlToInternalTranslator
         owlToInternalTranslator.lock();
@@ -59,20 +65,23 @@ public class FL_0_subsumption {
         }
 
         //head ontology representation
-        ConstantValues.debug_info("creating headontology out of normalized ontology", 0);
+//        ConstantValues.debug_info("creating headontology out of normalized ontology", 0);
+        LOGGER.info("creating headontology out of normalized ontology");
         ConstantValues.start_timer("head_ontology");
         HeadOntology head_ontology = new HeadOntology(ontology, owlToInternalTranslator.get_role_count());
         ConstantValues.stop_timer("head_ontology");
 
         //rete network
-        ConstantValues.debug_info("creating rete network out of normalized ontology", 0);
+        //ConstantValues.debug_info("creating rete network out of normalized ontology", 0);
+        LOGGER.info("create_rete_network");
         ConstantValues.start_timer("create_rete_network");
         this.rete_network = new ReteNetwork(head_ontology, owlToInternalTranslator.get_concept_count(), owlToInternalTranslator.get_role_count());
         ConstantValues.stop_timer("create_rete_network");
 
         //dot graph of rete network
         if (ConstantValues.dots()) {
-            ConstantValues.debug_info("writing dot graph", 0);
+            LOGGER.info("writing dot graph");
+//            ConstantValues.debug_info("writing dot graph", 0);
             ConstantValues.start_timer("create_dots");
             this.rete_network.write_dot_graph();
             ConstantValues.stop_timer("create_dots");
@@ -85,7 +94,8 @@ public class FL_0_subsumption {
         WorkingMemory workingmemory = rete_network.generate_new_WorkingMemory();
 
         //propagate first element
-        ConstantValues.debug_info("propagating root throw rete netwrok", 0);
+//        ConstantValues.debug_info("propagating root throw rete netwrok", 0);
+        LOGGER.fine("propagating root throw rete network");
         this.rete_network.propagate_domain_elem(0L, subsumption_tree.get_concepts_of_elem(0L).getConcepts(), workingmemory);
 
         //mainloop which build functional model tree stump
@@ -126,10 +136,11 @@ public class FL_0_subsumption {
                 add_concepts_to_elem(first_successor + rolename, new_concepts.get_concept_set_at(rolename + 1), subsumption_tree, workingmemory);
             }
 
-            // debug info - applied rule
-            if (ConstantValues.debug(1)) {
-                ConstantValues.debug_info("Applied rule: " + Long.toString(elem_id) + "\t-\t" + new_concepts.toString(), 1);
-            }
+//            // debug info - applied rule
+//            if (ConstantValues.debug(1)) {
+//                ConstantValues.debug_info("Applied rule: " + Long.toString(elem_id) + "\t-\t" + new_concepts.toString(), 1);
+//            }
+            LOGGER.finer("Applied rule: " + Long.toString(elem_id) + "\t-\t" + new_concepts.toString());
         }
 
         if (break_condition.apply(subsumption_tree.get_concepts_of_elem(0L))) {

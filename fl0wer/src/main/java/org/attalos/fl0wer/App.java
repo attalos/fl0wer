@@ -17,6 +17,8 @@ import org.apache.commons.cli.*;
 
 
 public class App {
+    private final static java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(App.class.getName());
+
     private static OWLDataFactory factory;
 
     private static String inputFilePath;
@@ -185,7 +187,9 @@ public class App {
         factory = manager.getOWLDataFactory();
 
         /* open ontology */
-        ConstantValues.debug_info("opening ontologie with the owl-api", 0);
+//        ConstantValues.debug_info("opening ontologie with the owl-api", 0);
+        LOGGER.info("opening ontologie with the owl-api");
+
         File ontology_file = new File(inputFilePath);
         OWLOntology ontology_owl = manager.loadOntologyFromOntologyDocument(ontology_file);
 

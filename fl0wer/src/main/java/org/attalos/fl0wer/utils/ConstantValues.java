@@ -36,13 +36,13 @@ public class ConstantValues {
         timer_map = new HashMap<>();
     }
 
-    public static boolean debug(Integer debug_level) {
-        if (!initialised) {
-            throw new RuntimeException("ConstantValues accessed before initialisation");
-        }
-
-        return debug_level <= ConstantValues.debug_level ;
-    }
+//    public static boolean debug(Integer debug_level) {
+//        if (!initialised) {
+//            throw new RuntimeException("ConstantValues accessed before initialisation");
+//        }
+//
+//        return debug_level <= ConstantValues.debug_level ;
+//    }
 
     public static boolean time_information() {
         if (!initialised) {
@@ -112,21 +112,21 @@ public class ConstantValues {
         return subsumption;
     }
 
-    public static Integer debug_level() {
-        if (!initialised) {
-            throw new RuntimeException("ConstantValues accessed before initialisation");
-        }
-
-        return debug_level;
-    }
-
-    public static void debug_info(String debug_info, Integer debug_level){
-        if (!initialised) {
-            throw new RuntimeException("ConstantValues accessed before initialisation");
-        }
-
-        if(debug_level <= ConstantValues.debug_level) {
-            System.out.println(debug_info);
-        }
-    }
+//    public static Integer debug_level() {
+//        if (!initialised) {
+//            throw new RuntimeException("ConstantValues accessed before initialisation");
+//        }
+//
+//        return debug_level;
+//    }
+//
+//    public static void debug_info(String debug_info, Integer debug_level){
+//        if (!initialised) {
+//            throw new RuntimeException("ConstantValues accessed before initialisation");
+//        }
+//
+//        if(debug_level <= ConstantValues.debug_level) {
+//            System.out.println(debug_info);
+//        }
+//    }
 }

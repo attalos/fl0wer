@@ -3,6 +3,7 @@ package org.attalos.fl0wer.rete;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.attalos.fl0wer.App;
 import org.attalos.fl0wer.utils.ConstantValues;
 import org.attalos.fl0wer.normalization.Ontology;
 import org.attalos.fl0wer.subsumption.ApplicableRule;
@@ -49,7 +50,6 @@ public class ReteNetworkTest {
 
 
         /* open ontology */
-        ConstantValues.debug_info("opening ontologie with the owl-api", 0);
         File ontology_file = new File("src/test/resources/reteTestOntology.owl");
         OWLOntology ontology_owl = manager.loadOntologyFromOntologyDocument(ontology_file);
 
