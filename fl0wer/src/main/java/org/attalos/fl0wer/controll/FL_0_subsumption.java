@@ -15,6 +15,7 @@ import org.semanticweb.owlapi.model.OWLOntology;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -22,15 +23,15 @@ import java.util.stream.Stream;
  */
 public class FL_0_subsumption {
     private ReteNetwork rete_network;
-    private Stream<OWLClass> input_owl_classes;
+    private Collection<OWLClass> input_owl_classes;
     OwlToInternalTranslator owlToInternalTranslator = new OwlToInternalTranslator();
 
 
     public FL_0_subsumption(OWLOntology owl_ontology) {
         //get input classes
         OWLClass owl_top = OWLManager.createOWLOntologyManager().getOWLDataFactory().getOWLThing();
-        input_owl_classes = owl_ontology.classesInSignature().filter(class_owl -> !class_owl.equals(owl_top));
-        owlToInternalTranslator.initialize_original_owl_classes(input_owl_classes);
+        input_owl_classes = owl_ontology.classesInSignature().filter(class_owl -> !class_owl.equals(owl_top)).collect(Collectors.toList());
+        owlToInternalTranslator.initialize_original_owl_classes(input_owl_classes.stream());
 
         //internal ontology representation
         ConstantValues.debug_info("creating internal ontology representation", 0);
@@ -172,9 +173,6 @@ public class FL_0_subsumption {
         ConstantValues.start_timer("backtranslation");
         List<OWLClass> subsumerset = owlToInternalTranslator.translate_reverse(subsumption_tree.get_concepts_of_elem(0L).getConcepts());
         ConstantValues.stop_timer("backtranslation");
-        for (OWLClass subsumer : subsumerset) {
-            System.out.println(HelperFunctions.toString_expression(subsumer));
-        }
 
         return subsumerset;
     }
@@ -182,9 +180,17 @@ public class FL_0_subsumption {
     public Map<OWLClass, Collection<OWLClass>> classify() {
         Map<OWLClass, Collection<OWLClass>> classificatoin_map = new HashMap<>();
 
-        input_owl_classes.forEach(class_owl -> {
+        int class_count = input_owl_classes.size();
+        int i = 0;
+        long start_time = System.currentTimeMillis();
+        for (OWLClass class_owl : input_owl_classes) {
+            if (i % 100 == 0) {
+                System.out.println("status: " + Integer.toString(i) + " of " + Integer.toString(class_count) + " (average time per superclass calculation: " + Double.toString(((double)(System.currentTimeMillis() - start_time)) / ((double) i)) + "ms)");
+            }
+            i++;
             classificatoin_map.put(class_owl, calculate_subsumerset(class_owl));
-        });
+        }
+
         return classificatoin_map;
     }
 

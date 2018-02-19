@@ -14,7 +14,9 @@ import org.semanticweb.owlapi.model.*;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -53,19 +55,14 @@ public class FL_0_subsumptionTest {
     }
 
     @Test
-    public void decide_subsumption() {
-        //read output stream
-        PrintStream stdout = System.out;
-        System.setOut(new PrintStream(outContent));
+    public void testCalculae_subsumerset() {
+        List<OWLClass> given_answer = fl_0_subsumption.calculate_subsumerset(root_concept_owl);
 
-        fl_0_subsumption.calculate_subsumerset(root_concept_owl);
-        String given_answer = outContent.toString().replace("\n", "");
-        String corret_answer = "<http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#E><http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#B>";
+        List<OWLClass> correct_answer = new ArrayList<>();
+        correct_answer.add(factory.getOWLClass(IRI.create("http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#E")));
+        correct_answer.add(factory.getOWLClass(IRI.create("http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#B")));
 
-        assertEquals("Answer to subsumptiontask was wrong", corret_answer, given_answer);
-
-        //reset output stream to stdout
-        System.setOut(stdout);
+        assertEquals("Answer to subsumptiontask was wrong", correct_answer, given_answer);
     }
 
     @Test
