@@ -17,7 +17,7 @@ public class OntologyTranslator {
 //        ontologyOwl.applyChange();
 //        OWLOntologyChange ontologyChange = new OWLOntologyChange() {
 //        }
-        ontologyOwl.axioms()
+        //ontologyOwl.axioms()
         //ontologyOwl.axioms().forEach(axiom -> axiom.ac);
     }
 }
