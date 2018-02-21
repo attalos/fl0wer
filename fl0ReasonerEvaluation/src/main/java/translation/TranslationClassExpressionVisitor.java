@@ -11,8 +11,7 @@ public class TranslationClassExpressionVisitor implements OWLClassExpressionVisi
     public TranslationClassExpressionVisitor() {}
 
     public OWLClassExpression visit(OWLObjectIntersectionOf ce) {
-        new OWLObjectIntersectionOfImpl(ce.conjunctSet().map(conjunct -> conjunct.accept(this)));
-        return ce;
+        return new OWLObjectIntersectionOfImpl(ce.conjunctSet().map(conjunct -> conjunct.accept(this)));
     }
 
     public OWLClassExpression visit(OWLObjectSomeValuesFrom ce) {
@@ -28,7 +27,7 @@ public class TranslationClassExpressionVisitor implements OWLClassExpressionVisi
     }
 
     public <T> OWLClassExpression doDefault(T object) {
-        assert false : "found owl class expression which shouldn't exist anymore at this state";
+        assert false : "found owl class expression which shouldn't exist anymore at this state:\n" + object.getClass().getName();
         return null;
     }
 }

@@ -1,23 +1,29 @@
 package translation;
 
 
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyChange;
-import org.semanticweb.owlapi.model.OWLOntologyID;
+import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.profiles.OWL2ELProfile;
 
-public class OntologyTranslator {
-    public static boolean fullfillsOwl2ElProfile(OWLOntology ontologyOwl) {
+import java.util.Objects;
 
-        OWL2ELProfile owl2ELProfile = new OWL2ELProfile();
+public class OntologyTranslator {
+    private static OWL2ELProfile owl2ELProfile = new OWL2ELProfile();
+    private static TranslationAxiomVisitor translationAxiomVisitor = new TranslationAxiomVisitor();
+    private static RawFL0VerificationVisitor rawFL0VerificationVisitor = new RawFL0VerificationVisitor();
+
+    public static boolean fullfillsOwl2ElProfile(OWLOntology ontologyOwl) {
         return owl2ELProfile.checkOntology(ontologyOwl).isInProfile();
     }
 
-    public static void foo(OWLOntology ontologyOwl) {
-//        ontologyOwl.applyChange();
-//        OWLOntologyChange ontologyChange = new OWLOntologyChange() {
-//        }
-        //ontologyOwl.axioms()
-        //ontologyOwl.axioms().forEach(axiom -> axiom.ac);
+    public static OWLOntology translateELtoFL0(OWLOntology ontologyOwl) throws OWLOntologyCreationException {
+        OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
+        return  manager.createOntology(ontologyOwl.axioms()
+                .map(owlAxiom -> owlAxiom.accept(translationAxiomVisitor))
+                .filter(Objects::nonNull));
+    }
+
+    public static boolean isRawFL0(OWLOntology ontologyOwl) {
+        return ontologyOwl.accept(rawFL0VerificationVisitor);
     }
 }

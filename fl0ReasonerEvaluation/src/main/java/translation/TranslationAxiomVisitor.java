@@ -1,6 +1,11 @@
 package translation;
 
 import org.semanticweb.owlapi.model.*;
+import uk.ac.manchester.cs.owl.owlapi.OWLEquivalentClassesAxiomImpl;
+import uk.ac.manchester.cs.owl.owlapi.OWLSubClassOfAxiomImpl;
+
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 public class TranslationAxiomVisitor implements OWLAxiomVisitorEx<OWLAxiom> {
     private TranslationClassExpressionVisitor translationClassExpressionVisitor;
@@ -12,14 +17,17 @@ public class TranslationAxiomVisitor implements OWLAxiomVisitorEx<OWLAxiom> {
 
     @Override
     public OWLAxiom visit(OWLSubClassOfAxiom axiom) {
-        axiom.getSubClass().accept(this.translationClassExpressionVisitor);
-        axiom.getSuperClass().accept(this.translationClassExpressionVisitor);
-        return null;
+        OWLClassExpression subClass = axiom.getSubClass().accept(this.translationClassExpressionVisitor);
+        OWLClassExpression superClass = axiom.getSuperClass().accept(this.translationClassExpressionVisitor);
+        return new OWLSubClassOfAxiomImpl(subClass, superClass, axiom.annotations().collect(Collectors.toList()));
     }
 
     @Override
     public OWLAxiom visit(OWLEquivalentClassesAxiom axiom) {
-        return null;
+        Collection<OWLClassExpression> classExpressions = axiom.classExpressions()
+                .map(classExpression -> classExpression.accept(this.translationClassExpressionVisitor))
+                .collect(Collectors.toList());
+        return new OWLEquivalentClassesAxiomImpl(classExpressions, axiom.annotations().collect(Collectors.toList()));
     }
 
     @Override
