@@ -1,0 +1,11 @@
+.idea
+*.iml
+*.blg
+*.aux
+*.log
+*.out
+*.toc
+*.lol
+*.synctex.gz
+target/
+*.dot
