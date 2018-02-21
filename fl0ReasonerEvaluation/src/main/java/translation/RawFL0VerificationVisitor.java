@@ -5,6 +5,9 @@ import org.semanticweb.owlapi.model.*;
 import java.util.stream.Collectors;
 
 public class RawFL0VerificationVisitor implements OWLObjectVisitorEx<Boolean> {
+
+    protected RawFL0VerificationVisitor() {}
+
     @Override
     public Boolean visit(OWLAnnotation node) {
         return true;

@@ -8,7 +8,7 @@ import uk.ac.manchester.cs.owl.owlapi.OWLObjectIntersectionOfImpl;
 
 public class TranslationClassExpressionVisitor implements OWLClassExpressionVisitorEx<OWLClassExpression> {
 
-    public TranslationClassExpressionVisitor() {}
+    protected TranslationClassExpressionVisitor() {}
 
     public OWLClassExpression visit(OWLObjectIntersectionOf ce) {
         return new OWLObjectIntersectionOfImpl(ce.conjunctSet().map(conjunct -> conjunct.accept(this)));

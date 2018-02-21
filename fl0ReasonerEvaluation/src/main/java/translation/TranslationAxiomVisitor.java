@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 public class TranslationAxiomVisitor implements OWLAxiomVisitorEx<OWLAxiom> {
     private TranslationClassExpressionVisitor translationClassExpressionVisitor;
 
-    public TranslationAxiomVisitor() {
+    protected TranslationAxiomVisitor() {
         this.translationClassExpressionVisitor = new TranslationClassExpressionVisitor();
     }
 
