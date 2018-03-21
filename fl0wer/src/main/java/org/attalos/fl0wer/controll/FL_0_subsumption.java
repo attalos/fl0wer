@@ -194,13 +194,16 @@ public class FL_0_subsumption {
         int class_count = input_owl_classes.size();
         int i = 0;
         long start_time = System.currentTimeMillis();
-        for (OWLClass class_owl : input_owl_classes) {
-            if (i % 100 == 0) {
+        /*for (OWLClass class_owl : input_owl_classes) {
+            if (i % 1000 == 0) {
                 System.out.println("status: " + Integer.toString(i) + " of " + Integer.toString(class_count) + " (average time per superclass calculation: " + Double.toString(((double)(System.currentTimeMillis() - start_time)) / ((double) i)) + "ms)");
             }
             i++;
             classificatoin_map.put(class_owl, calculate_subsumerset(class_owl));
-        }
+        }*/
+        input_owl_classes.parallelStream().forEach(class_owl -> {
+            classificatoin_map.put(class_owl, calculate_subsumerset(class_owl));
+        });
 
         return classificatoin_map;
     }
