@@ -8,6 +8,10 @@ import java.util.stream.Stream;
 public class ReasoningTask {
     private List<OWLOntology> ontologyList;
 
+    public ReasoningTask(List<OWLOntology> ontologyList) {
+        this.ontologyList = ontologyList;
+    }
+
     public Stream<OWLOntology> ontologiesToClassify() {
         return ontologyList.stream();
     }
