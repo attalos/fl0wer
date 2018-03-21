@@ -1,5 +1,6 @@
 package evaluation;
 
+import helpers.OntologyWrapper;
 import org.attalos.fl0wer.controll.FL_0_subsumption;
 import org.attalos.fl0wer.utils.ConstantValues;
 import org.semanticweb.owlapi.model.OWLOntology;
@@ -15,12 +16,11 @@ public class Fl0werEvaluator implements ReasonerEvaluator{
     }
 
     @Override
-    public ReasonerEvaluation evaluate(ReasoningTask reasoningTask) {
-        ReasonerEvaluation eval = new ReasonerEvaluation();
-        Stream<OWLOntology> ontologiesOwl = reasoningTask.ontologiesToClassify();
+    public PerformanceResult evaluate(ReasoningTask reasoningTask) {
+        OntologyWrapper ontology = reasoningTask.getOntology();
 
-        ontologiesOwl.forEach(ontologyOwl -> {
-            FL_0_subsumption fl0wer = new FL_0_subsumption(ontologyOwl);
+        if (ontology.getOntology() != null) {
+            FL_0_subsumption fl0wer = new FL_0_subsumption(ontology.getOntology());
 
             //get time data
             Instant startingTime = Instant.now();
@@ -28,9 +28,9 @@ public class Fl0werEvaluator implements ReasonerEvaluator{
             Instant finishTime = Instant.now();
 
             Duration duration = Duration.between(startingTime, finishTime);
-            eval.insertResult(ontologyOwl, new PerformanceResult(duration));
-        });
-
-        return eval;
+            return new PerformanceResult(duration);
+        } else {
+            return null;
+        }
     }
 }

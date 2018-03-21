@@ -1,23 +1,25 @@
 package evaluation;
 
+import helpers.OntologyWrapper;
 import org.semanticweb.owlapi.model.OWLOntology;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Deprecated
 public class ReasonerEvaluation {
-    private Map<OWLOntology, PerformanceResult> performanceMap;
+    private Map<OntologyWrapper, PerformanceResult> performanceMap;
 
     public ReasonerEvaluation() {
         this.performanceMap = new HashMap<>();
     }
 
-    public void insertResult(OWLOntology ontologyOwl, PerformanceResult performanceResult) {
-        this.performanceMap.put(ontologyOwl, performanceResult);
+    public void insertResult(OntologyWrapper ontology, PerformanceResult performanceResult) {
+        this.performanceMap.put(ontology, performanceResult);
     }
 
-    public PerformanceResult resultAt(OWLOntology ontologyOwl) {
-        return performanceMap.get(ontologyOwl);
+    public PerformanceResult resultAt(OntologyWrapper ontology) {
+        return performanceMap.get(ontology);
     }
 
 }
