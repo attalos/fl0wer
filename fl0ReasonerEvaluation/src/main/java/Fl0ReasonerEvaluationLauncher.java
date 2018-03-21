@@ -50,9 +50,9 @@ public class Fl0ReasonerEvaluationLauncher {
         ReasonerEvaluation hermitResult = hermitEvaluator.evaluate(reasoningTask);
 
         reasoningTask.ontologiesToClassify().forEach(ontologyOwl -> {
-            System.out.print(fl0werResult.resultAt(ontologyOwl).getDuration().getSeconds());
+            System.out.print(((float) fl0werResult.resultAt(ontologyOwl).getDuration().toMillis()) / 1000);
             System.out.print("\t\t");
-            System.out.println(hermitResult.resultAt(ontologyOwl).getDuration().getSeconds());
+            System.out.println(((float)hermitResult.resultAt(ontologyOwl).getDuration().toMillis()) / 1000);
         });
     }
 }

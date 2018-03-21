@@ -10,13 +10,16 @@ import java.util.stream.Stream;
 
 public class Fl0werEvaluator implements ReasonerEvaluator{
 
+    public Fl0werEvaluator() {
+        ConstantValues.initialise(-1, false, false, false);
+    }
+
     @Override
     public ReasonerEvaluation evaluate(ReasoningTask reasoningTask) {
         ReasonerEvaluation eval = new ReasonerEvaluation();
         Stream<OWLOntology> ontologiesOwl = reasoningTask.ontologiesToClassify();
 
         ontologiesOwl.forEach(ontologyOwl -> {
-            ConstantValues.initialise(-1, false, false, false);
             FL_0_subsumption fl0wer = new FL_0_subsumption(ontologyOwl);
 
             //get time data
