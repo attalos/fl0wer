@@ -59,6 +59,18 @@ public class Fl0werEvaluator implements ReasonerEvaluator {
 
     @Override
     public PerformanceResult subsumption(OntologyWrapper ontology, OWLClass subClassOwl, OWLClass superClassOwl) {
-        return null;
+        if (ontology.getOntology() != null) {
+            FL_0_subsumption fl0wer = new FL_0_subsumption(ontology.getOntology());
+
+            //get time data
+            Instant startingTime = Instant.now();
+            fl0wer.decide_subsumption(subClassOwl, superClassOwl);
+            Instant finishTime = Instant.now();
+
+            Duration duration = Duration.between(startingTime, finishTime);
+            return new PerformanceResult(duration);
+        } else {
+            return null;
+        }
     }
 }

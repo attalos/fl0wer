@@ -4,10 +4,14 @@ import evaluation.PerformanceResult;
 import evaluation.ReasonerEvaluator;
 import evaluation.ReasoningTask;
 import helpers.OntologyWrapper;
+import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
+import org.semanticweb.owlapi.model.OWLDataFactory;
+import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.reasoner.InferenceType;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
+import uk.ac.manchester.cs.owl.owlapi.OWLObjectIntersectionOfImpl;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -57,6 +61,24 @@ public abstract class OwlReasonerEvaluator implements ReasonerEvaluator {
 
     @Override
     public PerformanceResult subsumption(OntologyWrapper ontology, OWLClass subClassOwl, OWLClass superClassOwl) {
-        return null;
+        if (ontology.getOntology() != null) {
+            OWLReasoner reasoner = createReasoner(ontology);
+
+            //prepare subsumption term
+            OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
+            OWLDataFactory factory = manager.getOWLDataFactory();
+            OWLClassExpression notSuperClassOwl = factory.getOWLObjectComplementOf(superClassOwl);
+            OWLClassExpression subsumptionExpression = factory.getOWLObjectIntersectionOf(subClassOwl, notSuperClassOwl);
+
+            //get time data
+            Instant startingTime = Instant.now();
+            reasoner.isSatisfiable(subsumptionExpression);
+            Instant finishTime = Instant.now();
+
+            Duration duration = Duration.between(startingTime, finishTime);
+            return new PerformanceResult(duration);
+        } else {
+            return null;
+        }
     }
 }
