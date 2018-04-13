@@ -6,11 +6,9 @@ import evaluation.ReasoningTask;
 import helpers.OntologyWrapper;
 import org.attalos.fl0wer.controll.FL_0_subsumption;
 import org.attalos.fl0wer.utils.ConstantValues;
-import org.semanticweb.owlapi.model.OWLOntology;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.stream.Stream;
 
 public class Fl0werEvaluator implements ReasonerEvaluator {
 
