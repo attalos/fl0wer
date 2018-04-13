@@ -6,6 +6,7 @@ import evaluation.ReasoningTask;
 import helpers.OntologyWrapper;
 import org.attalos.fl0wer.controll.FL_0_subsumption;
 import org.attalos.fl0wer.utils.ConstantValues;
+import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 
 import java.time.Duration;
@@ -40,12 +41,24 @@ public class Fl0werEvaluator implements ReasonerEvaluator {
     }
 
     @Override
-    public PerformanceResult superClasses(OWLClassExpression classOwl) {
-        return null;
+    public PerformanceResult superClasses(OntologyWrapper ontology, OWLClass classOwl) {
+        if (ontology.getOntology() != null) {
+            FL_0_subsumption fl0wer = new FL_0_subsumption(ontology.getOntology());
+
+            //get time data
+            Instant startingTime = Instant.now();
+            fl0wer.calculate_subsumerset(classOwl);
+            Instant finishTime = Instant.now();
+
+            Duration duration = Duration.between(startingTime, finishTime);
+            return new PerformanceResult(duration);
+        } else {
+            return null;
+        }
     }
 
     @Override
-    public PerformanceResult subsumption(OWLClassExpression subClassOwl, OWLClassExpression superClassOwl) {
+    public PerformanceResult subsumption(OntologyWrapper ontology, OWLClass subClassOwl, OWLClass superClassOwl) {
         return null;
     }
 }

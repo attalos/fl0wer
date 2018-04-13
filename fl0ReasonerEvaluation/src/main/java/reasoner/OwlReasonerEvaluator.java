@@ -4,6 +4,7 @@ import evaluation.PerformanceResult;
 import evaluation.ReasonerEvaluator;
 import evaluation.ReasoningTask;
 import helpers.OntologyWrapper;
+import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.reasoner.InferenceType;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
@@ -38,12 +39,24 @@ public abstract class OwlReasonerEvaluator implements ReasonerEvaluator {
     }
 
     @Override
-    public PerformanceResult superClasses(OWLClassExpression classOwl) {
-        return null;
+    public PerformanceResult superClasses(OntologyWrapper ontology, OWLClass classOwl) {
+        if (ontology.getOntology() != null) {
+            OWLReasoner reasoner = createReasoner(ontology);
+
+            //get time data
+            Instant startingTime = Instant.now();
+            reasoner.getSuperClasses(classOwl);
+            Instant finishTime = Instant.now();
+
+            Duration duration = Duration.between(startingTime, finishTime);
+            return new PerformanceResult(duration);
+        } else {
+            return null;
+        }
     }
 
     @Override
-    public PerformanceResult subsumption(OWLClassExpression subClassOwl, OWLClassExpression superClassOwl) {
+    public PerformanceResult subsumption(OntologyWrapper ontology, OWLClass subClassOwl, OWLClass superClassOwl) {
         return null;
     }
 }
