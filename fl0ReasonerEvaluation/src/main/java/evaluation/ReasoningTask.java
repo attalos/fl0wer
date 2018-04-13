@@ -1,19 +1,14 @@
 package evaluation;
 
 import helpers.OntologyWrapper;
-import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import translation.OntologyTranslator;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-public class ReasoningTask {
-    private OntologyWrapper ontology;
+public abstract  class ReasoningTask {
+    protected OntologyWrapper ontology;
 
-    public ReasoningTask(OntologyWrapper ontology) {
+    protected ReasoningTask(OntologyWrapper ontology) {
         this.ontology = ontology;
         //translate to FL0
         try {
@@ -33,4 +28,6 @@ public class ReasoningTask {
     public OntologyWrapper getOntology() {
         return this.ontology;
     }
+
+    public abstract PerformanceResult evaluate(ReasonerEvaluator evaluator);
 }

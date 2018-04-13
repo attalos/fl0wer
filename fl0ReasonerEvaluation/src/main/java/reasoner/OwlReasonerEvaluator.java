@@ -4,7 +4,7 @@ import evaluation.PerformanceResult;
 import evaluation.ReasonerEvaluator;
 import evaluation.ReasoningTask;
 import helpers.OntologyWrapper;
-import org.semanticweb.HermiT.Reasoner;
+import org.semanticweb.owlapi.model.OWLClassExpression;
 import org.semanticweb.owlapi.reasoner.InferenceType;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 
@@ -17,8 +17,11 @@ public abstract class OwlReasonerEvaluator implements ReasonerEvaluator {
 
     @Override
     public PerformanceResult evaluate(ReasoningTask reasoningTask) {
+        return reasoningTask.evaluate(this);
+    }
 
-        OntologyWrapper ontology = reasoningTask.getOntology();
+    @Override
+    public PerformanceResult classify(OntologyWrapper ontology) {
         if (ontology.getOntology() != null) {
             OWLReasoner reasoner = createReasoner(ontology);
 
@@ -32,7 +35,15 @@ public abstract class OwlReasonerEvaluator implements ReasonerEvaluator {
         } else {
             return null;
         }
+    }
 
+    @Override
+    public PerformanceResult superClasses(OWLClassExpression classOwl) {
+        return null;
+    }
 
+    @Override
+    public PerformanceResult subsumption(OWLClassExpression subClassOwl, OWLClassExpression superClassOwl) {
+        return null;
     }
 }

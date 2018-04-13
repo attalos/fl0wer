@@ -64,7 +64,7 @@ public class Fl0ReasonerEvaluationLauncher {
                 OWLOntology ontologyOwl = manager.loadOntologyFromOntologyDocument(ontologyFile);
                 String ontologyName = StringUtils.difference(directoryName, ontologyFile.getAbsolutePath());
                 OntologyWrapper ontology = new OntologyWrapper(ontologyName, ontologyOwl);
-                ReasoningTask task = new ReasoningTask(ontology);
+                ReasoningTask task = new ClassificationReasoningTask(ontology);
 
                 //evaluate
                 PerformanceResult fl0werResult = fl0werEvaluator.evaluate(task);
