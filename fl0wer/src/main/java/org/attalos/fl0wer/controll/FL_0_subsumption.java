@@ -202,7 +202,10 @@ public class FL_0_subsumption {
             classificatoin_map.put(class_owl, calculate_subsumerset(class_owl));
         }*/
         input_owl_classes.parallelStream().forEach(class_owl -> {
-            classificatoin_map.put(class_owl, calculate_subsumerset(class_owl));
+            List<OWLClass> subsumerset = calculate_subsumerset(class_owl);
+            synchronized (this) {
+                classificatoin_map.put(class_owl, subsumerset);
+            }
         });
 
         return classificatoin_map;
