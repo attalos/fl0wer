@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.attalos.fl0wer.utils.ConstantValues;
 import org.attalos.fl0wer.controll.FL_0_subsumption;
 
+import org.attalos.fl0wer.utils.Timer;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.*;
 
@@ -69,7 +70,13 @@ public class App {
         } else if (calculate_subsumerset) {
             fl_0_subsumption.calculate_subsumerset(root_concept_owl);
         } else {
+            Timer classificationTimer = new Timer();
+            classificationTimer.start();
             fl_0_subsumption.classify();
+            classificationTimer.stop();
+
+            System.out.print("classification time: ");
+            System.out.println(classificationTimer.get_total_time());
         }
         ConstantValues.stop_timer("main_task");
 
@@ -159,7 +166,7 @@ public class App {
                 throw new RuntimeException("debug level has to be 0, 1 or 2");
             }
         }
-        
+
         if ( !(decide_subsumption_relation ^ calculate_subsumerset ^ classify) || (decide_subsumption_relation && calculate_subsumerset && decide_subsumption_relation) ) {
             System.out.println("You can only use one of -c1, -c2 and -S and -C at the same time");
             System.out.println("This program either decides subsumption between two given concepts (-c1, -c2) or calculates the subsumer set of a single given concept (-S) or classifies the ontology (-C)");
