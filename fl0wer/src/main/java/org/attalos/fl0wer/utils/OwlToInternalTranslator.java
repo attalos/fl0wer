@@ -13,6 +13,8 @@ import java.util.stream.Stream;
  */
 public class OwlToInternalTranslator {
     private HashMap<OWLClass, NamedConcept> concept_map = new HashMap<>();
+    private HashMap<Integer, OWLClass> reverse_concept_map = new HashMap<>();
+
     private HashMap<OWLObjectPropertyExpression, Role> role_map = new HashMap<>();
 
     private int concept_counter = 0;
@@ -30,7 +32,9 @@ public class OwlToInternalTranslator {
 
         original_owl_classes.forEach(class_owl -> {
             if ( !concept_map.containsKey(class_owl) ) {
-                concept_map.put(class_owl, new NamedConcept(concept_counter++));
+                NamedConcept namedConcept = new NamedConcept(concept_counter++);
+                concept_map.put(class_owl, namedConcept);
+                reverse_concept_map.put(namedConcept.getConcept_name(), class_owl);
             }
         });
 
@@ -82,6 +86,19 @@ public class OwlToInternalTranslator {
 
 
     public List<OWLClass> translate_reverse(Collection<Integer> int_collection) {
+        List<OWLClass> return_set = new ArrayList<>();
+        for (Integer currentConcept : int_collection) {
+            OWLClass original_class = reverse_concept_map.get(currentConcept);
+            if (original_class != null) {
+                return_set.add(original_class);
+            }
+        }
+
+        return return_set;
+    }
+
+    @Deprecated
+    public List<OWLClass> translate_reverse_0(Collection<Integer> int_collection) {
         List<OWLClass> return_set = new ArrayList<>();
 
         for (Map.Entry<OWLClass, NamedConcept> pair : concept_map.entrySet()) {
