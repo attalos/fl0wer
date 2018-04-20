@@ -7,7 +7,7 @@ public class ConstantValues {
     private static boolean initialised = false;
     private static boolean time_information = true;
     private static boolean dots = false;
-    private static boolean subsumption = false; //false if calculation the subsumerset
+    private static boolean subsumption = false;
     private static Integer debug_level = 0;
     private static Map<String, Timer> timer_map = new HashMap<String, Timer>();
 

@@ -23,7 +23,9 @@ public class App {
 
     private static String inputFilePath;
 
-    private static boolean decide_subsumption_relation;
+    private static boolean decide_subsumption_relation = false;
+    private static boolean calculate_subsumerset  = false;
+    private static boolean classify = false;
 
     private static String root_concept;
     private static String subsumer;
@@ -42,7 +44,12 @@ public class App {
         }
 
         /* get owl class of input classes */
-        OWLClass root_concept_owl = factory.getOWLClass(IRI.create(root_concept));
+        OWLClass root_concept_owl;
+        if (!classify) {
+            root_concept_owl = factory.getOWLClass(IRI.create(root_concept));
+        } else {
+            root_concept_owl = null;
+        }
 
         OWLClass subsumer_owl;
         if (decide_subsumption_relation) {
@@ -56,13 +63,15 @@ public class App {
         FL_0_subsumption fl_0_subsumption = new FL_0_subsumption(ontology_owl);
         ConstantValues.stop_timer("initialisation");
 
-        ConstantValues.start_timer("subsumption");
-        if (ConstantValues.is_subsumption()) {
+        ConstantValues.start_timer("main_task");
+        if (decide_subsumption_relation) {
             fl_0_subsumption.decide_subsumption(root_concept_owl, subsumer_owl);
-        } else {
+        } else if (calculate_subsumerset) {
             fl_0_subsumption.calculate_subsumerset(root_concept_owl);
+        } else {
+            fl_0_subsumption.classify();
         }
-        ConstantValues.stop_timer("subsumption");
+        ConstantValues.stop_timer("main_task");
 
         ConstantValues.print_times();
 
@@ -101,6 +110,8 @@ public class App {
 
         Option subsumerset = new Option("S", "supers", true, "output concepts subsuming the input concept <arg>");
 
+        Option classify_option = new Option("C", "classify", false, "classifies given ontology");
+
         Option debug_level = new Option("v", "verbose", true, "set debuglevel (standard: -1, possible: 0,1,2\")");
         //Option debug_level = new Option("d", "debug-level", true, "set higher debug level (standard: 0, possible: 0,1,2");
         //debug_level.setType(Integer.class);
@@ -115,6 +126,7 @@ public class App {
         options.addOption(concept1);
         options.addOption(concept2);
         options.addOption(subsumerset);
+        options.addOption(classify_option);
 
         CommandLineParser parser = new DefaultParser();
         CommandLine cmd;
@@ -130,7 +142,7 @@ public class App {
 
 
         decide_subsumption_relation = cmd.hasOption("subsumed") && cmd.hasOption("subsumer");
-        boolean calculate_subsumerset = cmd.hasOption("supers");
+        calculate_subsumerset = cmd.hasOption("supers");
 
         inputFilePath = cmd.getOptionValue("input");
         String subsumed = cmd.getOptionValue("subsumed");
@@ -138,6 +150,7 @@ public class App {
         boolean time = cmd.hasOption("time");
         boolean dots = cmd.hasOption("dots");
         String subsumerset_of = cmd.getOptionValue("supers");
+        classify = cmd.hasOption("classify");
 
         Integer debuglevel = -1;
         if (cmd.hasOption("verbose")) {
@@ -146,17 +159,17 @@ public class App {
                 throw new RuntimeException("debug level has to be 0, 1 or 2");
             }
         }
-
-        if (decide_subsumption_relation && calculate_subsumerset) {
-            System.out.println("You can't use -c1, -c2 and -S at the same time");
-            System.out.println("This program either decides subsumption between two given concepts (-c1, -c2) or calculates the subsumer set of a single given concept (-S)");
+        
+        if ( !(decide_subsumption_relation ^ calculate_subsumerset ^ classify) || (decide_subsumption_relation && calculate_subsumerset && decide_subsumption_relation) ) {
+            System.out.println("You can only use one of -c1, -c2 and -S and -C at the same time");
+            System.out.println("This program either decides subsumption between two given concepts (-c1, -c2) or calculates the subsumer set of a single given concept (-S) or classifies the ontology (-C)");
             return false;
         } else if (decide_subsumption_relation) {
             root_concept = subsumed;
         } else if (calculate_subsumerset) {
             root_concept = subsumerset_of;
-        } else {
-            System.out.println("Please use (-c1 and -c2) or (-S)");
+        } else if (!classify){
+            System.out.println("Please use (-c1 and -c2) or (-S) or (-C)");
             return false;
         }
 
