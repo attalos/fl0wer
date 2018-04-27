@@ -41,7 +41,7 @@ public class FL_0_subsumption {
         ConstantValues.start_timer("internal_representation");
         Ontology ontology = new Ontology(owl_ontology, owlToInternalTranslator);
         ConstantValues.stop_timer("internal_representation");
-        LOGGER.finest(ontology.toString() + "\n" + "###################");
+        //LOGGER.finest(ontology.toString() + "\n" + "###################");
 //        if (ConstantValues.debug(2)) {
 //            ConstantValues.debug_info(ontology.toString() + "\n" + "###################", 2);
 //        }
@@ -52,7 +52,7 @@ public class FL_0_subsumption {
         ConstantValues.start_timer("normalisation");
         ontology.normalize();
         ConstantValues.stop_timer("normalisation");
-        LOGGER.finest(ontology.toString() + "\n" + "###################");
+        //LOGGER.finest(ontology.toString() + "\n" + "###################");
 //        if (ConstantValues.debug(2)) {
 //            ConstantValues.debug_info(ontology.toString() + "\n" + "###################", 2);
 //        }
@@ -140,7 +140,7 @@ public class FL_0_subsumption {
 //            if (ConstantValues.debug(1)) {
 //                ConstantValues.debug_info("Applied rule: " + Long.toString(elem_id) + "\t-\t" + new_concepts.toString(), 1);
 //            }
-            LOGGER.finer("Applied rule: " + Long.toString(elem_id) + "\t-\t" + new_concepts.toString());
+            //LOGGER.finer("Applied rule: " + Long.toString(elem_id) + "\t-\t" + new_concepts.toString());
         }
 
         if (break_condition.apply(subsumption_tree.get_concepts_of_elem(0L))) {
