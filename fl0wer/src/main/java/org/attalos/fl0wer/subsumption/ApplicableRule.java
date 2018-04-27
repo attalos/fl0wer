@@ -25,11 +25,12 @@ public class ApplicableRule implements Comparable<ApplicableRule> {
 
     @Override
     public int compareTo(ApplicableRule applicableRule) {
-        if (this.node_id != applicableRule.node_id) {
+        return Long.compare(this.node_id, applicableRule.node_id);
+        /*if (this.node_id != applicableRule.node_id) {
             return Long.compare(this.node_id, applicableRule.node_id);
         } else {
             return rule_right_side.compareTo(applicableRule.rule_right_side);
-        }
+        }*/
     }
 
     @Override

@@ -67,7 +67,7 @@ public class ConceptHead implements Comparable<ConceptHead> {
             throw new RuntimeException("unexpected Node_Res while creating ConceptHead");
         }
     }
-    
+
     /**
      *
      * @return sorted (natural integer sorting) list of rolenames, which are not null successors.
