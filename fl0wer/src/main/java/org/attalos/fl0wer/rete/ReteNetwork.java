@@ -24,7 +24,7 @@ public class ReteNetwork {
         this.num_of_roles = num_of_roles;
 
         headOntology.get_gcis().forEach((HeadGCI head_gci) -> {
-            ArrayList<Integer> used_roles = head_gci.get_subConceptHead().get_not_null_sucessor_rolenames();
+            ArrayList<Integer> used_roles = head_gci.get_subConceptHead().get_not_null_successor_rolenames();
 
 
             ReteFinalNode final_node = new ReteFinalNode(head_gci.get_superConceptHead(), num_of_finalNodes++);

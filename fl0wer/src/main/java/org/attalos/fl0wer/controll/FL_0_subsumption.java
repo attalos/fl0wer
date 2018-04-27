@@ -121,7 +121,7 @@ public class FL_0_subsumption {
 
             //update subsumption_tree, blocking condition and propagate throw rete network
             ConceptHead new_concepts = applicable_rule.get_rule_right_side(); //TODO successor function instead of math magic everywhere
-            ArrayList<Integer> successors_with_changes = new_concepts.get_not_null_sucessor_rolenames();
+            ArrayList<Integer> successors_with_changes = new_concepts.get_not_null_successor_rolenames();
             if (successors_with_changes.size() == 0) {
                 continue;
             }

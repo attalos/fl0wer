@@ -12,6 +12,7 @@ import java.util.StringJoiner;
  */
 public class ConceptHead implements Comparable<ConceptHead> {
     ArrayList<ArrayList<Integer>> head_array;
+    ArrayList<Integer> notNullPositions;        //so you don't have to calculate it every time
 
     /*public ConceptHead(int num_of_roles) {
         head_array = new ArrayList<ArrayList<Long>>(num_of_roles + 1);
@@ -66,19 +67,32 @@ public class ConceptHead implements Comparable<ConceptHead> {
             throw new RuntimeException("unexpected Node_Res while creating ConceptHead");
         }
     }
-
+    
     /**
      *
-     * @return sorted (natural integer sorting) list of rolenames, which are not null successors. The list contains -1 if the current element changes are not null
+     * @return sorted (natural integer sorting) list of rolenames, which are not null successors.
+     * The list contains -1 if the current element changes are not null
+     * The set is calculated the first time this function is called and cached for later
      */
-    public ArrayList<Integer> get_not_null_sucessor_rolenames() {
-        ArrayList<Integer> not_null_sucessor_rolenames = new ArrayList<>();
-        for (int i = 0; i < head_array.size(); i++) {
-            if (head_array.get(i) != null) {
-                not_null_sucessor_rolenames.add(i - 1);
+    public ArrayList<Integer> get_not_null_successor_rolenames() {
+        if (notNullPositions == null) {
+            synchronized (this) {
+                //this realy should be done only ones
+                if (notNullPositions == null) {
+                    calculateNotNullSuccessorRoleNames();
+                }
             }
         }
-        return not_null_sucessor_rolenames;
+        return new ArrayList<>(notNullPositions);
+    }
+
+    private void calculateNotNullSuccessorRoleNames() {
+        notNullPositions = new ArrayList<>();
+        for (int i = 0; i < head_array.size(); i++) {
+            if (head_array.get(i) != null) {
+                notNullPositions.add(i - 1);
+            }
+        }
     }
 
     /**
