@@ -51,6 +51,15 @@ public class ReteIntraElemNode implements ReteNode{
         } else if (rolename != -1) {
             this.successors.add(new ReteRoleNode(rolename, final_node));
         } else {
+            //if there is already a final node combine those instead of attaching a new final node
+            if (final_node instanceof ReteFinalNode) {
+                for (ReteNode successor : successors) {
+                    if (successor instanceof  ReteFinalNode) {
+                        ((ReteFinalNode) successor).combineWith((ReteFinalNode) final_node);
+                        return;
+                    }
+                }
+            }
             this.successors.add(final_node);
         }
     }

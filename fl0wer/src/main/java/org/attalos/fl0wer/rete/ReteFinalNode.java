@@ -45,4 +45,12 @@ public class ReteFinalNode implements ReteNode {
         gci_level.add(this_hash);
         return dot_string;
     }
+
+    /**
+     * Inserts given final node into this final node
+     * @param finalNode
+     */
+    protected void combineWith(ReteFinalNode finalNode) {
+        this.fired_result.combineWith(finalNode.fired_result);
+    }
 }

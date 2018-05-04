@@ -68,6 +68,16 @@ public class ConceptHead implements Comparable<ConceptHead> {
         }
     }
 
+    public void combineWith(ConceptHead conceptHead) {
+        for (int i = 0; i < this.head_array.size(); i++) {
+            if (this.head_array.get(i) == null) {
+                this.head_array.set(i, conceptHead.head_array.get(i));
+            } else if (conceptHead.head_array.get(i) != null) {
+                this.head_array.get(i).addAll(conceptHead.head_array.get(i));
+            }
+        }
+    }
+
     /**
      *
      * @return sorted (natural integer sorting) list of rolenames, which are not null successors.
