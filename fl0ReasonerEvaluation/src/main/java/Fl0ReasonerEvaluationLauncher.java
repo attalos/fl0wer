@@ -16,7 +16,6 @@ import java.util.Objects;
 import java.util.logging.LogManager;
 
 import org.apache.commons.lang.StringUtils;
-import reasoner.JFactEvaluator;
 import reasoner.OpenlletEvaluator;
 
 public class Fl0ReasonerEvaluationLauncher {
@@ -35,7 +34,7 @@ public class Fl0ReasonerEvaluationLauncher {
         PrintStream outputStream = System.out;
         if (args.length == 2) {
             try {
-                outputStream = new PrintStream(new FileOutputStream(args[1], false)); ;
+                outputStream = new PrintStream(new FileOutputStream(args[1], false));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -49,34 +48,45 @@ public class Fl0ReasonerEvaluationLauncher {
 
         ReasonerEvaluator fl0werEvaluator = new Fl0werEvaluator();
         ReasonerEvaluator hermitEvaluator = new HermitEvaluator();
-        ReasonerEvaluator jfactEvaluator = new JFactEvaluator();
+        //ReasonerEvaluator jfactEvaluator = new JFactEvaluator();
         ReasonerEvaluator openlletEvaluator = new OpenlletEvaluator();
 
-        String format = "%-70s    %10d    %10.3f    %10.3f    %10.3f    %10.3f%n";
-        String formatHeadline = "%-70s    %10s    %10s    %10s    %10s    %10s%n";
-        outputStream.printf(formatHeadline, "Ontologyname", "Classcount", "fl0wer", "HermiT", "JFact", "Openllet");
+        //String format = "%-70s    %10d    %10.3f    %10.3f    %10.3f    %10.3f%n";
+        //String formatHeadline = "%-70s    %10s    %10s    %10s    %10s    %10s%n";
+        //outputStream.printf(formatHeadline, "Ontologyname", "Classcount", "fl0wer", "HermiT", "JFact", "Openllet");
         //System.out.printf(formatHeadline, "------------", "----------", "------", "------", "-----", "--------");
 
-        OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
+        outputStream.println("reasoner;ontology;classcount;time");
         for (File ontologyFile : ontologyFiles) {
             try {
-                //open ontology
-                OWLOntology ontologyOwl = manager.loadOntologyFromOntologyDocument(ontologyFile);
-                String ontologyName = StringUtils.difference(directoryName, ontologyFile.getAbsolutePath());
-                OntologyWrapper ontology = new OntologyWrapper(ontologyName, ontologyOwl);
-                ReasoningTask task = new SubsumptionReasoningTask(ontology);
+                for (int i = 0; i < 5; i++) {
+                    //open ontology
+                    OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
+                    OWLOntology ontologyOwl = manager.loadOntologyFromOntologyDocument(ontologyFile);
+                    String ontologyName = StringUtils.difference(directoryName, ontologyFile.getAbsolutePath());
+                    OntologyWrapper ontology = new OntologyWrapper(ontologyName, ontologyOwl);
+                    ReasoningTask task = new SubsumptionReasoningTask(ontology);
 
-                //evaluate
-                PerformanceResult fl0werResult = fl0werEvaluator.evaluate(task);
-                PerformanceResult hermitResult = hermitEvaluator.evaluate(task);
-                PerformanceResult jfactResult = jfactEvaluator.evaluate(task);
-                PerformanceResult openlletResult = openlletEvaluator.evaluate(task);
+                    if (ontology.getOntology() == null) {
+                        System.out.println(ontology.getName() + "this wasn't a valid FL0 or EL ontology");
+                        continue;
+                    }
 
-                //print
-                if (ontology.getOntology() == null) {
-                    System.out.println(ontology.getName() + "this wasn't a valid FL0 or EL ontology");
-                } else {
-                    long classcount = ontology.getOntology().classesInSignature().count();
+                    //evaluate
+                    PerformanceResult fl0werResult = fl0werEvaluator.evaluate(task);
+                    PerformanceResult hermitResult = hermitEvaluator.evaluate(task);
+                    //PerformanceResult jfactResult = jfactEvaluator.evaluate(task);
+                    PerformanceResult openlletResult = openlletEvaluator.evaluate(task);
+
+                    //print
+                    outputStream.println(fl0werResult.toCsvEntry(";"));
+                    outputStream.println(hermitResult.toCsvEntry(";"));
+                    //outputStream.println(jfactResult.toCsvEntry(";"));
+                    outputStream.println(openlletResult.toCsvEntry(";"));
+                }
+
+                //} else {
+                    /*long classcount = ontology.getOntology().classesInSignature().count();
                     float fl0werTime = ((float) fl0werResult.getDuration().toMillis()) / 1000;
                     float hermitTime = ((float) hermitResult.getDuration().toMillis()) / 1000;
                     float jfactTime = ((float) jfactResult.getDuration().toMillis()) / 1000;
@@ -87,8 +97,9 @@ public class Fl0ReasonerEvaluationLauncher {
                             fl0werTime,
                             hermitTime,
                             jfactTime,
-                            openlletTime);
-                }
+                            openlletTime);*/
+
+                //}
             } catch (OWLOntologyCreationException e) {
                 e.printStackTrace();
             }

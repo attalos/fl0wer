@@ -11,7 +11,6 @@ import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
 import org.semanticweb.owlapi.reasoner.InferenceType;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
-import uk.ac.manchester.cs.owl.owlapi.OWLObjectIntersectionOfImpl;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -19,6 +18,8 @@ import java.time.Instant;
 public abstract class OwlReasonerEvaluator implements ReasonerEvaluator {
 
     protected abstract OWLReasoner createReasoner(OntologyWrapper ontology);
+
+    protected abstract String getReasonerName();
 
     @Override
     public PerformanceResult evaluate(ReasoningTask reasoningTask) {
@@ -36,7 +37,7 @@ public abstract class OwlReasonerEvaluator implements ReasonerEvaluator {
             Instant finishTime = Instant.now();
 
             Duration duration = Duration.between(startingTime, finishTime);
-            return new PerformanceResult(duration);
+            return new PerformanceResult(getReasonerName(), ontology, duration);
         } else {
             return null;
         }
@@ -53,7 +54,7 @@ public abstract class OwlReasonerEvaluator implements ReasonerEvaluator {
             Instant finishTime = Instant.now();
 
             Duration duration = Duration.between(startingTime, finishTime);
-            return new PerformanceResult(duration);
+            return new PerformanceResult(getReasonerName(), ontology, duration);
         } else {
             return null;
         }
@@ -76,7 +77,7 @@ public abstract class OwlReasonerEvaluator implements ReasonerEvaluator {
             Instant finishTime = Instant.now();
 
             Duration duration = Duration.between(startingTime, finishTime);
-            return new PerformanceResult(duration);
+            return new PerformanceResult(getReasonerName(), ontology, duration);
         } else {
             return null;
         }

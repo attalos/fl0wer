@@ -34,7 +34,7 @@ public class Fl0werEvaluator implements ReasonerEvaluator {
             Instant finishTime = Instant.now();
 
             Duration duration = Duration.between(startingTime, finishTime);
-            return new PerformanceResult(duration);
+            return new PerformanceResult("Fl0wer", ontology, duration);
         } else {
             return null;
         }
@@ -51,7 +51,7 @@ public class Fl0werEvaluator implements ReasonerEvaluator {
             Instant finishTime = Instant.now();
 
             Duration duration = Duration.between(startingTime, finishTime);
-            return new PerformanceResult(duration);
+            return new PerformanceResult("Fl0wer", ontology, duration);
         } else {
             return null;
         }
@@ -68,7 +68,7 @@ public class Fl0werEvaluator implements ReasonerEvaluator {
             Instant finishTime = Instant.now();
 
             Duration duration = Duration.between(startingTime, finishTime);
-            return new PerformanceResult(duration);
+            return new PerformanceResult("Fl0wer", ontology, duration);
         } else {
             return null;
         }

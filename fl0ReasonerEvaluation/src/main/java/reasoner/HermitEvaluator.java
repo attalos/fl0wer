@@ -13,8 +13,14 @@ import java.time.Duration;
 import java.time.Instant;
 
 public class HermitEvaluator extends  OwlReasonerEvaluator {
+
     @Override
     protected OWLReasoner createReasoner(OntologyWrapper ontology) {
         return new Reasoner.ReasonerFactory().createReasoner(ontology.getOntology());
+    }
+
+    @Override
+    protected String getReasonerName() {
+        return "Hermit";
     }
 }
