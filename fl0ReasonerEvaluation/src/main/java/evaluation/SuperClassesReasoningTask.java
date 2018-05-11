@@ -12,8 +12,8 @@ import java.util.stream.Collectors;
 public class SuperClassesReasoningTask extends ReasoningTask {
     private OWLClass classOwl;
 
-    public SuperClassesReasoningTask(OntologyWrapper ontology) {
-        super(ontology);
+    public SuperClassesReasoningTask(int taskID, OntologyWrapper ontology) {
+        super(taskID, ontology);
 
         //select class randomly
         List<OWLClass> classesInOntology = this.ontology.getOntology().classesInSignature().collect(Collectors.toList());

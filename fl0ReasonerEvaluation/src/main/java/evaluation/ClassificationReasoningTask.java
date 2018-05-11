@@ -3,8 +3,8 @@ package evaluation;
 import helpers.OntologyWrapper;
 
 public class ClassificationReasoningTask extends  ReasoningTask {
-    public ClassificationReasoningTask(OntologyWrapper ontology) {
-        super(ontology);
+    public ClassificationReasoningTask(int taskID, OntologyWrapper ontology) {
+        super(taskID, ontology);
     }
 
     @Override

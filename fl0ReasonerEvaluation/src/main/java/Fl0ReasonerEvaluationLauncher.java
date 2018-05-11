@@ -3,13 +3,14 @@ import helpers.OntologyWrapper;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.model.OWLOntology;
-import org.semanticweb.owlapi.model.OWLOntologyCreationException;
-import org.semanticweb.owlapi.model.OWLOntologyManager;
+import org.semanticweb.owlapi.formats.OWLXMLDocumentFormat;
+import org.semanticweb.owlapi.io.OWLXMLOntologyFormat;
+import org.semanticweb.owlapi.model.*;
 import reasoner.Fl0werEvaluator;
 import reasoner.HermitEvaluator;
 
 import java.io.*;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -17,17 +18,44 @@ import java.util.logging.LogManager;
 
 import org.apache.commons.lang.StringUtils;
 import reasoner.OpenlletEvaluator;
+import translation.OntologyTranslator;
 
 public class Fl0ReasonerEvaluationLauncher {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws OWLOntologyCreationException, FileNotFoundException, OWLOntologyStorageException {
         //disable logging
         LogManager.getLogManager().reset();
         BasicConfigurator.configure();
         org.apache.log4j.Logger.getRootLogger().setLevel(Level.OFF);
 
         //handle parameters
-        if (args.length != 1 && args.length != 2) {
-            System.out.println("use\n java -jar PROGRAMNAME ONTOLOGIE_DIR [OUTPUTFILE]");
+        if (args.length != 3 ||
+                !Arrays.asList("translate" , "execute", "createClassification", "createSubsumption", "createSubsumerset").contains(args[0])) {
+            String executedFileName = new java.io.File(Fl0ReasonerEvaluationLauncher.class.getProtectionDomain()
+                    .getCodeSource()
+                    .getLocation()
+                    .getPath())
+                    .getName();
+            System.out.println("expected Syntax: ");
+            System.out.println("java -jar " + executedFileName + ".jar translate INPUT_DIR OUTPUT_DIR");
+            System.out.println("java -jar " + executedFileName + ".jar execute TASK_FILENAME RESULT_FILENAME");
+            System.out.println("java -jar " + executedFileName + ".jar createClassification INPUT_DIR TASK_FILENAME");
+            System.out.println("java -jar " + executedFileName + ".jar createSubsumption INPUT_DIR TASK_FILENAME");
+            System.out.println("java -jar " + executedFileName + ".jar createSubsumerset INPUT_DIR TASK_FILENAME");
+            return;
+        }
+
+        if (args[0].equals("translate")) {
+            translate(args[1], args[2]);
+            return;
+        }
+
+        if (args[0].equals("createSubsumption")) {
+            createTask(args[1], args[2], 20);
+            return;
+        }
+
+        if (args[0].equals("execute")) {
+            executeTask(args[1], args[2]);
             return;
         }
 
@@ -64,8 +92,8 @@ public class Fl0ReasonerEvaluationLauncher {
                     OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
                     OWLOntology ontologyOwl = manager.loadOntologyFromOntologyDocument(ontologyFile);
                     String ontologyName = StringUtils.difference(directoryName, ontologyFile.getAbsolutePath());
-                    OntologyWrapper ontology = new OntologyWrapper(ontologyName, ontologyOwl);
-                    ReasoningTask task = new SubsumptionReasoningTask(ontology);
+                    OntologyWrapper ontology = new OntologyWrapper(ontologyName, ontologyFile.getAbsolutePath(), ontologyOwl);
+                    ReasoningTask task = new SubsumptionReasoningTask(i, ontology);
 
                     if (ontology.getOntology() == null) {
                         System.out.println(ontology.getName() + "this wasn't a valid FL0 or EL ontology");
@@ -122,5 +150,57 @@ public class Fl0ReasonerEvaluationLauncher {
         }
 
         return ontologyFiles;
+    }
+
+    private static void translate(String inputDir, String outputDir) throws OWLOntologyCreationException, FileNotFoundException, OWLOntologyStorageException {
+        List<File> ontologyFiles = openAllOntologiesInDirectory(new File(inputDir));
+
+        for (File ontologyFile : ontologyFiles) {
+            OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
+            OWLOntology inputOntologyOwl = manager.loadOntologyFromOntologyDocument(ontologyFile);      //open
+
+            OWLOntology outputOntologyOwl = OntologyTranslator.createFL0Ontology(inputOntologyOwl);     //translate
+            if (outputOntologyOwl == null) return;
+
+            //save
+            String ontologyName = StringUtils.difference(inputDir, ontologyFile.getAbsolutePath());
+            ontologyName = ontologyName.replace("/", "_").substring(1);
+            System.out.println(ontologyName);
+            OWLDocumentFormat owlxmlFormat = new OWLXMLDocumentFormat();
+            manager.saveOntology(outputOntologyOwl, owlxmlFormat, new FileOutputStream(outputDir + "/" +ontologyName , false));
+        }
+    }
+
+    private static void createTask(String inputDir, String taskFile, int taskCount) throws OWLOntologyCreationException {
+        List<File> ontologyFiles = openAllOntologiesInDirectory(new File(inputDir));
+
+        for (File ontologyFile : ontologyFiles) {
+
+            //open
+            OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
+            OWLOntology ontologyOwl = manager.loadOntologyFromOntologyDocument(ontologyFile);
+            String ontologyName = StringUtils.difference(inputDir, ontologyFile.getAbsolutePath()).substring(1);
+            OntologyWrapper ontology = new OntologyWrapper(ontologyName, ontologyFile.getAbsolutePath(), ontologyOwl);
+
+            for (int i = 0; i < taskCount; i++) {
+                ReasoningTask task = new SubsumptionReasoningTask(i, ontology);
+                System.out.println(task);
+            }
+        }
+    }
+
+    private static void executeTask(String reasonerName, String taskCSV) throws OWLOntologyCreationException {
+        ReasoningTask task = new SubsumptionReasoningTask(taskCSV);
+
+        ReasonerEvaluator evaluator = null;
+        switch (reasonerName) {
+            case "fl0wer" : evaluator = new Fl0werEvaluator(); break;
+            case "hermit" : evaluator = new HermitEvaluator(); break;
+            case "openllet" : evaluator = new OpenlletEvaluator(); break;
+        }
+
+        PerformanceResult result = evaluator.evaluate(task);
+        System.out.println(result.toCsvEntry(","));
+
     }
 }

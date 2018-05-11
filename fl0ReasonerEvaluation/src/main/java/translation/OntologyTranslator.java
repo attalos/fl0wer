@@ -16,6 +16,11 @@ public class OntologyTranslator {
         return owl2ELProfile.checkOntology(ontologyOwl).isInProfile();
     }
 
+    /**
+     *
+     * WARING! This 'translation' doesn't keep semantic equality but creats a FL_0 ontology of simmilar structure
+     *
+     */
     public static OWLOntology translateELtoFL0(OWLOntology ontologyOwl) throws OWLOntologyCreationException {
         OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
         return  manager.createOntology(ontologyOwl.axioms()
@@ -25,5 +30,21 @@ public class OntologyTranslator {
 
     public static boolean isRawFL0(OWLOntology ontologyOwl) {
         return ontologyOwl.accept(rawFL0VerificationVisitor);
+    }
+
+    /**
+     * creates an FL_0 Ontology of simmilar structure if input was EL Ontology or returns the input if the ontology
+     * already was in FL_0
+     *
+     */
+    public static OWLOntology createFL0Ontology(OWLOntology ontologyOwl) throws OWLOntologyCreationException {
+        if (isRawFL0(ontologyOwl)) {
+            return ontologyOwl;
+        } else if (fullfillsOwl2ElProfile(ontologyOwl)) {
+            return translateELtoFL0(ontologyOwl);
+        } else {
+            System.out.println("Ontology wasn't in EL or FL0");
+            return null;
+        }
     }
 }
