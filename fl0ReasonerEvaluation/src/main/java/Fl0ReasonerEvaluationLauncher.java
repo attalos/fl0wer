@@ -190,13 +190,22 @@ public class Fl0ReasonerEvaluationLauncher {
     }
 
     private static void executeTask(String reasonerName, String taskCSV, String resultFilename) throws OWLOntologyCreationException {
-        ReasoningTask task = new SubsumptionReasoningTask(taskCSV);
+        ReasoningTask task;
+        int csvSize = taskCSV.split(",").length;
+        switch (csvSize) {
+            case 3: task = new ClassificationReasoningTask(taskCSV); break;
+            case 4: task = new SuperClassesReasoningTask(taskCSV); break;
+            case 5: task = new SubsumptionReasoningTask(taskCSV); break;
+            default: task = null;
+        }
+        assert  task != null;
 
-        ReasonerEvaluator evaluator = null;
+        ReasonerEvaluator evaluator;
         switch (reasonerName) {
             case "fl0wer" : evaluator = new Fl0werEvaluator(); break;
             case "hermit" : evaluator = new HermitEvaluator(); break;
             case "openllet" : evaluator = new OpenlletEvaluator(); break;
+            default: evaluator = null;g
         }
         assert evaluator != null;
 
