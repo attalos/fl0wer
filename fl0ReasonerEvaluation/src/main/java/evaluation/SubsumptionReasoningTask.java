@@ -35,8 +35,6 @@ public class SubsumptionReasoningTask extends ReasoningTask {
 
         subClassOwl = factory.getOWLClass(IRI.create(attributes[3]));
         superClassOwl = factory.getOWLClass(IRI.create(attributes[4]));
-
-
     }
 
     @Override

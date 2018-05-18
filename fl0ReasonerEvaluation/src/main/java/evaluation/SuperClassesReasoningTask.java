@@ -1,7 +1,8 @@
 package evaluation;
 
 import helpers.OntologyWrapper;
-import org.semanticweb.owlapi.model.OWLClass;
+import org.semanticweb.owlapi.apibinding.OWLManager;
+import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.util.OWLClassLiteralCollector;
 
 import java.util.List;
@@ -21,8 +22,24 @@ public class SuperClassesReasoningTask extends ReasoningTask {
         this.classOwl = classesInOntology.get(index);
     }
 
+    public SuperClassesReasoningTask(String csvString) throws OWLOntologyCreationException {
+        super(csvString);
+
+        String[] attributes = csvString.split(",");
+
+        OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
+        OWLDataFactory factory = manager.getOWLDataFactory();
+
+        classOwl = factory.getOWLClass(IRI.create(attributes[3]));
+    }
+
     @Override
     public PerformanceResult evaluate(ReasonerEvaluator evaluator) {
         return evaluator.superClasses(this.ontology, this.classOwl);
+    }
+
+    @Override
+    public String toString() {
+        return taskID + "," + ontology + "," + classOwl.toString().substring(1,classOwl.toString().length()-1);
     }
 }

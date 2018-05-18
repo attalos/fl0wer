@@ -10,6 +10,7 @@ import reasoner.Fl0werEvaluator;
 import reasoner.HermitEvaluator;
 
 import java.io.*;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -21,20 +22,18 @@ import reasoner.OpenlletEvaluator;
 import translation.OntologyTranslator;
 
 public class Fl0ReasonerEvaluationLauncher {
-    public static void main(String[] args) throws OWLOntologyCreationException, FileNotFoundException, OWLOntologyStorageException {
+    public static void main(String[] args) throws OWLOntologyCreationException, FileNotFoundException, OWLOntologyStorageException, URISyntaxException {
         //disable logging
         LogManager.getLogManager().reset();
         BasicConfigurator.configure();
         org.apache.log4j.Logger.getRootLogger().setLevel(Level.OFF);
 
         //handle parameters
-        if (args.length != 3 ||
-                !Arrays.asList("translate" , "execute", "createClassification", "createSubsumption", "createSubsumerset").contains(args[0])) {
-            String executedFileName = new java.io.File(Fl0ReasonerEvaluationLauncher.class.getProtectionDomain()
+        if (!Arrays.asList("translate" , "execute", "createClassification", "createSubsumption", "createSubsumerset").contains(args[0])) {
+            String executedFileName = Fl0ReasonerEvaluationLauncher.class.getProtectionDomain()
                     .getCodeSource()
                     .getLocation()
-                    .getPath())
-                    .getName();
+                    .getPath();
             System.out.println("expected Syntax: ");
             System.out.println("java -jar " + executedFileName + ".jar translate INPUT_DIR OUTPUT_DIR");
             System.out.println("java -jar " + executedFileName + ".jar execute TASK_FILENAME RESULT_FILENAME");
@@ -55,7 +54,7 @@ public class Fl0ReasonerEvaluationLauncher {
         }
 
         if (args[0].equals("execute")) {
-            executeTask(args[1], args[2]);
+            executeTask(args[1], args[2], args[3]);
             return;
         }
 
@@ -171,8 +170,9 @@ public class Fl0ReasonerEvaluationLauncher {
         }
     }
 
-    private static void createTask(String inputDir, String taskFile, int taskCount) throws OWLOntologyCreationException {
+    private static void createTask(String inputDir, String taskFile, int taskCount) throws OWLOntologyCreationException, FileNotFoundException {
         List<File> ontologyFiles = openAllOntologiesInDirectory(new File(inputDir));
+        PrintStream outputStream = new PrintStream(new FileOutputStream(taskFile, false));
 
         for (File ontologyFile : ontologyFiles) {
 
@@ -184,12 +184,12 @@ public class Fl0ReasonerEvaluationLauncher {
 
             for (int i = 0; i < taskCount; i++) {
                 ReasoningTask task = new SubsumptionReasoningTask(i, ontology);
-                System.out.println(task);
+                outputStream.println(task);
             }
         }
     }
 
-    private static void executeTask(String reasonerName, String taskCSV) throws OWLOntologyCreationException {
+    private static void executeTask(String reasonerName, String taskCSV, String resultFilename) throws OWLOntologyCreationException {
         ReasoningTask task = new SubsumptionReasoningTask(taskCSV);
 
         ReasonerEvaluator evaluator = null;
