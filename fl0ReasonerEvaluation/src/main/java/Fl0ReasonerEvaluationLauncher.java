@@ -198,6 +198,7 @@ public class Fl0ReasonerEvaluationLauncher {
             case "hermit" : evaluator = new HermitEvaluator(); break;
             case "openllet" : evaluator = new OpenlletEvaluator(); break;
         }
+        assert evaluator != null;
 
         PerformanceResult result = evaluator.evaluate(task);
         System.out.println(result.toCsvEntry(","));
