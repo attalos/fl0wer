@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.logging.LogManager;
 
 import org.apache.commons.lang.StringUtils;
@@ -49,7 +50,20 @@ public class Fl0ReasonerEvaluationLauncher {
         }
 
         if (args[0].equals("createSubsumption")) {
-            createTask(args[1], args[2], 20);
+            createTask(args[1], args[2], 20,
+                    ontologyWrapper -> taskID -> new SubsumptionReasoningTask(taskID, ontologyWrapper));
+            return;
+        }
+
+        if (args[0].equals("createSubsumerset")) {
+            createTask(args[1], args[2], 20,
+                    ontologyWrapper -> taskID -> new SuperClassesReasoningTask(taskID, ontologyWrapper));
+            return;
+        }
+
+        if (args[0].equals("createClassification")) {
+            createTask(args[1], args[2], 20,
+                    ontologyWrapper -> taskID -> new ClassificationReasoningTask(taskID, ontologyWrapper));
             return;
         }
 
@@ -170,7 +184,12 @@ public class Fl0ReasonerEvaluationLauncher {
         }
     }
 
-    private static void createTask(String inputDir, String taskFile, int taskCount) throws OWLOntologyCreationException, FileNotFoundException {
+    private static void createTask(String inputDir,
+                                   String taskFile,
+                                   int taskCount,
+                                   Function<OntologyWrapper, Function<Integer, ReasoningTask>> reasoningTaskConstructor )
+            throws OWLOntologyCreationException, FileNotFoundException {
+
         List<File> ontologyFiles = openAllOntologiesInDirectory(new File(inputDir));
         PrintStream outputStream = new PrintStream(new FileOutputStream(taskFile, false));
 
@@ -183,7 +202,7 @@ public class Fl0ReasonerEvaluationLauncher {
             OntologyWrapper ontology = new OntologyWrapper(ontologyName, ontologyFile.getAbsolutePath(), ontologyOwl);
 
             for (int i = 0; i < taskCount; i++) {
-                ReasoningTask task = new SubsumptionReasoningTask(i, ontology);
+                ReasoningTask task = reasoningTaskConstructor.apply(ontology).apply(i);
                 outputStream.println(task);
             }
         }
@@ -205,7 +224,7 @@ public class Fl0ReasonerEvaluationLauncher {
             case "fl0wer" : evaluator = new Fl0werEvaluator(); break;
             case "hermit" : evaluator = new HermitEvaluator(); break;
             case "openllet" : evaluator = new OpenlletEvaluator(); break;
-            default: evaluator = null;g
+            default: evaluator = null;
         }
         assert evaluator != null;
 
