@@ -19,6 +19,7 @@ import java.util.function.Function;
 import java.util.logging.LogManager;
 
 import org.apache.commons.lang.StringUtils;
+import reasoner.JFactEvaluator;
 import reasoner.OpenlletEvaluator;
 import translation.OntologyTranslator;
 
@@ -226,6 +227,7 @@ public class Fl0ReasonerEvaluationLauncher {
             case "fl0wer" : evaluator = new Fl0werEvaluator(); break;
             case "hermit" : evaluator = new HermitEvaluator(); break;
             case "openllet" : evaluator = new OpenlletEvaluator(); break;
+            case "jfact" : evaluator = new JFactEvaluator(); break;
             default: evaluator = null;
         }
         assert evaluator != null;
