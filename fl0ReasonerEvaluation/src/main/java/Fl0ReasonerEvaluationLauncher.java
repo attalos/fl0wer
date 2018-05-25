@@ -30,17 +30,19 @@ public class Fl0ReasonerEvaluationLauncher {
         org.apache.log4j.Logger.getRootLogger().setLevel(Level.OFF);
 
         //handle parameters
-        if (!Arrays.asList("translate" , "execute", "createClassification", "createSubsumption", "createSubsumerset").contains(args[0])) {
-            String executedFileName = Fl0ReasonerEvaluationLauncher.class.getProtectionDomain()
+        if (args.length <= 1 || !Arrays.asList("translate" , "execute", "createClassification", "createSubsumption", "createSubsumerset").contains(args[0])) {
+            String[] executedFilePath = Fl0ReasonerEvaluationLauncher.class.getProtectionDomain()
                     .getCodeSource()
                     .getLocation()
-                    .getPath();
+                    .getFile()
+                    .split("/");
+            String executedFileName = executedFilePath[executedFilePath.length - 1];
             System.out.println("expected Syntax: ");
-            System.out.println("java -jar " + executedFileName + ".jar translate INPUT_DIR OUTPUT_DIR");
-            System.out.println("java -jar " + executedFileName + ".jar execute TASK_FILENAME RESULT_FILENAME");
-            System.out.println("java -jar " + executedFileName + ".jar createClassification INPUT_DIR TASK_FILENAME");
-            System.out.println("java -jar " + executedFileName + ".jar createSubsumption INPUT_DIR TASK_FILENAME");
-            System.out.println("java -jar " + executedFileName + ".jar createSubsumerset INPUT_DIR TASK_FILENAME");
+            System.out.println("java -jar " + executedFileName + " translate INPUT_DIR OUTPUT_DIR");
+            System.out.println("java -jar " + executedFileName + " execute TASK_FILENAME RESULT_FILENAME");
+            System.out.println("java -jar " + executedFileName + " createClassification INPUT_DIR TASK_FILENAME");
+            System.out.println("java -jar " + executedFileName + " createSubsumption INPUT_DIR TASK_FILENAME");
+            System.out.println("java -jar " + executedFileName + " createSubsumerset INPUT_DIR TASK_FILENAME");
             return;
         }
 
