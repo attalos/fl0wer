@@ -1,33 +1,57 @@
 package translation;
 
+import com.sun.istack.internal.NotNull;
 import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapitools.builders.BuilderDataAllValuesFrom;
 import org.semanticweb.owlapitools.builders.BuilderObjectAllValuesFrom;
 import uk.ac.manchester.cs.owl.owlapi.OWLObjectAllValuesFromImpl;
 import uk.ac.manchester.cs.owl.owlapi.OWLObjectIntersectionOfImpl;
 
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public class TranslationClassExpressionVisitor implements OWLClassExpressionVisitorEx<OWLClassExpression> {
 
     protected TranslationClassExpressionVisitor() {}
 
+    @Override
     public OWLClassExpression visit(OWLObjectIntersectionOf ce) {
-        return new OWLObjectIntersectionOfImpl(ce.conjunctSet().map(conjunct -> conjunct.accept(this)));
+        List<OWLClassExpression> conjunctList = ce.conjunctSet()
+                .map(conjunct -> conjunct.accept(this))
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
+        if (conjunctList.size() == 0) {
+            return null;
+        } else if (conjunctList.size() == 1) {
+            return conjunctList.get(0);
+        } else {
+            return new OWLObjectIntersectionOfImpl(conjunctList.stream());
+        }
     }
 
+    @Override
     public OWLClassExpression visit(OWLObjectSomeValuesFrom ce) {
-        return new OWLObjectAllValuesFromImpl(ce.getProperty(), ce.getFiller().accept(this));
+        OWLClassExpression filler = ce.getFiller().accept(this);
+        if (filler == null) { return null; }
+        return new OWLObjectAllValuesFromImpl(ce.getProperty(), filler);
     }
 
+    @Override
     public OWLClassExpression visit(OWLObjectAllValuesFrom ce) {
-        return new OWLObjectAllValuesFromImpl(ce.getProperty(), ce.getFiller().accept(this));
+        OWLClassExpression filler = ce.getFiller().accept(this);
+        if (filler == null) { return null; }
+        return new OWLObjectAllValuesFromImpl(ce.getProperty(), filler);
     }
 
+    @Override
     public OWLClassExpression visit(OWLClass ce) {
         return ce;
     }
 
     public <T> OWLClassExpression doDefault(T object) {
-        assert false : "found owl class expression which shouldn't exist anymore at this state:\n" + object.getClass().getName();
+        //assert false : "found owl class expression which shouldn't exist anymore at this state:\n" + object.getClass().getName();
         return null;
     }
 }

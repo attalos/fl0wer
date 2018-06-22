@@ -159,7 +159,7 @@ public class Fl0ReasonerEvaluationLauncher {
                     ontologyFiles.addAll(openAllOntologiesInDirectory(fileEntry));
                 }
             } else {
-                if (fileEntry.getName().endsWith(".ont")) {
+                if (fileEntry.getName().endsWith(".ont") || fileEntry.getName().endsWith(".owl")) {
                     ontologyFiles.add(fileEntry);
                 }
             }
