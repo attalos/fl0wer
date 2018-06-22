@@ -6,11 +6,13 @@ public class OntologyWrapper {
     private String name;
     private String ontologyPath;
     private OWLOntology ontology;
+    private final long size;
 
     public OntologyWrapper(String name, String ontologyPath, OWLOntology ontology) {
         this.name = name;
         this.ontologyPath = ontologyPath;
         this.ontology = ontology;
+        this.size = this.ontology.classesInSignature().count();
     }
 
     public String getName() {
@@ -23,6 +25,10 @@ public class OntologyWrapper {
 
     public void setOntology(OWLOntology ontology) {
         this.ontology = ontology;
+    }
+
+    public long getSize() {
+        return size;
     }
 
     @Override

@@ -26,7 +26,7 @@ public class PerformanceResult {
         joiner
                 .add(reasonerName)
                 .add(ontology.getName())
-                .add(Long.toString(ontology.getOntology().classesInSignature().count()))
+                .add(Long.toString(ontology.getSize()))
                 .add(Long.toString(duration.toMillis()));
         return joiner.toString();
     }
