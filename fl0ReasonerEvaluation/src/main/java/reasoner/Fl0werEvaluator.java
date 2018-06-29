@@ -26,14 +26,20 @@ public class Fl0werEvaluator implements ReasonerEvaluator {
     @Override
     public PerformanceResult classify(OntologyWrapper ontology) {
         if (ontology.getOntology() != null) {
-            FL_0_subsumption fl0wer = new FL_0_subsumption(ontology.getOntology());
-
             //get time data
-            Instant startingTime = Instant.now();
-            fl0wer.classify();
-            Instant finishTime = Instant.now();
+            Duration duration = Duration.ZERO;
+            try {
+                FL_0_subsumption fl0wer = new FL_0_subsumption(ontology.getOntology());
+                Instant startingTime = Instant.now();
+                fl0wer.classify();
+                Instant finishTime = Instant.now();
+                duration = Duration.between(startingTime, finishTime);
+            } catch (Exception e) {
+                System.err.println("Error occured - wrote time = 0 to output file");
+                e.printStackTrace(System.err);
+            }
 
-            Duration duration = Duration.between(startingTime, finishTime);
+
             return new PerformanceResult("Fl0wer", ontology, duration);
         } else {
             return null;

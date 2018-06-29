@@ -65,7 +65,7 @@ public class Fl0ReasonerEvaluationLauncher {
         }
 
         if (args[0].equals("createClassification")) {
-            createTask(args[1], args[2], 20,
+            createTask(args[1], args[2], 1,
                     ontologyWrapper -> taskID -> new ClassificationReasoningTask(taskID, ontologyWrapper));
             return;
         }

@@ -1,16 +1,13 @@
 package translation;
 
-import com.sun.istack.internal.NotNull;
+
 import org.semanticweb.owlapi.model.*;
-import org.semanticweb.owlapitools.builders.BuilderDataAllValuesFrom;
-import org.semanticweb.owlapitools.builders.BuilderObjectAllValuesFrom;
 import uk.ac.manchester.cs.owl.owlapi.OWLObjectAllValuesFromImpl;
 import uk.ac.manchester.cs.owl.owlapi.OWLObjectIntersectionOfImpl;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class TranslationClassExpressionVisitor implements OWLClassExpressionVisitorEx<OWLClassExpression> {
 
