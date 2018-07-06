@@ -61,7 +61,7 @@ public class FL_0_subsumption {
         owlToInternalTranslator.lock();
 
         if (owlToInternalTranslator.get_role_count() < 1) {
-            throw new RuntimeException("at least one role needed");
+            //throw new RuntimeException("at least one role needed");
         }
 
         //head ontology representation

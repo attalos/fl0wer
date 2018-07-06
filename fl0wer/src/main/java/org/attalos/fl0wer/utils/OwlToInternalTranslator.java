@@ -26,6 +26,8 @@ public class OwlToInternalTranslator {
 
     public void lock() {
         locked = true;
+        if (owl_role_counter == 0)
+            owl_role_counter = 1;
     }
 
     public void initialize_original_owl_classes(Stream<OWLClass> original_owl_classes) {
