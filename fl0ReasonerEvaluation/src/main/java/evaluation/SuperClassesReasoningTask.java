@@ -13,8 +13,8 @@ import java.util.stream.Collectors;
 public class SuperClassesReasoningTask extends ReasoningTask {
     private OWLClass classOwl;
 
-    public SuperClassesReasoningTask(int taskID, OntologyWrapper ontology) {
-        super(taskID, ontology);
+    public SuperClassesReasoningTask(int taskID, OntologyWrapper ontology, long timeout) {
+        super(taskID, ontology, timeout);
 
         //select class randomly
         List<OWLClass> classesInOntology = this.ontology.getOntology().classesInSignature().collect(Collectors.toList());
@@ -35,7 +35,7 @@ public class SuperClassesReasoningTask extends ReasoningTask {
 
     @Override
     public PerformanceResult evaluate(ReasonerEvaluator evaluator) {
-        return evaluator.superClasses(this.ontology, this.classOwl);
+        return evaluator.superClasses(this.ontology, this.classOwl, this.timeout);
     }
 
     @Override

@@ -11,11 +11,49 @@ import org.semanticweb.owlapi.model.OWLClassExpression;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
-public class Fl0werEvaluator implements ReasonerEvaluator {
+public class Fl0werEvaluator extends ReasonerEvaluator<FL_0_subsumption> {
 
     public Fl0werEvaluator() {
         ConstantValues.initialise(-1, false, false, false);
+    }
+
+    @Override
+    protected Duration classificationMethod(FL_0_subsumption fl0wer) {
+        Instant startingTime = Instant.now();
+        fl0wer.classify();
+        Instant finishTime = Instant.now();
+        return Duration.between(startingTime, finishTime);
+    }
+
+    @Override
+    protected Duration superClassesMethod(FL_0_subsumption fl0wer, OWLClass classOwl) {
+        Instant startingTime = Instant.now();
+        fl0wer.calculate_subsumerset(classOwl);
+        Instant finishTime = Instant.now();
+        return Duration.between(startingTime, finishTime);
+    }
+
+    @Override
+    protected Duration substumptionMethod(FL_0_subsumption fl0wer, OWLClass subClassOwl, OWLClass superClassOwl) {
+        Instant startingTime = Instant.now();
+        fl0wer.decide_subsumption(subClassOwl, superClassOwl);
+        Instant finishTime = Instant.now();
+        return Duration.between(startingTime, finishTime);
+    }
+
+    @Override
+    protected FL_0_subsumption init(OntologyWrapper ontWrp) {
+        return new FL_0_subsumption(ontWrp.getOntology());
+    }
+
+    @Override
+    protected String getReasonerName() {
+        return "Fl0wer";
     }
 
     @Override
@@ -23,16 +61,24 @@ public class Fl0werEvaluator implements ReasonerEvaluator {
         return reasoningTask.evaluate(this);
     }
 
-    @Override
+    /*@Override
     public PerformanceResult classify(OntologyWrapper ontology) {
         if (ontology.getOntology() != null) {
             //get time data
             Duration duration = Duration.ZERO;
             try {
                 FL_0_subsumption fl0wer = new FL_0_subsumption(ontology.getOntology());
-                Instant startingTime = Instant.now();
-                fl0wer.classify();
-                Instant finishTime = Instant.now();
+
+
+                ExecutorService executor = Executors.newFixedThreadPool(1);
+                Future<Void> timeoutTask = executor.submit(() -> {
+                    Instant startingTime = Instant.now();
+                    fl0wer.classify();
+                    Instant finishTime = Instant.now();
+                    return null;
+                });
+
+
                 duration = Duration.between(startingTime, finishTime);
             } catch (Exception e) {
                 System.err.println("Error occured - wrote time = 0 to output file");
@@ -44,9 +90,9 @@ public class Fl0werEvaluator implements ReasonerEvaluator {
         } else {
             return null;
         }
-    }
+    }*/
 
-    @Override
+    /*@Override
     public PerformanceResult superClasses(OntologyWrapper ontology, OWLClass classOwl) {
         if (ontology.getOntology() != null) {
             FL_0_subsumption fl0wer = new FL_0_subsumption(ontology.getOntology());
@@ -61,9 +107,9 @@ public class Fl0werEvaluator implements ReasonerEvaluator {
         } else {
             return null;
         }
-    }
+    }*/
 
-    @Override
+    /*@Override
     public PerformanceResult subsumption(OntologyWrapper ontology, OWLClass subClassOwl, OWLClass superClassOwl) {
         if (ontology.getOntology() != null) {
             FL_0_subsumption fl0wer = new FL_0_subsumption(ontology.getOntology());
@@ -78,5 +124,5 @@ public class Fl0werEvaluator implements ReasonerEvaluator {
         } else {
             return null;
         }
-    }
+    }*/
 }

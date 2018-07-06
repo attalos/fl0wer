@@ -13,8 +13,8 @@ public class SubsumptionReasoningTask extends ReasoningTask {
     private OWLClass subClassOwl;
     private OWLClass superClassOwl;
 
-    public SubsumptionReasoningTask(int taskID, OntologyWrapper ontology) {
-        super(taskID, ontology);
+    public SubsumptionReasoningTask(int taskID, OntologyWrapper ontology, long timeout) {
+        super(taskID, ontology, timeout);
 
         //select classes randomly
         List<OWLClass> classesInOntology = this.ontology.getOntology().classesInSignature().collect(Collectors.toList());
@@ -39,7 +39,7 @@ public class SubsumptionReasoningTask extends ReasoningTask {
 
     @Override
     public PerformanceResult evaluate(ReasonerEvaluator evaluator) {
-        return evaluator.subsumption(this.ontology, this.subClassOwl, this.superClassOwl);
+        return evaluator.subsumption(this.ontology, this.subClassOwl, this.superClassOwl, this.timeout);
     }
 
     @Override

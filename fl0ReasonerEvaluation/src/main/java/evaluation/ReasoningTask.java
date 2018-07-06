@@ -13,10 +13,12 @@ import java.io.File;
 public abstract  class ReasoningTask {
     protected int taskID;
     protected OntologyWrapper ontology;
+    protected long timeout = 30;            //TODO read it from csv
 
-    protected ReasoningTask(int taskID, OntologyWrapper ontology) {
+    protected ReasoningTask(int taskID, OntologyWrapper ontology, long timeout) {
         this.taskID = taskID;
         this.ontology = ontology;
+        this.timeout = timeout;
         //translate to FL0
         try {
             if (OntologyTranslator.fullfillsOwl2ElProfile(this.ontology.getOntology())) {

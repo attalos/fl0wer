@@ -54,25 +54,25 @@ public class Fl0ReasonerEvaluationLauncher {
 
         if (args[0].equals("createSubsumption")) {
             createTask(args[1], args[2], 20,
-                    ontologyWrapper -> taskID -> new SubsumptionReasoningTask(taskID, ontologyWrapper));
+                    ontologyWrapper -> taskID -> new SubsumptionReasoningTask(taskID, ontologyWrapper, 30));
             return;
         }
 
         if (args[0].equals("createSubsumerset")) {
             createTask(args[1], args[2], 20,
-                    ontologyWrapper -> taskID -> new SuperClassesReasoningTask(taskID, ontologyWrapper));
+                    ontologyWrapper -> taskID -> new SuperClassesReasoningTask(taskID, ontologyWrapper, 30));
             return;
         }
 
         if (args[0].equals("createClassification")) {
             createTask(args[1], args[2], 1,
-                    ontologyWrapper -> taskID -> new ClassificationReasoningTask(taskID, ontologyWrapper));
+                    ontologyWrapper -> taskID -> new ClassificationReasoningTask(taskID, ontologyWrapper, 30));
             return;
         }
 
         if (args[0].equals("execute")) {
             executeTask(args[1], args[2], args[3]);
-            return;
+            System.exit(0);     // necessary since some of the reasoners do not stop voluntary
         }
 //
 //        PrintStream outputStream = System.out;
