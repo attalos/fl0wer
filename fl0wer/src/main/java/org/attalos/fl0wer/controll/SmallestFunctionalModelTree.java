@@ -11,6 +11,7 @@ import java.util.function.Consumer;
  * Created by attalos on 29.06.17.
  */
 public class SmallestFunctionalModelTree {
+    //TODO try performance difference for hashmap
     private SortedMap<Long, FunctionalElement> model_tree;
     private BlockingCondition blocking_condition;
     private int num_of_roles;
