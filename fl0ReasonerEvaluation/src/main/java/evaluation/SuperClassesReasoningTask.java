@@ -18,6 +18,9 @@ public class SuperClassesReasoningTask extends ReasoningTask {
 
         //select class randomly
         List<OWLClass> classesInOntology = this.ontology.getOntology().classesInSignature().collect(Collectors.toList());
+        if (classesInOntology.size() == 0) {
+            throw new IllegalArgumentException("ontology must contain at least one class");
+        }
         int index = ThreadLocalRandom.current().nextInt(0, classesInOntology.size());
         this.classOwl = classesInOntology.get(index);
     }

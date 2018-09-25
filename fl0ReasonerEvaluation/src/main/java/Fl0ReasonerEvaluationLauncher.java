@@ -31,7 +31,7 @@ public class Fl0ReasonerEvaluationLauncher {
         org.apache.log4j.Logger.getRootLogger().setLevel(Level.OFF);
 
         //handle parameters
-        if (args.length <= 1 || !Arrays.asList("translate" , "execute", "createClassification", "createSubsumption", "createSubsumerset").contains(args[0])) {
+        if (args.length <= 2 || !Arrays.asList("translate" , "execute", "createClassification", "createSubsumption", "createSubsumerset").contains(args[0])) {
             String[] executedFilePath = Fl0ReasonerEvaluationLauncher.class.getProtectionDomain()
                     .getCodeSource()
                     .getLocation()
@@ -40,10 +40,11 @@ public class Fl0ReasonerEvaluationLauncher {
             String executedFileName = executedFilePath[executedFilePath.length - 1];
             System.out.println("expected Syntax: ");
             System.out.println("java -jar " + executedFileName + " translate INPUT_DIR OUTPUT_DIR");
-            System.out.println("java -jar " + executedFileName + " execute TASK_FILENAME RESULT_FILENAME");
+            System.out.println("java -jar " + executedFileName + " execute REASONER_NAME TASK_LINE");
             System.out.println("java -jar " + executedFileName + " createClassification INPUT_DIR TASK_FILENAME");
             System.out.println("java -jar " + executedFileName + " createSubsumption INPUT_DIR TASK_FILENAME");
             System.out.println("java -jar " + executedFileName + " createSubsumerset INPUT_DIR TASK_FILENAME");
+            System.out.println("REASONER_NAME = (flower|hermit|jfact|openllet)");
             return;
         }
 
@@ -53,13 +54,13 @@ public class Fl0ReasonerEvaluationLauncher {
         }
 
         if (args[0].equals("createSubsumption")) {
-            createTask(args[1], args[2], 20,
+            createTask(args[1], args[2], 1,
                     ontologyWrapper -> taskID -> new SubsumptionReasoningTask(taskID, ontologyWrapper, 30));
             return;
         }
 
         if (args[0].equals("createSubsumerset")) {
-            createTask(args[1], args[2], 20,
+            createTask(args[1], args[2], 1,
                     ontologyWrapper -> taskID -> new SuperClassesReasoningTask(taskID, ontologyWrapper, 30));
             return;
         }
@@ -71,7 +72,7 @@ public class Fl0ReasonerEvaluationLauncher {
         }
 
         if (args[0].equals("execute")) {
-            executeTask(args[1], args[2], args[3]);
+            executeTask(args[1], args[2]);
             System.exit(0);     // necessary since some of the reasoners do not stop voluntary
         }
 //
@@ -205,13 +206,19 @@ public class Fl0ReasonerEvaluationLauncher {
             OntologyWrapper ontology = new OntologyWrapper(ontologyName, ontologyFile.getAbsolutePath(), ontologyOwl);
 
             for (int i = 0; i < taskCount; i++) {
-                ReasoningTask task = reasoningTaskConstructor.apply(ontology).apply(i);
-                outputStream.println(task);
+                try {
+                    ReasoningTask task = reasoningTaskConstructor.apply(ontology).apply(i);
+                    outputStream.println(task);
+                } catch (IllegalArgumentException e) {
+                    System.err.println("The following exception occured for " + ontology.getName());
+                    System.err.println(e.getMessage());
+                }
+
             }
         }
     }
 
-    private static void executeTask(String reasonerName, String taskCSV, String resultFilename) throws OWLOntologyCreationException {
+    private static void executeTask(String reasonerName, String taskCSV) throws OWLOntologyCreationException {
         ReasoningTask task;
         int csvSize = taskCSV.split(",").length;
         switch (csvSize) {

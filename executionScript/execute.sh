@@ -3,8 +3,8 @@
 executeTask() {
 	#prepare system
 	sleep 2
-	sudo chrt -f 99 java -jar $1 execute $2 $3 /home/attalos/Documents/private/projects/fl0wer/fl0ReasonerEvaluation.git/executionScript/output.txt	
-	#echo "sudo chrt -f 99 java -jar $1 execute $2 $3 /home/attalos/Documents/private/projects/fl0wer/fl0ReasonerEvaluation.git/executionScript/output.txt"
+	sudo chrt -f 99 java -jar $1 execute $2 $3
+	#echo "sudo chrt -f 99 java -jar $1 execute $2 $3"
 }
 
 helpMsg="usage: cmd taskFile jarFile [-r]"
