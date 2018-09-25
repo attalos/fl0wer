@@ -215,6 +215,8 @@ public class Fl0ReasonerEvaluationLauncher {
                 }
 
             }
+
+            manager.clearOntologies();
         }
     }
 
