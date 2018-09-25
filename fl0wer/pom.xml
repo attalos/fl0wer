@@ -20,6 +20,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.7.0</version>
         <configuration>
           <source>1.8</source>
           <target>1.8</target>
@@ -41,7 +42,6 @@
         </configuration>
         <executions>
           <execution>
-            <id>make-assemblye</id>
             <phase>package</phase>
             <goals>
               <goal>single</goal>
@@ -50,7 +50,7 @@
         </executions>
       </plugin>
 
-      <plugin>
+      <!--<plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
         <configuration>
@@ -60,18 +60,18 @@
             </manifest>
           </archive>
         </configuration>
-      </plugin>
+      </plugin>-->
     </plugins>
   </build>
 
   <dependencies>
 
-    <dependency>
+<!--    <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>3.8.1</version>
       <scope>test</scope>
-    </dependency>
+    </dependency>-->
 
     <dependency>
       <groupId>net.sourceforge.owlapi</groupId>
@@ -86,11 +86,11 @@
     </dependency>-->
 
     <!-- to prevent error from owl-api -->
-    <dependency>
+<!--    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
       <version>1.7.5</version>
-    </dependency>
+    </dependency>-->
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-log4j12</artifactId>
@@ -105,12 +105,7 @@
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>RELEASE</version>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>RELEASE</version>
+      <version>4.12</version>
     </dependency>
 
   </dependencies>
