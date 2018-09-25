@@ -3,7 +3,6 @@
 executeTask() {
 	#prepare system
 	sleep 2
-
 	sudo chrt -f 99 java -jar $1 execute $2 $3 /home/attalos/Documents/private/projects/fl0wer/fl0ReasonerEvaluation.git/executionScript/output.txt	
 	#echo "sudo chrt -f 99 java -jar $1 execute $2 $3 /home/attalos/Documents/private/projects/fl0wer/fl0ReasonerEvaluation.git/executionScript/output.txt"
 }
@@ -57,10 +56,10 @@ do
 
 	#execute
 	echo $line
-	echo fl0wer; result_fl0wer=$(executeTask $2 fl0wer $line)	
-	echo hermit; result_hermit=$(executeTask $2 hermit $line)	
-	echo openllet; result_openllet=$(executeTask $2 openllet $line)	
-	echo jfact; result_jfact=$(executeTask $2 jfact $line)	
+	echo -n "fl0wer   -   ";  result_fl0wer=$(executeTask $2 fl0wer $line);     echo $result_fl0wer
+	echo -n "hermit   -   ";  result_hermit=$(executeTask $2 hermit $line);     echo $result_hermit
+	echo -n "openllet - ";    result_openllet=$(executeTask $2 openllet $line); echo $result_openllet
+	echo -n "jfact    -    "; result_jfact=$(executeTask $2 jfact $line);       echo $result_jfact
 
 	#write
 	echo $result_fl0wer >> output.txt
