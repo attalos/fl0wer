@@ -160,6 +160,8 @@ public class SmallestFunctionalModelTree {
             return;
         }
 
+        func_elem.set_indirectly_blocked(false, rule_release_function);
+
         if (func_elem.is_directly_blocking()) {
             handle_blocking_element(this.blocking_condition.get_blocking_elements(func_elem.getConcepts()), rule_release_function);
         }
