@@ -38,7 +38,6 @@ public class ReteRoleNode implements ReteNode {
     public void propagate_domain_elem(BigInteger elem_index, int rolename, Collection<Integer> domain_elem, int num_of_roles, WorkingMemory wm) {
         if (rolename == this.required_rolename && !elem_index.equals(BigInteger.ZERO)) {
             for (ReteNode s : successors) {
-                BigInteger tst = HelperFunctions.calculatePartentId(elem_index, rolename, BigInteger.valueOf(num_of_roles));
                 s.propagate_domain_elem(
                         HelperFunctions.calculatePartentId(elem_index, rolename, BigInteger.valueOf(num_of_roles)),
                         rolename, domain_elem, num_of_roles, wm);
