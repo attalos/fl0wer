@@ -55,11 +55,11 @@ public class FunctionalElement {
         this.directly_blocking = is_directly_blocking;
     }
 
-    protected Set<Integer> getConcepts() {
+    public Set<Integer> getConcepts() {
         return concepts;
     }
 
-    protected boolean is_blocked() {
+    public boolean is_blocked() {
         return directly_blocked || indirectly_blocked;
     }
 
@@ -75,7 +75,7 @@ public class FunctionalElement {
         return directly_blocking;
     }
 
-    protected void insert_rule_to_hold_back(ApplicableRule rule_to_hold_back) {
+    public void insert_rule_to_hold_back(ApplicableRule rule_to_hold_back) {
         if (this.hold_back_rules == null) {
             this.hold_back_rules = new ArrayList<>();
         }

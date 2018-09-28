@@ -3,6 +3,7 @@ package org.attalos.fl0wer.controll;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.attalos.fl0wer.FL0wer;
 import org.attalos.fl0wer.utils.ConstantValues;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -13,15 +14,13 @@ import org.semanticweb.owlapi.model.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.Assert.*;
 
-public class FL_0_subsumptionTest {
-    private FL_0_subsumption fl_0_subsumption;
+public class FL_0_werTest {
+    private FL0wer fl_0_wer;
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private OWLClass root_concept_owl;
 
@@ -51,12 +50,12 @@ public class FL_0_subsumptionTest {
         /* get owl class of input classes */
         root_concept_owl = factory.getOWLClass(IRI.create("http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#B"));
 
-        fl_0_subsumption = new FL_0_subsumption(ontology_owl);
+        fl_0_wer = new FL0wer(ontology_owl);
     }
 
     @Test
     public void testCalculae_subsumerset() {
-        List<OWLClass> given_answer = fl_0_subsumption.calculate_subsumerset(root_concept_owl);
+        List<OWLClass> given_answer = fl_0_wer.calculate_subsumerset(root_concept_owl);
 
         List<OWLClass> correct_answer = new ArrayList<>();
         correct_answer.add(factory.getOWLClass(IRI.create("http://www.semanticweb.org/attalos/ontologies/2017/6/testing-ontology#E")));
@@ -67,13 +66,13 @@ public class FL_0_subsumptionTest {
 
     @Test
     public void testBlocking() {
-        fl_0_subsumption = new FL_0_subsumption(openOwlOntology("src/test/resources/blockingTestOntology.owl"));
+        fl_0_wer = new FL0wer(openOwlOntology("src/test/resources/blockingTestOntology.owl"));
 
         /* get owl class of input classes */
         root_concept_owl = factory.getOWLClass(IRI.create("http://www.semanticweb.org/attalos/ontologies/2018/1/blockingTestOntology#A"));
 
         //if this runs for to long - blocking probably doesn't work
-        List<OWLClass> subsumerset = fl_0_subsumption.calculate_subsumerset(root_concept_owl);
+        List<OWLClass> subsumerset = fl_0_wer.calculate_subsumerset(root_concept_owl);
 
         assertNotNull(subsumerset);
 

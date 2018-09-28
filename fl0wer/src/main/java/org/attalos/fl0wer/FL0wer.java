@@ -1,5 +1,7 @@
-package org.attalos.fl0wer.controll;
+package org.attalos.fl0wer;
 
+import org.attalos.fl0wer.controll.FunctionalElement;
+import org.attalos.fl0wer.controll.SmallestFunctionalModelTree;
 import org.attalos.fl0wer.normalization.Ontology;
 import org.attalos.fl0wer.rete.ReteNetwork;
 import org.attalos.fl0wer.rete.WorkingMemory;
@@ -7,7 +9,6 @@ import org.attalos.fl0wer.subsumption.ApplicableRule;
 import org.attalos.fl0wer.subsumption.ConceptHead;
 import org.attalos.fl0wer.subsumption.HeadOntology;
 import org.attalos.fl0wer.utils.ConstantValues;
-import org.attalos.fl0wer.utils.HelperFunctions;
 import org.attalos.fl0wer.utils.OwlToInternalTranslator;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLClass;
@@ -17,19 +18,18 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Created by attalos on 7/1/17.
  */
-public class FL_0_subsumption {
-    private final static Logger LOGGER = Logger.getLogger(FL_0_subsumption.class.getName());
+public class FL0wer {
+    private final static Logger LOGGER = Logger.getLogger(FL0wer.class.getName());
     private ReteNetwork rete_network;
     private Collection<OWLClass> input_owl_classes;
     OwlToInternalTranslator owlToInternalTranslator = new OwlToInternalTranslator();
 
 
-    public FL_0_subsumption(OWLOntology owl_ontology) {
+    public FL0wer(OWLOntology owl_ontology) {
         //get input classes
         OWLClass owl_top = OWLManager.createOWLOntologyManager().getOWLDataFactory().getOWLThing();
         input_owl_classes = owl_ontology.classesInSignature().filter(class_owl -> !class_owl.equals(owl_top)).collect(Collectors.toList());

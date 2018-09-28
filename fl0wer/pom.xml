@@ -33,7 +33,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>org.attalos.fl0wer.App</mainClass>
+              <mainClass>org.attalos.fl0wer.Application</mainClass>
             </manifest>
           </archive>
           <descriptorRefs>

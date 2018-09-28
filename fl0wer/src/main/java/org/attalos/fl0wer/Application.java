@@ -4,21 +4,18 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.attalos.fl0wer.utils.ConstantValues;
-import org.attalos.fl0wer.controll.FL_0_subsumption;
 
 import org.attalos.fl0wer.utils.Timer;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.*;
 
 import java.io.File;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.apache.commons.cli.*;
 
 
-public class App {
-    private final static java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(App.class.getName());
+public class Application {
+    private final static java.util.logging.Logger LOGGER = java.util.logging.Logger.getLogger(Application.class.getName());
 
     private static OWLDataFactory factory;
 
@@ -61,18 +58,18 @@ public class App {
 
         //the important part :)
         ConstantValues.start_timer("initialisation");
-        FL_0_subsumption fl_0_subsumption = new FL_0_subsumption(ontology_owl);
+        FL0wer fl_0_wer = new FL0wer(ontology_owl);
         ConstantValues.stop_timer("initialisation");
 
         ConstantValues.start_timer("main_task");
         if (decide_subsumption_relation) {
-            fl_0_subsumption.decide_subsumption(root_concept_owl, subsumer_owl);
+            fl_0_wer.decide_subsumption(root_concept_owl, subsumer_owl);
         } else if (calculate_subsumerset) {
-            fl_0_subsumption.calculate_subsumerset(root_concept_owl);
+            fl_0_wer.calculate_subsumerset(root_concept_owl);
         } else {
             Timer classificationTimer = new Timer();
             classificationTimer.start();
-            fl_0_subsumption.classify();
+            fl_0_wer.classify();
             classificationTimer.stop();
 
             System.out.print("classification time: ");

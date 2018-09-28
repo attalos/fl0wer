@@ -3,7 +3,6 @@ package org.attalos.fl0wer.rete;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.attalos.fl0wer.App;
 import org.attalos.fl0wer.utils.ConstantValues;
 import org.attalos.fl0wer.normalization.Ontology;
 import org.attalos.fl0wer.subsumption.ApplicableRule;
