@@ -1,6 +1,6 @@
-package evaluation;
+package org.attalos.fl0ReasonerEvaluation.evaluation;
 
-import helpers.OntologyWrapper;
+import org.attalos.fl0ReasonerEvaluation.helpers.OntologyWrapper;
 import org.semanticweb.owlapi.model.OWLClass;
 
 import java.time.Duration;
@@ -19,7 +19,7 @@ public abstract class ReasonerEvaluator<T> {
 
     /**
      *
-     * Classification evaluation
+     * Classification org.attalos.fl0ReasonerEvaluation.evaluation
      *
      * @param ontWrp
      * @param timeout
@@ -31,7 +31,7 @@ public abstract class ReasonerEvaluator<T> {
 
     /**
      *
-     * SuperClasses calculation evaluation
+     * SuperClasses calculation org.attalos.fl0ReasonerEvaluation.evaluation
      *
      * @param ontWrp
      * @param classOwl
@@ -44,7 +44,7 @@ public abstract class ReasonerEvaluator<T> {
 
     /**
      *
-     * Subsumption evaluation
+     * Subsumption org.attalos.fl0ReasonerEvaluation.evaluation
      *
      * @param ontWrp
      * @param subClassOwl
@@ -62,7 +62,7 @@ public abstract class ReasonerEvaluator<T> {
 
     /**
      *
-     * Generalised evaluation
+     * Generalised org.attalos.fl0ReasonerEvaluation.evaluation
      *
      * @param ontWrp
      * @param timeout

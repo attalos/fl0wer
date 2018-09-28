@@ -1,4 +1,4 @@
-package translation;
+package org.attalos.fl0ReasonerEvaluation.translation;
 
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -18,7 +18,7 @@ public class OntologyTranslator {
 
     /**
      *
-     * WARING! This 'translation' doesn't keep semantic equality but creats a FL_0 ontology of simmilar structure
+     * WARING! This 'org.attalos.fl0ReasonerEvaluation.translation' doesn't keep semantic equality but creats a FL_0 ontology of simmilar structure
      *
      */
     public static OWLOntology translateELtoFL0(OWLOntology ontologyOwl) throws OWLOntologyCreationException {

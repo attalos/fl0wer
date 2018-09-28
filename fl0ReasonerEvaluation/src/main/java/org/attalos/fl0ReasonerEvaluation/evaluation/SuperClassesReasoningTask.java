@@ -1,12 +1,10 @@
-package evaluation;
+package org.attalos.fl0ReasonerEvaluation.evaluation;
 
-import helpers.OntologyWrapper;
+import org.attalos.fl0ReasonerEvaluation.helpers.OntologyWrapper;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.*;
-import org.semanticweb.owlapi.util.OWLClassLiteralCollector;
 
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 

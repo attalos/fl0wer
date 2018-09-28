@@ -1,20 +1,15 @@
-package reasoner;
+package org.attalos.fl0ReasonerEvaluation.reasoner;
 
-import evaluation.PerformanceResult;
-import evaluation.ReasonerEvaluator;
-import evaluation.ReasoningTask;
-import helpers.OntologyWrapper;
+import org.attalos.fl0ReasonerEvaluation.evaluation.PerformanceResult;
+import org.attalos.fl0ReasonerEvaluation.evaluation.ReasonerEvaluator;
+import org.attalos.fl0ReasonerEvaluation.evaluation.ReasoningTask;
+import org.attalos.fl0ReasonerEvaluation.helpers.OntologyWrapper;
 import org.attalos.fl0wer.FL0wer;
 import org.attalos.fl0wer.utils.ConstantValues;
 import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLClassExpression;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
 public class Fl0werEvaluator extends ReasonerEvaluator<FL0wer> {
 

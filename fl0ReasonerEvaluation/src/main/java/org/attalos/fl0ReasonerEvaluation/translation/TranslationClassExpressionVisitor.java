@@ -1,4 +1,4 @@
-package translation;
+package org.attalos.fl0ReasonerEvaluation.translation;
 
 
 import org.semanticweb.owlapi.model.*;

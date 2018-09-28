@@ -30,7 +30,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>Fl0ReasonerEvaluationLauncher</mainClass>
+                            <mainClass>org.attalos.fl0ReasonerEvaluation.Fl0ReasonerEvaluationLauncher</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -41,7 +41,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>Fl0ReasonerEvaluationLauncher</mainClass>
+                            <mainClass>org.attalos.fl0ReasonerEvaluation.Fl0ReasonerEvaluationLauncher</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

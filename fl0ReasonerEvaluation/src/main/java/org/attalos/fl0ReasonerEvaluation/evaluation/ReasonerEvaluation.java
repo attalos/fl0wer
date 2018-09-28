@@ -1,7 +1,6 @@
-package evaluation;
+package org.attalos.fl0ReasonerEvaluation.evaluation;
 
-import helpers.OntologyWrapper;
-import org.semanticweb.owlapi.model.OWLOntology;
+import org.attalos.fl0ReasonerEvaluation.helpers.OntologyWrapper;
 
 import java.util.HashMap;
 import java.util.Map;

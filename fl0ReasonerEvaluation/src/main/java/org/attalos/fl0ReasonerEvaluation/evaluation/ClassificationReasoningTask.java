@@ -1,8 +1,7 @@
-package evaluation;
+package org.attalos.fl0ReasonerEvaluation.evaluation;
 
-import helpers.OntologyWrapper;
+import org.attalos.fl0ReasonerEvaluation.helpers.OntologyWrapper;
 import org.semanticweb.owlapi.apibinding.OWLManager;
-import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLDataFactory;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;

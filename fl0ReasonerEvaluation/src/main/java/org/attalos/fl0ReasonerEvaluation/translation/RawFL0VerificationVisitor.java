@@ -1,8 +1,6 @@
-package translation;
+package org.attalos.fl0ReasonerEvaluation.translation;
 
 import org.semanticweb.owlapi.model.*;
-
-import java.util.stream.Collectors;
 
 public class RawFL0VerificationVisitor implements OWLObjectVisitorEx<Boolean> {
 

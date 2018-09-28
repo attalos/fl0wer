@@ -1,13 +1,14 @@
-import evaluation.*;
-import helpers.OntologyWrapper;
+package org.attalos.fl0ReasonerEvaluation;
+
+import org.attalos.fl0ReasonerEvaluation.evaluation.*;
+import org.attalos.fl0ReasonerEvaluation.helpers.OntologyWrapper;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.formats.OWLXMLDocumentFormat;
-import org.semanticweb.owlapi.io.OWLXMLOntologyFormat;
 import org.semanticweb.owlapi.model.*;
-import reasoner.Fl0werEvaluator;
-import reasoner.HermitEvaluator;
+import org.attalos.fl0ReasonerEvaluation.reasoner.Fl0werEvaluator;
+import org.attalos.fl0ReasonerEvaluation.reasoner.HermitEvaluator;
 
 import java.io.*;
 import java.net.URISyntaxException;
@@ -19,9 +20,9 @@ import java.util.function.Function;
 import java.util.logging.LogManager;
 
 import org.apache.commons.lang.StringUtils;
-import reasoner.JFactEvaluator;
-import reasoner.OpenlletEvaluator;
-import translation.OntologyTranslator;
+import org.attalos.fl0ReasonerEvaluation.reasoner.JFactEvaluator;
+import org.attalos.fl0ReasonerEvaluation.reasoner.OpenlletEvaluator;
+import org.attalos.fl0ReasonerEvaluation.translation.OntologyTranslator;
 
 public class Fl0ReasonerEvaluationLauncher {
     public static void main(String[] args) throws OWLOntologyCreationException, FileNotFoundException, OWLOntologyStorageException, URISyntaxException {
@@ -101,7 +102,7 @@ public class Fl0ReasonerEvaluationLauncher {
 //        //outputStream.printf(formatHeadline, "Ontologyname", "Classcount", "fl0wer", "HermiT", "JFact", "Openllet");
 //        //System.out.printf(formatHeadline, "------------", "----------", "------", "------", "-----", "--------");
 //
-//        outputStream.println("reasoner;ontology;classcount;time");
+//        outputStream.println("org.attalos.fl0ReasonerEvaluation.reasoner;ontology;classcount;time");
 //        for (File ontologyFile : ontologyFiles) {
 //            try {
 //                for (int i = 0; i < 5; i++) {

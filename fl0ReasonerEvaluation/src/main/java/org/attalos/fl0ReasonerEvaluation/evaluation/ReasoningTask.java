@@ -1,11 +1,11 @@
-package evaluation;
+package org.attalos.fl0ReasonerEvaluation.evaluation;
 
-import helpers.OntologyWrapper;
+import org.attalos.fl0ReasonerEvaluation.helpers.OntologyWrapper;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLOntology;
 import org.semanticweb.owlapi.model.OWLOntologyCreationException;
 import org.semanticweb.owlapi.model.OWLOntologyManager;
-import translation.OntologyTranslator;
+import org.attalos.fl0ReasonerEvaluation.translation.OntologyTranslator;
 
 import java.io.File;
 

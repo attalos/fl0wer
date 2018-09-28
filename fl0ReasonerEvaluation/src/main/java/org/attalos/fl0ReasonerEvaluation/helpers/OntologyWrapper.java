@@ -1,4 +1,4 @@
-package helpers;
+package org.attalos.fl0ReasonerEvaluation.helpers;
 
 import org.attalos.fl0wer.normalization.Ontology;
 import org.attalos.fl0wer.subsumption.HeadGCI;
@@ -55,7 +55,7 @@ public class OntologyWrapper {
 
 
     private boolean belongsToHornFragment() {
-        //procedere of fl0wer reasoner
+        //procedere of fl0wer org.attalos.fl0ReasonerEvaluation.reasoner
         ConstantValues.initialise(-1, false, false, false);
         OwlToInternalTranslator o2iTranslator = new OwlToInternalTranslator();
         OWLClass owl_top = OWLManager.createOWLOntologyManager().getOWLDataFactory().getOWLThing();

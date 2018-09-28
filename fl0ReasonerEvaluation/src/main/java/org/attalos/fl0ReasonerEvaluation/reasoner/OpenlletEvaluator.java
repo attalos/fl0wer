@@ -1,6 +1,6 @@
-package reasoner;
+package org.attalos.fl0ReasonerEvaluation.reasoner;
 
-import helpers.OntologyWrapper;
+import org.attalos.fl0ReasonerEvaluation.helpers.OntologyWrapper;
 import openllet.owlapi.OpenlletReasonerFactory;
 import org.semanticweb.owlapi.reasoner.OWLReasoner;
 

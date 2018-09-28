@@ -1,6 +1,6 @@
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import translation.OntologyTranslatorTest;
+import org.attalos.fl0ReasonerEvaluation.translation.OntologyTranslatorTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({

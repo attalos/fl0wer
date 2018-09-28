@@ -1,9 +1,9 @@
-package reasoner;
+package org.attalos.fl0ReasonerEvaluation.reasoner;
 
-import evaluation.PerformanceResult;
-import evaluation.ReasonerEvaluator;
-import evaluation.ReasoningTask;
-import helpers.OntologyWrapper;
+import org.attalos.fl0ReasonerEvaluation.evaluation.PerformanceResult;
+import org.attalos.fl0ReasonerEvaluation.evaluation.ReasonerEvaluator;
+import org.attalos.fl0ReasonerEvaluation.evaluation.ReasoningTask;
+import org.attalos.fl0ReasonerEvaluation.helpers.OntologyWrapper;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
@@ -65,11 +65,11 @@ public abstract class OwlReasonerEvaluator extends ReasonerEvaluator<OWLReasoner
     /*@Override
     public PerformanceResult classify(OntologyWrapper ontology) {
         if (ontology.getOntology() != null) {
-            OWLReasoner reasoner = createReasoner(ontology);
+            OWLReasoner org.attalos.fl0ReasonerEvaluation.reasoner = createReasoner(ontology);
 
             //get time data
             Instant startingTime = Instant.now();
-            reasoner.precomputeInferences(InferenceType.CLASS_HIERARCHY);
+            org.attalos.fl0ReasonerEvaluation.reasoner.precomputeInferences(InferenceType.CLASS_HIERARCHY);
             Instant finishTime = Instant.now();
 
             Duration duration = Duration.between(startingTime, finishTime);
@@ -82,11 +82,11 @@ public abstract class OwlReasonerEvaluator extends ReasonerEvaluator<OWLReasoner
     @Override
     public PerformanceResult superClasses(OntologyWrapper ontology, OWLClass classOwl) {
         if (ontology.getOntology() != null) {
-            OWLReasoner reasoner = createReasoner(ontology);
+            OWLReasoner org.attalos.fl0ReasonerEvaluation.reasoner = createReasoner(ontology);
 
             //get time data
             Instant startingTime = Instant.now();
-            reasoner.getSuperClasses(classOwl);
+            org.attalos.fl0ReasonerEvaluation.reasoner.getSuperClasses(classOwl);
             Instant finishTime = Instant.now();
 
             Duration duration = Duration.between(startingTime, finishTime);
@@ -99,7 +99,7 @@ public abstract class OwlReasonerEvaluator extends ReasonerEvaluator<OWLReasoner
     @Override
     public PerformanceResult subsumption(OntologyWrapper ontology, OWLClass subClassOwl, OWLClass superClassOwl) {
         if (ontology.getOntology() != null) {
-            OWLReasoner reasoner = createReasoner(ontology);
+            OWLReasoner org.attalos.fl0ReasonerEvaluation.reasoner = createReasoner(ontology);
 
             //prepare subsumption term
             OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
@@ -109,7 +109,7 @@ public abstract class OwlReasonerEvaluator extends ReasonerEvaluator<OWLReasoner
 
             //get time data
             Instant startingTime = Instant.now();
-            reasoner.isSatisfiable(subsumptionExpression);
+            org.attalos.fl0ReasonerEvaluation.reasoner.isSatisfiable(subsumptionExpression);
             Instant finishTime = Instant.now();
 
             Duration duration = Duration.between(startingTime, finishTime);
