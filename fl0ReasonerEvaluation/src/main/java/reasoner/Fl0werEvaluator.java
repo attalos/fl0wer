@@ -4,7 +4,7 @@ import evaluation.PerformanceResult;
 import evaluation.ReasonerEvaluator;
 import evaluation.ReasoningTask;
 import helpers.OntologyWrapper;
-import org.attalos.fl0wer.controll.FL_0_subsumption;
+import org.attalos.fl0wer.FL0wer;
 import org.attalos.fl0wer.utils.ConstantValues;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLClassExpression;
@@ -16,14 +16,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-public class Fl0werEvaluator extends ReasonerEvaluator<FL_0_subsumption> {
+public class Fl0werEvaluator extends ReasonerEvaluator<FL0wer> {
 
     public Fl0werEvaluator() {
         ConstantValues.initialise(-1, false, false, false);
     }
 
     @Override
-    protected Duration classificationMethod(FL_0_subsumption fl0wer) {
+    protected Duration classificationMethod(FL0wer fl0wer) {
         Instant startingTime = Instant.now();
         fl0wer.classify();
         Instant finishTime = Instant.now();
@@ -31,7 +31,7 @@ public class Fl0werEvaluator extends ReasonerEvaluator<FL_0_subsumption> {
     }
 
     @Override
-    protected Duration superClassesMethod(FL_0_subsumption fl0wer, OWLClass classOwl) {
+    protected Duration superClassesMethod(FL0wer fl0wer, OWLClass classOwl) {
         Instant startingTime = Instant.now();
         fl0wer.calculate_subsumerset(classOwl);
         Instant finishTime = Instant.now();
@@ -39,7 +39,7 @@ public class Fl0werEvaluator extends ReasonerEvaluator<FL_0_subsumption> {
     }
 
     @Override
-    protected Duration substumptionMethod(FL_0_subsumption fl0wer, OWLClass subClassOwl, OWLClass superClassOwl) {
+    protected Duration substumptionMethod(FL0wer fl0wer, OWLClass subClassOwl, OWLClass superClassOwl) {
         Instant startingTime = Instant.now();
         fl0wer.decide_subsumption(subClassOwl, superClassOwl);
         Instant finishTime = Instant.now();
@@ -47,8 +47,8 @@ public class Fl0werEvaluator extends ReasonerEvaluator<FL_0_subsumption> {
     }
 
     @Override
-    protected FL_0_subsumption init(OntologyWrapper ontWrp) {
-        return new FL_0_subsumption(ontWrp.getOntology());
+    protected FL0wer init(OntologyWrapper ontWrp) {
+        return new FL0wer(ontWrp.getOntology());
     }
 
     @Override

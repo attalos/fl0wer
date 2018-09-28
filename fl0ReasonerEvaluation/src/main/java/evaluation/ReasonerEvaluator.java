@@ -1,15 +1,10 @@
 package evaluation;
 
 import helpers.OntologyWrapper;
-import org.attalos.fl0wer.controll.FL_0_subsumption;
 import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.model.OWLClassExpression;
 
 import java.time.Duration;
-import java.time.Instant;
-import java.util.List;
 import java.util.concurrent.*;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 public abstract class ReasonerEvaluator<T> {
