@@ -62,9 +62,9 @@ public class FL0wer {
         //lock OwlToInternalTranslator
         owlToInternalTranslator.lock();
 
-        if (owlToInternalTranslator.get_role_count() < 1) {
-            //throw new RuntimeException("at least one role needed");
-        }
+//        if (owlToInternalTranslator.get_role_count() < 1) {
+//            throw new RuntimeException("at least one role needed");
+//        }
 
         //head ontology representation
 //        ConstantValues.debug_info("creating headontology out of normalized ontology", 0);
@@ -155,6 +155,7 @@ public class FL0wer {
 
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public boolean decide_subsumption(OWLClass subsumed, OWLClass subsumer) {
         //get some needed values
         //TODO do not use Concept_Factory directly!
@@ -168,9 +169,11 @@ public class FL0wer {
         SmallestFunctionalModelTree subsumption_tree = new SmallestFunctionalModelTree(subsumed_int, owlToInternalTranslator.get_role_count());
 
         //main part
-        return general_subsumerset_calculation_with_break_condition(subsumption_tree, func_elem -> func_elem.getConcepts().contains(subsumer));
+        return general_subsumerset_calculation_with_break_condition(subsumption_tree, func_elem ->
+                func_elem.getConcepts().contains(subsumer_int));
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public List<OWLClass> calculate_subsumerset(OWLClass subsumed) {
         //get some needed values
         //TODO do not use Concept_Factory directly!
@@ -194,13 +197,14 @@ public class FL0wer {
         return subsumerset;
     }
 
+    @SuppressWarnings("UnusedReturnValue")
     public Map<OWLClass, Collection<OWLClass>> classify() {
         Map<OWLClass, Collection<OWLClass>> classificatoin_map = new HashMap<>();
 
-        int class_count = input_owl_classes.size();
+        /*int class_count = input_owl_classes.size();
         int i = 0;
         long start_time = System.currentTimeMillis();
-        /*for (OWLClass class_owl : input_owl_classes) {
+        for (OWLClass class_owl : input_owl_classes) {
             if (i % 1000 == 0) {
                 System.out.println("status: " + Integer.toString(i) + " of " + Integer.toString(class_count) + " (average time per superclass calculation: " + Double.toString(((double)(System.currentTimeMillis() - start_time)) / ((double) i)) + "ms)");
             }

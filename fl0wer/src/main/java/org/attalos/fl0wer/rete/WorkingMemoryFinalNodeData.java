@@ -10,7 +10,7 @@ public class WorkingMemoryFinalNodeData {
     //private Set<ApplicableRule> already_fired_rules;
     private Set<BigInteger> already_fired_rules;
 
-    protected WorkingMemoryFinalNodeData() {
+    WorkingMemoryFinalNodeData() {
         already_fired_rules = new HashSet<>();
     }
 

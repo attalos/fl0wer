@@ -11,22 +11,20 @@ import java.util.StringJoiner;
  * Created by attalos on 6/8/17.
  */
 public class ConceptHead implements Comparable<ConceptHead> {
-    ArrayList<ArrayList<Integer>> head_array;
-    ArrayList<Integer> notNullPositions;        //so you don't have to calculate it every time
+    private ArrayList<ArrayList<Integer>> head_array;
+    private ArrayList<Integer> notNullPositions;        //so you don't have to calculate it every time
 
     /*public ConceptHead(int num_of_roles) {
         head_array = new ArrayList<ArrayList<Long>>(num_of_roles + 1);
     }*/
 
-    public ConceptHead(ConceptDescription concept, int num_of_roles) {
+    ConceptHead(ConceptDescription concept, int num_of_roles) {
         head_array = new ArrayList<>(Collections.nCopies(num_of_roles + 1, null));
         //head_array = new ArrayList<>(num_of_roles + 1);
         //head_array.set(num_of_roles + 1, null);
 
         if(concept instanceof Conjunction) {
-            ((Conjunction) concept).getConjuncts().forEach(conjunct -> {
-                add_NodeRes(conjunct);
-            });
+            ((Conjunction) concept).getConjuncts().forEach(this::add_NodeRes);
         } else if (concept instanceof  Node_Res) {
             add_NodeRes((Node_Res) concept);
         } else {
@@ -114,7 +112,7 @@ public class ConceptHead implements Comparable<ConceptHead> {
         return head_array.get(index);
     }
 
-    public int get_head_index() {
+    private int get_head_index() {
         ArrayList<Integer> head_start = head_array.get(0);
 
         if (head_start != null && head_start.size() != 0) {

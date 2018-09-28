@@ -12,16 +12,14 @@ import java.util.stream.Collectors;
  * Created by attalos on 6/8/17.
  */
 public class HeadOntology {
-    ArrayList<HeadGCI> gcis;
+    private ArrayList<HeadGCI> gcis;
 
     public HeadOntology(Ontology ontology, int num_of_roles) {
         gcis = new ArrayList<>();
 
         Set<GCI> assertions = ontology.getAssertions();
 
-        assertions.forEach(assertion -> {
-            gcis.add(new HeadGCI(assertion, num_of_roles));
-        });
+        assertions.forEach(assertion -> gcis.add(new HeadGCI(assertion, num_of_roles)));
 
         Collections.sort(gcis);
     }

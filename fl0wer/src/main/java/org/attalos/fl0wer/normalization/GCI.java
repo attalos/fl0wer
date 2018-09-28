@@ -12,7 +12,7 @@ public class GCI {
     private ConceptDescription subClass;
     private ConceptDescription superClass;
 
-    public GCI(ConceptDescription subClass, ConceptDescription superClass) {
+    GCI(ConceptDescription subClass, ConceptDescription superClass) {
 
         this.subClass = subClass;
         this.superClass = superClass;
@@ -130,7 +130,6 @@ public class GCI {
 
                     iterator.remove();
                     new_conjuncts.appendConjunct(new ValueRestriction(role_word.pop(), new_concept1));
-                    int i = 1;
                 }
             }
         }

@@ -7,7 +7,7 @@ public class WorkingMemoryMultipleInputNodeData {
     private int incomming_path_count;
     private Map<BigInteger, List<Boolean>> current_elements;
 
-    protected WorkingMemoryMultipleInputNodeData(int incomming_path_count) {
+    WorkingMemoryMultipleInputNodeData(int incomming_path_count) {
         this.incomming_path_count = incomming_path_count;
         this.current_elements = new HashMap<>();
     }

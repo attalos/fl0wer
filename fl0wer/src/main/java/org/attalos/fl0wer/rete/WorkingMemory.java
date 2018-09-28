@@ -2,7 +2,6 @@ package org.attalos.fl0wer.rete;
 
 import org.attalos.fl0wer.subsumption.ApplicableRule;
 
-import java.util.ArrayList;
 import java.util.PriorityQueue;
 
 public class WorkingMemory {
@@ -10,7 +9,7 @@ public class WorkingMemory {
     private WorkingMemoryMultipleInputNodeData[] multipleInputNode_memory;
     private WorkingMemoryFinalNodeData[] finalNode_memory;
 
-    protected WorkingMemory(int num_of_multipleInputNodes, int num_of_finalNodes) {
+    WorkingMemory(int num_of_multipleInputNodes, int num_of_finalNodes) {
         rule_queue = new PriorityQueue<>();
         multipleInputNode_memory = new WorkingMemoryMultipleInputNodeData[num_of_multipleInputNodes];
         finalNode_memory = new WorkingMemoryFinalNodeData[num_of_finalNodes];

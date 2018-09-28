@@ -19,7 +19,7 @@ public class ReteMultipleInput implements  ReteNode {
     }*/
 
 
-    public ReteMultipleInput(ArrayList<Integer> predecessor_identifier, ReteFinalNode final_node, int node_id) {
+    ReteMultipleInput(ArrayList<Integer> predecessor_identifier, ReteFinalNode final_node, int node_id) {
         this.predecessor_identifier = predecessor_identifier;
         this.successor = final_node;
         this.node_id = node_id;

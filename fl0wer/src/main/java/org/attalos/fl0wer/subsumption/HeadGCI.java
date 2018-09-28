@@ -6,15 +6,15 @@ import org.attalos.fl0wer.normalization.GCI;
  * Created by attalos on 6/8/17.
  */
 public class HeadGCI implements Comparable<HeadGCI> {
-    ConceptHead subConceptHead;
-    ConceptHead superConceptHead;
+    private ConceptHead subConceptHead;
+    private ConceptHead superConceptHead;
 
-    public HeadGCI(ConceptHead subConceptHead, ConceptHead superConceptHead) {
+    HeadGCI(ConceptHead subConceptHead, ConceptHead superConceptHead) {
         this.subConceptHead = subConceptHead;
         this.superConceptHead = superConceptHead;
     }
 
-    public HeadGCI(GCI gci, int num_of_roles) {
+    HeadGCI(GCI gci, int num_of_roles) {
         this.subConceptHead = new ConceptHead(gci.getSubClass(), num_of_roles);
         this.superConceptHead = new ConceptHead(gci.getSuperClass(), num_of_roles);
     }

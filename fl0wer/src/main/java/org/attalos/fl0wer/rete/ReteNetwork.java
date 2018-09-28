@@ -1,5 +1,6 @@
 package org.attalos.fl0wer.rete;
 
+import com.sun.corba.se.impl.corba.ExceptionListImpl;
 import org.attalos.fl0wer.subsumption.ApplicableRule;
 import org.attalos.fl0wer.subsumption.HeadGCI;
 import org.attalos.fl0wer.subsumption.HeadOntology;
@@ -33,6 +34,7 @@ public class ReteNetwork {
 
             if (used_roles.size() == 0) {
                 //TODO (top concept)
+                throw new RuntimeException("The top concept was used but the code is not able to handle it at the moment");
             } else if (used_roles.size() == 1) {
                 int used_role = used_roles.get(0);
                 ArrayList<Integer> needed_concepts = head_gci.get_subConceptHead().get_concept_set_at(used_roles.get(0) + 1);
@@ -90,8 +92,8 @@ public class ReteNetwork {
 
     public void reenter_rule_to_queue(ApplicableRule ar, WorkingMemory wm) { wm.offer_rule(ar); }
 
-    public String to_dot_graph() {
-        String dot_string = "digraph g {\n";
+    private String to_dot_graph() {
+        StringBuilder dot_string = new StringBuilder("digraph g {\n");
         ArrayList<String> top_level = new ArrayList<>();
         ArrayList<String> role_level = new ArrayList<>();
         ArrayList<String> eq_level = new ArrayList<>();
@@ -99,17 +101,17 @@ public class ReteNetwork {
         for (ReteNode top_level_node:top_level_nodes) {
             if (top_level_node != null) {
                 top_level.add(Integer.toString(top_level_node.hashCode()));
-                dot_string += "root -> " + Integer.toString(top_level_node.hashCode()) + "\n";
-                dot_string += top_level_node.to_dot_graph(top_level, role_level, eq_level, gci_level, -1);
+                dot_string.append("root -> ").append(top_level_node.hashCode()).append("\n");
+                dot_string.append(top_level_node.to_dot_graph(top_level, role_level, eq_level, gci_level, -1));
             }
         }
 
-        dot_string += "{ rank=same; " + String.join(" ", top_level) + " }\n";
-        dot_string += "{ rank=same; " + String.join(" ", role_level) + " }\n";
-        dot_string += "{ rank=same; " + String.join(" ", eq_level) + " }\n";
-        dot_string += "{ rank=same; " + String.join(" ", gci_level) + " }\n";
-        dot_string += "}";
-        return dot_string;
+        dot_string.append("{ rank=same; ").append(String.join(" ", top_level)).append(" }\n");
+        dot_string.append("{ rank=same; ").append(String.join(" ", role_level)).append(" }\n");
+        dot_string.append("{ rank=same; ").append(String.join(" ", eq_level)).append(" }\n");
+        dot_string.append("{ rank=same; ").append(String.join(" ", gci_level)).append(" }\n");
+        dot_string.append("}");
+        return dot_string.toString();
     }
 
     public void write_dot_graph() {

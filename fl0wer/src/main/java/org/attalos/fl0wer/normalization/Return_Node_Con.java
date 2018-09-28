@@ -7,7 +7,7 @@ public class Return_Node_Con {
     private Node_Con conjunction;
     private boolean something_Changed;
 
-    public Return_Node_Con(Node_Con conjunction, boolean something_Changed) {
+    Return_Node_Con(Node_Con conjunction, boolean something_Changed) {
         this.conjunction = conjunction;
         this.something_Changed = something_Changed;
     }

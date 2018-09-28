@@ -14,7 +14,7 @@ public class ReteFinalNode implements ReteNode {
     private int node_id;
 
 
-    public ReteFinalNode(ConceptHead fired_result, int node_id) {
+    ReteFinalNode(ConceptHead fired_result, int node_id) {
         this.fired_result = fired_result;
         this.node_id = node_id;
     }

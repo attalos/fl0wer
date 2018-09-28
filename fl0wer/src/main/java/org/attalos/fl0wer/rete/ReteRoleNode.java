@@ -11,10 +11,10 @@ import java.util.Collection;
  */
 public class ReteRoleNode implements ReteNode {
 
-    int required_rolename;
-    ArrayList<ReteNode> successors;
+    private int required_rolename;
+    private ArrayList<ReteNode> successors;
 
-    public ReteRoleNode(int required_rolename, ReteNode final_node) {
+    ReteRoleNode(int required_rolename, ReteNode final_node) {
         this.required_rolename = required_rolename;
         this.successors = new ArrayList<>();
         this.successors.add(final_node);
@@ -52,13 +52,13 @@ public class ReteRoleNode implements ReteNode {
     @Override
     public String to_dot_graph(ArrayList<String> top_level, ArrayList<String> role_level, ArrayList<String> eq_level, ArrayList<String> gci_level, Integer predecessor_identifier) {
         String this_hash = Integer.toString(this.hashCode());
-        String dot_string = this_hash + "[label=\"r" + this.required_rolename + "\"]\n";
+        StringBuilder dot_string = new StringBuilder(this_hash + "[label=\"r" + this.required_rolename + "\"]\n");
         role_level.add(this_hash);
         for (ReteNode successor:successors) {
-            dot_string += this_hash + " -> " + Integer.toString(successor.hashCode()) + "\n";
-            dot_string += successor.to_dot_graph(top_level, role_level, eq_level, gci_level, this.required_rolename);
+            dot_string.append(this_hash).append(" -> ").append(successor.hashCode()).append("\n");
+            dot_string.append(successor.to_dot_graph(top_level, role_level, eq_level, gci_level, this.required_rolename));
 
         }
-        return dot_string;
+        return dot_string.toString();
     }
 }

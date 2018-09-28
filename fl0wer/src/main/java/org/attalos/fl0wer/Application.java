@@ -33,12 +33,13 @@ public class Application {
 
         if (!init(args)) return;
 
-        OWLOntology ontology_owl = null;
+        OWLOntology ontology_owl;
         try {
             ontology_owl = open_ontology();
         } catch (Exception e) {
             System.out.println("Something went wrong and an Exception was thrown: " + e.getMessage());
             e.printStackTrace();
+            return;
         }
 
         /* get owl class of input classes */

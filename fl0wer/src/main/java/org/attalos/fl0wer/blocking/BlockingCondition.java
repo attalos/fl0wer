@@ -22,8 +22,6 @@ public class BlockingCondition {
 
     /**
      *
-     * @param elem_id
-     * @param elem_concepts
      * @return false, if there are no changes in blocking relation possible and true otherwise
      */
     public boolean insert_blocking_element(BigInteger elem_id, Set<Integer> elem_concepts) {
@@ -46,8 +44,6 @@ public class BlockingCondition {
 
     /**
      *
-     * @param elem_id
-     * @param elem_concepts
      * @return false, if there are no changes in blocking relation possible and true otherwise
      */
     public boolean remove_blocking_element(BigInteger elem_id, Set<Integer> elem_concepts) {
@@ -72,7 +68,6 @@ public class BlockingCondition {
 
     /**
      *
-     * @param elem_concepts
      * @return returns all elem_ids which have this exact concept set
      */
     public SortedSet<BigInteger> get_blocking_elements(Set<Integer> elem_concepts) {

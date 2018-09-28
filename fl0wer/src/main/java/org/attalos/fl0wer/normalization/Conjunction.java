@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  * Created by attalos on 4/24/17.
  */
 public class Conjunction implements Node_Con {
-    Set<Node_Res> conjuncts;
+    private Set<Node_Res> conjuncts;
 
     @Override
     public String toString() {
@@ -22,12 +22,12 @@ public class Conjunction implements Node_Con {
                 + ")";
     }
 
-    public Conjunction() {
+    Conjunction() {
         conjuncts = new HashSet<>();
     }
 
 
-    public Conjunction(Node_Res conjunct) {
+    Conjunction(Node_Res conjunct) {
         conjuncts = new HashSet<>();
         conjuncts.add(conjunct);
     }
@@ -43,7 +43,7 @@ public class Conjunction implements Node_Con {
         this.conjuncts = conjuncts;
     }
 
-    public Conjunction (OWLObjectIntersectionOf owl_intersection, OwlToInternalTranslator o2iTranslator) {
+    Conjunction (OWLObjectIntersectionOf owl_intersection, OwlToInternalTranslator o2iTranslator) {
         /*if(owl_intersection instanceof OWLClass) {
             return owlNamedConcept_toNamedConcept((OWLClass) owl_intersection);
         }*/
@@ -91,7 +91,7 @@ public class Conjunction implements Node_Con {
 
     @Override
     public ConceptDescription normalize_nf11_to_nf13() {
-        conjuncts.forEach(node_res -> node_res.normalize_nf11_to_nf13());
+        conjuncts.forEach(Node_Res::normalize_nf11_to_nf13);
         if (conjuncts.contains(Top.getInstance()) && conjuncts.size() != 1) {
             conjuncts.remove(Top.getInstance());
         }
@@ -130,8 +130,6 @@ public class Conjunction implements Node_Con {
 
     @Override
     public boolean is_nf2_normalized() {
-        return this.conjuncts.stream().allMatch(
-                conjunct -> conjunct.is_nf2_normalized()
-        );
+        return this.conjuncts.stream().allMatch(ConceptDescription::is_nf2_normalized);
     }
 }

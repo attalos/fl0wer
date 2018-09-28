@@ -1,6 +1,5 @@
 package org.attalos.fl0wer.controll;
 
-import org.attalos.fl0wer.rete.WorkingMemory;
 import org.attalos.fl0wer.subsumption.ApplicableRule;
 
 import java.util.*;
@@ -17,7 +16,7 @@ public class FunctionalElement {
 
     private List<ApplicableRule> hold_back_rules;
 
-    protected FunctionalElement(Collection<Integer> concepts) {
+    FunctionalElement(Collection<Integer> concepts) {
         this.concepts = new HashSet<>(concepts);
         this.directly_blocking = false;
         this.directly_blocked = false;
@@ -26,7 +25,7 @@ public class FunctionalElement {
 
     /**
      *
-     * @param new_concepts
+     * @param new_concepts concepts, which could be inserted
      * @return true, if there are concepts in new_concepts which are not in the current concept set
      */
     protected boolean would_change_elem(Collection<Integer> new_concepts) {

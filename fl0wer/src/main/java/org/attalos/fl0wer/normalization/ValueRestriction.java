@@ -14,13 +14,13 @@ public class ValueRestriction implements  Node_Res{
     private LinkedList<Role> role_word;
     private Node_Con concept;
 
-    public ValueRestriction(Role role, Node_Con concept) {
+    ValueRestriction(Role role, Node_Con concept) {
         role_word = new LinkedList<>();
         role_word.add(role);
         this.concept = concept;
     }
 
-    public ValueRestriction(OWLObjectAllValuesFrom owl_valueRes, OwlToInternalTranslator o2iTranslator) {
+    ValueRestriction(OWLObjectAllValuesFrom owl_valueRes, OwlToInternalTranslator o2iTranslator) {
         role_word = new LinkedList<>();
         //role_word.add(new Role(owl_valueRes.getProperty()));
         role_word.add(o2iTranslator.translate(owl_valueRes.getProperty()));
@@ -46,7 +46,7 @@ public class ValueRestriction implements  Node_Res{
                 + "." + concept;
     }
 
-    public ValueRestriction(LinkedList<Role> role_word, Node_Con concept) {
+    ValueRestriction(LinkedList<Role> role_word, Node_Con concept) {
         this.role_word = role_word;
         this.concept = concept;
     }
@@ -97,9 +97,8 @@ public class ValueRestriction implements  Node_Res{
         }
         Conjunction class_concept = (Conjunction) this.concept;
         Conjunction new_conjunction = new Conjunction();
-        class_concept.getConjuncts().forEach(conjunct -> {
-            new_conjunction.appendConjunct(conjunct.prepand_roleword(this.role_word));
-        });
+        class_concept.getConjuncts().forEach((Node_Res conjunct) ->
+                new_conjunction.appendConjunct(conjunct.prepand_roleword(this.role_word)));
         return new Return_Node_Con(new_conjunction, true);
 
     }

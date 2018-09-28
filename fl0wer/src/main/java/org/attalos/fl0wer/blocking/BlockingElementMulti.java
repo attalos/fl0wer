@@ -23,7 +23,6 @@ public class BlockingElementMulti extends BlockingElement {
 
     /**
      *
-     * @param elem_id
      * @return null if there is more than one element left and the elem_id otherwise
      */
     protected BigInteger remove_elem (BigInteger elem_id) {
@@ -40,11 +39,11 @@ public class BlockingElementMulti extends BlockingElement {
 
     @Override
     public String toString() {
-        String output = "{";
+        StringBuilder output = new StringBuilder("{");
         for (BigInteger id : blocking_elements) {
-            output += id + ",";
+            output.append(id).append(",");
         }
-        output += "}";
-        return output;
+        output.append("}");
+        return output.toString();
     }
 }

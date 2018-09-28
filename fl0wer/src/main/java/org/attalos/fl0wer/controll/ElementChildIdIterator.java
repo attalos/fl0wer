@@ -8,10 +8,10 @@ public class ElementChildIdIterator implements Iterator<BigInteger> {
 
     private BigInteger current_element_id;      // is actually current -1 (see next())
     private BigInteger last_element_id;
-    //for (Long child = this.num_of_roles * elem_id + 1; child <= this.num_of_roles * elem_id + this.num_of_roles; child++) {
 
-
-    public ElementChildIdIterator(BigInteger num_of_roles, BigInteger elem_id) {
+    // replaces:
+    // for (Long child = this.num_of_roles * elem_id + 1; child <= this.num_of_roles * elem_id + this.num_of_roles; child++) {
+    ElementChildIdIterator(BigInteger num_of_roles, BigInteger elem_id) {
         this.current_element_id = elem_id.multiply(num_of_roles);
         last_element_id = elem_id.add(BigInteger.ONE).multiply(num_of_roles);
     }

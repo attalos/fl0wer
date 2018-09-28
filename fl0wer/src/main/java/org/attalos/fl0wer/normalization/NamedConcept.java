@@ -6,8 +6,7 @@ import java.util.LinkedList;
  * Created by attalos on 4/24/17.
  */
 public class NamedConcept implements Node_Res, Node_Con {
-    int concept_name;
-
+    private int concept_name;
 
     public NamedConcept(int concept_name) {
         this.concept_name = concept_name;

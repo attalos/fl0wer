@@ -62,14 +62,14 @@ public class Ontology {
                 }
                 OWLClassExpression owl_class_1 = iterator.next();
                 ConceptDescription class_1_0 = owlClass_to_conceptDescription(owl_class_1, o2iTranslator);
-                ConceptDescription class_1_1 = owlClass_to_conceptDescription(owl_class_1, o2iTranslator);
+                //ConceptDescription class_1_1 = owlClass_to_conceptDescription(owl_class_1, o2iTranslator);
 
                 if (!iterator.hasNext()) {
                     throw new RuntimeException("there should be exactly 2 classes in OWLEquivalentClassAxiom but the was: 1");
                 }
                 OWLClassExpression owl_class_2 = iterator.next();
                 ConceptDescription class_2_0 = owlClass_to_conceptDescription(owl_class_2, o2iTranslator);
-                ConceptDescription class_2_1 = owlClass_to_conceptDescription(owl_class_2, o2iTranslator);
+                //ConceptDescription class_2_1 = owlClass_to_conceptDescription(owl_class_2, o2iTranslator);
 
                 if (iterator.hasNext()) {
                     throw new RuntimeException("there should be exactly 2 classes in OWLEquivalentClassAxiom but the was: 3 or more");
