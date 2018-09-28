@@ -26,7 +26,7 @@ public class FL0wer {
     private final static Logger LOGGER = Logger.getLogger(FL0wer.class.getName());
     private ReteNetwork rete_network;
     private Collection<OWLClass> input_owl_classes;
-    OwlToInternalTranslator owlToInternalTranslator = new OwlToInternalTranslator();
+    private OwlToInternalTranslator owlToInternalTranslator = new OwlToInternalTranslator();
 
 
     public FL0wer(OWLOntology owl_ontology) {
