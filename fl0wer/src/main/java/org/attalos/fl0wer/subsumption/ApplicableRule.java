@@ -1,21 +1,22 @@
 package org.attalos.fl0wer.subsumption;
 
+import java.math.BigInteger;
 import java.util.Objects;
 
 /**
  * Created by attalos on 6/27/17.
  */
 public class ApplicableRule implements Comparable<ApplicableRule> {
-    private long node_id;
+    private BigInteger node_id;
     private ConceptHead rule_right_side;
 
 
-    public ApplicableRule(long node_id, ConceptHead rule_right_side) {
+    public ApplicableRule(BigInteger node_id, ConceptHead rule_right_side) {
         this.node_id = node_id;
         this.rule_right_side = rule_right_side;
     }
 
-    public long get_node_id() {
+    public BigInteger get_node_id() {
         return node_id;
     }
 
@@ -25,7 +26,8 @@ public class ApplicableRule implements Comparable<ApplicableRule> {
 
     @Override
     public int compareTo(ApplicableRule applicableRule) {
-        return Long.compare(this.node_id, applicableRule.node_id);
+        return this.node_id.compareTo(applicableRule.node_id);
+        //return Long.compare(this.node_id, applicableRule.node_id);
         /*if (this.node_id != applicableRule.node_id) {
             return Long.compare(this.node_id, applicableRule.node_id);
         } else {
@@ -38,7 +40,7 @@ public class ApplicableRule implements Comparable<ApplicableRule> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ApplicableRule that = (ApplicableRule) o;
-        return node_id == that.node_id &&
+        return node_id.equals(that.node_id) &&
                 Objects.equals(rule_right_side, that.rule_right_side);
     }
 

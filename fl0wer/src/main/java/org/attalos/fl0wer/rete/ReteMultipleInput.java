@@ -1,5 +1,6 @@
 package org.attalos.fl0wer.rete;
 
+import java.math.BigInteger;
 import java.util.*;
 
 /**
@@ -35,7 +36,7 @@ public class ReteMultipleInput implements  ReteNode {
     }
 
     @Override
-    public void propagate_domain_elem(Long elem_index, int rolename, Collection<Integer> domain_elem, int num_of_roles, WorkingMemory wm) {
+    public void propagate_domain_elem(BigInteger elem_index, int rolename, Collection<Integer> domain_elem, int num_of_roles, WorkingMemory wm) {
 
         int index_of_role = predecessor_identifier.indexOf(rolename);
         if (index_of_role == -1) {

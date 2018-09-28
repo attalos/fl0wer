@@ -1,5 +1,6 @@
 package org.attalos.fl0wer.rete;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -65,7 +66,7 @@ public class ReteIntraElemNode implements ReteNode{
     }
 
     @Override
-    public void propagate_domain_elem(Long elem_index, int rolename, Collection<Integer> domain_elem, int num_of_roles, WorkingMemory wm) {
+    public void propagate_domain_elem(BigInteger elem_index, int rolename, Collection<Integer> domain_elem, int num_of_roles, WorkingMemory wm) {
         if (domain_elem.contains(needed_concept)) {
             //successors.forEach(successor -> successor.propagate_domain_elem(elem_index, rolename, domain_elem, num_of_roles));
             for (ReteNode successor : successors) {

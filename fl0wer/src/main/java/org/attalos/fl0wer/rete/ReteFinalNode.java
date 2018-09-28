@@ -3,6 +3,7 @@ package org.attalos.fl0wer.rete;
 import org.attalos.fl0wer.subsumption.ApplicableRule;
 import org.attalos.fl0wer.subsumption.ConceptHead;
 
+import java.math.BigInteger;
 import java.util.*;
 
 /**
@@ -29,7 +30,7 @@ public class ReteFinalNode implements ReteNode {
     }
 
     @Override
-    public void propagate_domain_elem(Long elem_index, int rolename, Collection<Integer> domain_elem, int num_of_roles, WorkingMemory wm) {
+    public void propagate_domain_elem(BigInteger elem_index, int rolename, Collection<Integer> domain_elem, int num_of_roles, WorkingMemory wm) {
                 //if rule is new add it to queue in WorkingMemory
         if (wm.get_finalNode_memory_at(this.node_id).ruleFirstTimeFired(elem_index)) {
             ApplicableRule resulting_applicable_rule = new ApplicableRule(elem_index, fired_result);

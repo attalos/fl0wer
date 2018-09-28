@@ -1,5 +1,6 @@
 package org.attalos.fl0wer.blocking;
 
+import java.math.BigInteger;
 import java.util.SortedSet;
 
 /**
@@ -11,7 +12,7 @@ public abstract class BlockingElement {
      *
      * @return all elem_ids which are in this blocking condition or null if there is only one elem
      */
-    protected abstract SortedSet<Long> get_blocking_elements();
+    protected abstract SortedSet<BigInteger> get_blocking_elements();
     ///**
      //*
      //* @param elem_id elem to remove

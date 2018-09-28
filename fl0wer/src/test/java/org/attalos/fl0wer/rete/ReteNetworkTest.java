@@ -16,6 +16,7 @@ import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.*;
 
 import java.io.File;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -86,12 +87,12 @@ public class ReteNetworkTest {
         List<Integer> expected_output_concept_set = new ArrayList<>();
         expected_output_concept_set.add(class_D);
 
-        rete_network.propagate_domain_elem(0L, input_concept_set, wm);
+        rete_network.propagate_domain_elem(BigInteger.ZERO, input_concept_set, wm);
         ApplicableRule resulting_Rule = rete_network.get_next_rule_to_fire(wm);
 
         assertNotNull("There was no applicable rule found", resulting_Rule);
         assertNull("There were to many applicable rules found", this.rete_network.get_next_rule_to_fire(wm));
-        assertEquals("Resulting rule was refering to wrong domain element", 0, resulting_Rule.get_node_id());
+        assertEquals("Resulting rule was refering to wrong domain element", BigInteger.ZERO, resulting_Rule.get_node_id());
         assertEquals("Resulting rule contained wrong concepts", expected_output_concept_set, resulting_Rule.get_rule_right_side().get_concept_set_at(0));
         assertNull("Resulting rule contained wrong concepts", resulting_Rule.get_rule_right_side().get_concept_set_at(roll_r + 1));
 
@@ -104,16 +105,16 @@ public class ReteNetworkTest {
         Set<Integer> input_concept_set = new HashSet<>();
         input_concept_set.add(class_C);
 
-        rete_network.propagate_domain_elem(0L, input_concept_set, wm);
+        rete_network.propagate_domain_elem(BigInteger.ZERO, input_concept_set, wm);
         ApplicableRule resulting_Rule = rete_network.get_next_rule_to_fire(wm);
         assertNotNull("(see simple_rule_detection)", resulting_Rule);
         assertNull("(see simple_rule_detection)", this.rete_network.get_next_rule_to_fire(wm));
 
-        rete_network.propagate_domain_elem(77L, input_concept_set, wm);
+        rete_network.propagate_domain_elem(BigInteger.valueOf(77), input_concept_set, wm);
         resulting_Rule = rete_network.get_next_rule_to_fire(wm);
         assertNotNull("There was no applicable rule found for second dom elem", resulting_Rule);
         assertNull("There were to many applicable rules found for second dom elem", this.rete_network.get_next_rule_to_fire(wm));
-        assertEquals("Resulting rule was refering to wrong domain element", 77, resulting_Rule.get_node_id());
+        assertEquals("Resulting rule was refering to wrong domain element", BigInteger.valueOf(77), resulting_Rule.get_node_id());
     }
 
     @Test
@@ -129,14 +130,14 @@ public class ReteNetworkTest {
         List<Integer> expected_output_concept_set = new ArrayList<>();
         expected_output_concept_set.add(class_D);
 
-        rete_network.propagate_domain_elem(0L, input_concept_set_0, wm);
-        rete_network.propagate_domain_elem(1L, input_concept_set_1, wm);
+        rete_network.propagate_domain_elem(BigInteger.ZERO, input_concept_set_0, wm);
+        rete_network.propagate_domain_elem(BigInteger.ONE, input_concept_set_1, wm);
 
         ApplicableRule resulting_Rule = rete_network.get_next_rule_to_fire(wm);
 
         assertNotNull("There was no applicable rule found", resulting_Rule);
         assertNull("There were to many applicable rules found", this.rete_network.get_next_rule_to_fire(wm));
-        assertEquals("Resulting rule was refering to wrong domain element", 0, resulting_Rule.get_node_id());
+        assertEquals("Resulting rule was refering to wrong domain element", BigInteger.ZERO, resulting_Rule.get_node_id());
         assertEquals("Resulting rule contained wrong concepts", expected_output_concept_set, resulting_Rule.get_rule_right_side().get_concept_set_at(0));
         assertNull("Resulting rule contained wrong concepts", resulting_Rule.get_rule_right_side().get_concept_set_at(1));
 
@@ -149,10 +150,10 @@ public class ReteNetworkTest {
         Set<Integer> input_concept_set = new HashSet<>();
         input_concept_set.add(class_C);
 
-        rete_network.propagate_domain_elem(0L, input_concept_set, wm);
+        rete_network.propagate_domain_elem(BigInteger.ZERO, input_concept_set, wm);
         rete_network.get_next_rule_to_fire(wm);
 
-        rete_network.propagate_domain_elem(0L, input_concept_set, wm);
+        rete_network.propagate_domain_elem(BigInteger.ZERO, input_concept_set, wm);
         ApplicableRule resulting_Rule = rete_network.get_next_rule_to_fire(wm);
         assertNull("Every rule should only be found once per dom elem", resulting_Rule);
     }
@@ -166,11 +167,11 @@ public class ReteNetworkTest {
         input_concept_set.add(class_C);
 
         ApplicableRule resulting_Rule;
-        rete_network.propagate_domain_elem(0L, input_concept_set, wm1);
+        rete_network.propagate_domain_elem(BigInteger.ZERO, input_concept_set, wm1);
         resulting_Rule = rete_network.get_next_rule_to_fire(wm1);
         assertNotNull("Something went completly wrong. (See testSimple_rule_detection)", resulting_Rule);
 
-        rete_network.propagate_domain_elem(0L, input_concept_set, wm2);
+        rete_network.propagate_domain_elem(BigInteger.ZERO, input_concept_set, wm2);
         resulting_Rule = rete_network.get_next_rule_to_fire(wm2);
         assertNotNull("Working with one wm had an effekt von working with another", resulting_Rule);
     }

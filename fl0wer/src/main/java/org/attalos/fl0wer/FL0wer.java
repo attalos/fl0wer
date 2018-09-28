@@ -9,11 +9,13 @@ import org.attalos.fl0wer.subsumption.ApplicableRule;
 import org.attalos.fl0wer.subsumption.ConceptHead;
 import org.attalos.fl0wer.subsumption.HeadOntology;
 import org.attalos.fl0wer.utils.ConstantValues;
+import org.attalos.fl0wer.utils.HelperFunctions;
 import org.attalos.fl0wer.utils.OwlToInternalTranslator;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLOntology;
 
+import java.math.BigInteger;
 import java.util.*;
 import java.util.function.Function;
 import java.util.logging.Logger;
@@ -96,12 +98,12 @@ public class FL0wer {
         //propagate first element
 //        ConstantValues.debug_info("propagating root throw rete netwrok", 0);
         LOGGER.fine("propagating root throw rete network");
-        this.rete_network.propagate_domain_elem(0L, subsumption_tree.get_concepts_of_elem(0L).getConcepts(), workingmemory);
+        this.rete_network.propagate_domain_elem(BigInteger.ZERO, subsumption_tree.get_concepts_of_elem(BigInteger.ZERO).getConcepts(), workingmemory);
 
         //mainloop which build functional model tree stump
         while (true) {
             //check break condition
-            if (break_condition.apply(subsumption_tree.get_concepts_of_elem(0L))) {
+            if (break_condition.apply(subsumption_tree.get_concepts_of_elem(BigInteger.ZERO))) {
                 return true;
             }
 
@@ -110,7 +112,7 @@ public class FL0wer {
             if (applicable_rule == null) {
                 break;
             }
-            Long elem_id = applicable_rule.get_node_id();
+            BigInteger elem_id = applicable_rule.get_node_id();
             FunctionalElement elem = subsumption_tree.get_concepts_of_elem(elem_id);
 
             //check blocking
@@ -131,9 +133,15 @@ public class FL0wer {
                 successors_with_changes.remove(0);
             }
 
-            Long first_successor = owlToInternalTranslator.get_role_count() * elem_id + 1; //TODO remove math "magic"
+            //BigInteger first_successor = owlToInternalTranslator.get_role_count() * elem_id + 1; //TODO remove math "magic"
+            BigInteger first_successor = HelperFunctions.calculateFirstChildId(elem_id,
+                    BigInteger.valueOf(owlToInternalTranslator.get_role_count()));
             for (Integer rolename : successors_with_changes) {      //update direct successors
-                add_concepts_to_elem(first_successor + rolename, new_concepts.get_concept_set_at(rolename + 1), subsumption_tree, workingmemory);
+                add_concepts_to_elem(
+                        first_successor.add(BigInteger.valueOf(rolename)),
+                        new_concepts.get_concept_set_at(rolename + 1),
+                        subsumption_tree,
+                        workingmemory);
             }
 
 //            // debug info - applied rule
@@ -143,11 +151,8 @@ public class FL0wer {
             //LOGGER.finer("Applied rule: " + Long.toString(elem_id) + "\t-\t" + new_concepts.toString());
         }
 
-        if (break_condition.apply(subsumption_tree.get_concepts_of_elem(0L))) {
-            return true;
-        }
+        return break_condition.apply(subsumption_tree.get_concepts_of_elem(BigInteger.ZERO));
 
-        return false;
     }
 
     public boolean decide_subsumption(OWLClass subsumed, OWLClass subsumer) {
@@ -182,7 +187,8 @@ public class FL0wer {
 
         //backtranslation
         ConstantValues.start_timer("backtranslation");
-        List<OWLClass> subsumerset = owlToInternalTranslator.translate_reverse(subsumption_tree.get_concepts_of_elem(0L).getConcepts());
+        List<OWLClass> subsumerset = owlToInternalTranslator.translate_reverse(
+                subsumption_tree.get_concepts_of_elem(BigInteger.ZERO).getConcepts());
         ConstantValues.stop_timer("backtranslation");
 
         return subsumerset;
@@ -211,7 +217,7 @@ public class FL0wer {
         return classificatoin_map;
     }
 
-    private void add_concepts_to_elem(Long elem_id, ArrayList<Integer> new_concepts, SmallestFunctionalModelTree subsumption_tree, WorkingMemory wm) {
+    private void add_concepts_to_elem(BigInteger elem_id, ArrayList<Integer> new_concepts, SmallestFunctionalModelTree subsumption_tree, WorkingMemory wm) {
         if (subsumption_tree.update_node(elem_id, new_concepts, applicable_rules -> reenter_rules_to_queue(applicable_rules, wm))) {
             ConstantValues.start_timer("rete_propagation");
             this.rete_network.propagate_domain_elem(elem_id, subsumption_tree.get_concepts_of_elem(elem_id).getConcepts(), wm);

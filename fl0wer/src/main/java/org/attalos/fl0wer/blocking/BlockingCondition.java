@@ -1,5 +1,6 @@
 package org.attalos.fl0wer.blocking;
 
+import java.math.BigInteger;
 import java.util.*;
 
 /**
@@ -25,7 +26,7 @@ public class BlockingCondition {
      * @param elem_concepts
      * @return false, if there are no changes in blocking relation possible and true otherwise
      */
-    public boolean insert_blocking_element(Long elem_id, Set<Integer> elem_concepts) {
+    public boolean insert_blocking_element(BigInteger elem_id, Set<Integer> elem_concepts) {
         BlockingElement elem_of_interest = this.blocking_map.get(elem_concepts);
 
         if (elem_of_interest == null) {
@@ -49,7 +50,7 @@ public class BlockingCondition {
      * @param elem_concepts
      * @return false, if there are no changes in blocking relation possible and true otherwise
      */
-    public boolean remove_blocking_element(Long elem_id, Set<Integer> elem_concepts) {
+    public boolean remove_blocking_element(BigInteger elem_id, Set<Integer> elem_concepts) {
         BlockingElement elem_of_interest = this.blocking_map.get(elem_concepts);
 
         if (elem_of_interest == null) {
@@ -57,7 +58,7 @@ public class BlockingCondition {
         } else if (elem_of_interest instanceof BlockingElementSingle) {
             this.blocking_map.remove(elem_concepts);
         } else if (elem_of_interest instanceof BlockingElementMulti) {
-            Long one_elem_left = ((BlockingElementMulti) elem_of_interest).remove_elem(elem_id);
+            BigInteger one_elem_left = ((BlockingElementMulti) elem_of_interest).remove_elem(elem_id);
             if (one_elem_left != null) {
                 this.blocking_map.put(new HashSet<>(elem_concepts), new BlockingElementSingle(one_elem_left));
             }
@@ -74,7 +75,7 @@ public class BlockingCondition {
      * @param elem_concepts
      * @return returns all elem_ids which have this exact concept set
      */
-    public SortedSet<Long> get_blocking_elements(Set<Integer> elem_concepts) {
+    public SortedSet<BigInteger> get_blocking_elements(Set<Integer> elem_concepts) {
         BlockingElement be = this.blocking_map.get(elem_concepts);
 
         if (be == null) {

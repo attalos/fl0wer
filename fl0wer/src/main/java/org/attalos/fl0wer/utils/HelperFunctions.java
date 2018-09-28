@@ -4,6 +4,7 @@ import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.*;
 
 import java.io.File;
+import java.math.BigInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -65,5 +66,40 @@ public class HelperFunctions {
         }
 
         return "#################";
+    }
+
+    /*this does not seem right - is it realy just the parent id? or what did i try to do here*/
+    public static BigInteger calculateParentId(BigInteger node, BigInteger num_of_roles) {
+        //parent_id = (node - ((node - 1) % this.num_of_roles) - 1) / this.num_of_roles;
+        return node
+                .subtract(node
+                        .subtract(BigInteger.ONE)
+                        .mod(num_of_roles))
+                .subtract(BigInteger.ONE)
+                .divide(num_of_roles);
+    }
+
+    public static BigInteger calculatePartentId(BigInteger node, int rolename, BigInteger num_of_roles) {
+        // (node - rolename - 1) / num_of_roles
+        return node
+                .subtract(BigInteger.valueOf(rolename))
+                .subtract(BigInteger.ONE)
+                .divide(num_of_roles);
+    }
+
+    public static BigInteger calculateFirstChildId(BigInteger node, BigInteger num_of_roles) {
+        //num_of_roles_ * elem_id + 1;
+        return node
+                .multiply(num_of_roles)
+                .add(BigInteger.ONE);
+
+    }
+
+    public static int calculateRolename(BigInteger node, BigInteger num_of_roles) {
+        //int rolename = Math.toIntExact((node - 1) % num_of_roles);
+        return node
+                .subtract(BigInteger.ONE)
+                .mod(num_of_roles)
+                .intValueExact();
     }
 }

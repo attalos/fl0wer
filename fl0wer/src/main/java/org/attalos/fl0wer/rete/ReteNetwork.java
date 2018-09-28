@@ -3,9 +3,11 @@ package org.attalos.fl0wer.rete;
 import org.attalos.fl0wer.subsumption.ApplicableRule;
 import org.attalos.fl0wer.subsumption.HeadGCI;
 import org.attalos.fl0wer.subsumption.HeadOntology;
+import org.attalos.fl0wer.utils.HelperFunctions;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
+import java.math.BigInteger;
 import java.util.*;
 
 /**
@@ -61,10 +63,10 @@ public class ReteNetwork {
         }
     }
 
-    public void propagate_domain_elem(Long elem_id, Set<Integer> elem_concepts, WorkingMemory wm) {
+    public void propagate_domain_elem(BigInteger elem_id, Set<Integer> elem_concepts, WorkingMemory wm) {
         //void propagate_domain_elem(Long elem_index, int rolename, ArrayList<Long> domain_elem, int num_of_roles);
 
-        int rolename = Math.toIntExact((elem_id - 1) % num_of_roles);
+        int rolename = HelperFunctions.calculateRolename(elem_id, BigInteger.valueOf(num_of_roles));
 
         for (Integer node_index : elem_concepts) {
             ReteNode rete_node = this.top_level_nodes.get(node_index);

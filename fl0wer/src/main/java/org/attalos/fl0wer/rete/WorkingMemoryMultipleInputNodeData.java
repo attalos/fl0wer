@@ -1,10 +1,11 @@
 package org.attalos.fl0wer.rete;
 
+import java.math.BigInteger;
 import java.util.*;
 
 public class WorkingMemoryMultipleInputNodeData {
     private int incomming_path_count;
-    private Map<Long, List<Boolean>> current_elements;
+    private Map<BigInteger, List<Boolean>> current_elements;
 
     protected WorkingMemoryMultipleInputNodeData(int incomming_path_count) {
         this.incomming_path_count = incomming_path_count;
@@ -17,7 +18,7 @@ public class WorkingMemoryMultipleInputNodeData {
      * @param index_of_role index of role in currect
      * @return true, if the element came from every incomming path, so the rule is fullfilled
      */
-    protected boolean elem_came_from(Long elem_index, int index_of_role) {
+    protected boolean elem_came_from(BigInteger elem_index, int index_of_role) {
 
         List<Boolean> current_element;
 
