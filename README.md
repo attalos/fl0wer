@@ -63,8 +63,11 @@ This script will ask you for superuser rights to set the priority
 of the task so it won't get interupted. This lowers the noise level.
 
 ```console
-$ ./execute.sh TASK_FILE evaluator.jar
+$ ./execute.sh TASK_FILE evaluator.jar [-r]
 ```
+`-r` restarts the evaluation. The current content of `output.txt` will be lost. 
+You also have to use `-r` when you deletet the old `output.txt`. Otherwise the script
+will still continue at the last position and it also won't add the required headline.
 
 Plotting
 --------
