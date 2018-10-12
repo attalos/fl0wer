@@ -15,24 +15,31 @@ public abstract  class ReasoningTask {
     protected OntologyWrapper ontology;
     protected long timeout = 30;            //TODO read it from csv
 
-    protected ReasoningTask(int taskID, OntologyWrapper ontology, long timeout) {
+    ReasoningTask(int taskID, OntologyWrapper ontology, long timeout) {
         this.taskID = taskID;
         this.ontology = ontology;
         this.timeout = timeout;
         //translate to FL0
-        try {
+
+        if (!OntologyTranslator.isRawFL0(this.ontology.getOntology())) {
+            throw new IllegalArgumentException("all ontologies should be FL0 ontologies at this point, but " + ontology.getName() + "was not.");
+        }
+        /*try {
             if (OntologyTranslator.fullfillsOwl2ElProfile(this.ontology.getOntology())) {
                 this.ontology.setOntology(OntologyTranslator.translateELtoFL0(this.ontology.getOntology()));
             } else if (!OntologyTranslator.isRawFL0(this.ontology.getOntology())){
                 System.out.println("Ontology wasn't in EL or FL0");
                 this.ontology.setOntology(null);
             }
+            if (!OntologyTranslator.isRawFL0(this.ontology.getOntology())) {
+                throw new RuntimeException("all ontologies should be FL0 ontologies at this point");
+            }
         } catch (OWLOntologyCreationException e) {
             this.ontology.setOntology(null);
-        }
+        }*/
     }
 
-    protected ReasoningTask(String csvString) throws OWLOntologyCreationException {
+    ReasoningTask(String csvString) throws OWLOntologyCreationException {
         String[] attributes = csvString.split(",");
         this.taskID = Integer.parseInt(attributes[0]);
         File ontologyFile = new File(attributes[2]);

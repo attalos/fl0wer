@@ -43,7 +43,7 @@ public class RawFL0VerificationVisitor implements OWLObjectVisitorEx<Boolean> {
 
     @Override
     public Boolean visit(OWLSubClassOfAxiom axiom) {
-        return axiom.getSubClass().accept(this) && axiom.getSubClass().accept(this);
+        return axiom.getSubClass().accept(this) && axiom.getSuperClass().accept(this);
     }
 
     @Override
