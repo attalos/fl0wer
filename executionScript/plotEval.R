@@ -12,6 +12,9 @@ mean_f <- function(data) {
 
 error_f <- function(data) {
 	error = sd(data)/sqrt(length(data))
+    if (is.na(error)) {
+        return(0)
+    }
 	return(error)
 }
 
