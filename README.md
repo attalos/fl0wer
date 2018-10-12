@@ -1,7 +1,7 @@
 Reasoner Evaluation
 ===================
 
-This evaluation was writte for the Fl0wer reasoner and compares it with Hermit, JFact and Openllet.
+This evaluation was written for the Fl0wer reasoner and compares it with Hermit, JFact and Openllet.
 
 Building
 --------
@@ -47,9 +47,9 @@ $ java -jar evaluator.jar translate INPUT_DIR OUTPUT_DIR
 With your FL<sub>0</sub> ontologie, you can create taskfiles, which you will later use to benchmark the individual reasoners.
 
 ```console
-$ java -jar evaluator.jar createClassification INPUT_DIR TASK_FILENAME
-$ java -jar evaluator.jar createSubsumption INPUT_DIR TASK_FILENAME
-$ java -jar evaluator.jar createSubsumerset INPUT_DIR TASK_FILENAME
+$ java -jar evaluator.jar createClassification INPUT_DIR TASK_FILENAME TASK_COUNT TIMEOUT
+$ java -jar evaluator.jar createSubsumption INPUT_DIR TASK_FILENAME TASK_COUNT TIMEOUT
+$ java -jar evaluator.jar createSubsumerset INPUT_DIR TASK_FILENAME TASK_COUNT TIMEOUT
 ```
 
 To execute a single task run:
@@ -63,5 +63,19 @@ This script will ask you for superuser rights to set the priority
 of the task so it won't get interupted. This lowers the noise level.
 
 ```console
-$ ./execute.sh TASK_FILE evaluator.sh
+$ ./execute.sh TASK_FILE evaluator.jar
+```
+
+Plotting
+--------
+
+The `execute.sh` script should have created an output.txt file.
+To plot this, you can use the `plotEval.R` script.
+
+```
+./plotEval.R output.txt [OPTION]
+
+OPTION (only one of them possible):
+    -l --log        for logarithmic scale
+    -i --ignore     to ignore jfact in the plotting
 ```
