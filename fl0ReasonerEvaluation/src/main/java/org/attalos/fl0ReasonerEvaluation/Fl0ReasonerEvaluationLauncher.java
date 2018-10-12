@@ -33,46 +33,54 @@ public class Fl0ReasonerEvaluationLauncher {
 
         //handle parameters
         if (args.length <= 2 || !Arrays.asList("translate" , "execute", "createClassification", "createSubsumption", "createSubsumerset").contains(args[0])) {
-            String[] executedFilePath = Fl0ReasonerEvaluationLauncher.class.getProtectionDomain()
-                    .getCodeSource()
-                    .getLocation()
-                    .getFile()
-                    .split("/");
-            String executedFileName = executedFilePath[executedFilePath.length - 1];
-            System.out.println("expected Syntax: ");
-            System.out.println("java -jar " + executedFileName + " translate INPUT_DIR OUTPUT_DIR");
-            System.out.println("java -jar " + executedFileName + " execute REASONER_NAME TASK_LINE");
-            System.out.println("java -jar " + executedFileName + " createClassification INPUT_DIR TASK_FILENAME");
-            System.out.println("java -jar " + executedFileName + " createSubsumption INPUT_DIR TASK_FILENAME");
-            System.out.println("java -jar " + executedFileName + " createSubsumerset INPUT_DIR TASK_FILENAME");
-            System.out.println("REASONER_NAME = (flower|hermit|jfact|openllet)");
+            showHelp();
             return;
         }
 
         if (args[0].equals("translate")) {
+            if (args.length != 3) {
+                showHelp();
+                return;
+            }
             translate(args[1], args[2]);
             return;
         }
 
         if (args[0].equals("createSubsumption")) {
-            createTask(args[1], args[2], 1,
-                    ontologyWrapper -> taskID -> new SubsumptionReasoningTask(taskID, ontologyWrapper, 30));
+            if (args.length != 5) {
+                showHelp();
+                return;
+            }
+            createTask(args[1], args[2], Integer.parseInt(args[3]),
+                    ontologyWrapper -> taskID -> new SubsumptionReasoningTask(taskID, ontologyWrapper, Long.parseLong(args[4])));
             return;
         }
 
         if (args[0].equals("createSubsumerset")) {
-            createTask(args[1], args[2], 1,
-                    ontologyWrapper -> taskID -> new SuperClassesReasoningTask(taskID, ontologyWrapper, 30));
+            if (args.length != 5) {
+                showHelp();
+                return;
+            }
+            createTask(args[1], args[2], Integer.parseInt(args[3]),
+                    ontologyWrapper -> taskID -> new SuperClassesReasoningTask(taskID, ontologyWrapper, Long.parseLong(args[4])));
             return;
         }
 
         if (args[0].equals("createClassification")) {
-            createTask(args[1], args[2], 1,
-                    ontologyWrapper -> taskID -> new ClassificationReasoningTask(taskID, ontologyWrapper, 30));
+            if (args.length != 5) {
+                showHelp();
+                return;
+            }
+            createTask(args[1], args[2], Integer.parseInt(args[3]),
+                    ontologyWrapper -> taskID -> new ClassificationReasoningTask(taskID, ontologyWrapper, Long.parseLong(args[4])));
             return;
         }
 
         if (args[0].equals("execute")) {
+            if (args.length != 3) {
+                showHelp();
+                return;
+            }
             executeTask(args[1], args[2]);
             System.exit(0);     // necessary since some of the reasoners do not stop voluntary
         }
@@ -244,6 +252,21 @@ public class Fl0ReasonerEvaluationLauncher {
 
         PerformanceResult result = evaluator.evaluate(task);
         System.out.println(result.toCsvEntry(","));
+    }
 
+    private static void showHelp() {
+        String[] executedFilePath = Fl0ReasonerEvaluationLauncher.class.getProtectionDomain()
+                .getCodeSource()
+                .getLocation()
+                .getFile()
+                .split("/");
+        String executedFileName = executedFilePath[executedFilePath.length - 1];
+        System.out.println("expected Syntax: ");
+        System.out.println("java -jar " + executedFileName + " translate INPUT_DIR OUTPUT_DIR");
+        System.out.println("java -jar " + executedFileName + " execute REASONER_NAME TASK_LINE");
+        System.out.println("java -jar " + executedFileName + " createClassification INPUT_DIR TASK_FILENAME TASK_COUNT, TIMEOUT");
+        System.out.println("java -jar " + executedFileName + " createSubsumption INPUT_DIR TASK_FILENAME TASK_COUNT TIMEOUT");
+        System.out.println("java -jar " + executedFileName + " createSubsumerset INPUT_DIR TASK_FILENAME TASK_COUNT TIMEOUT");
+        System.out.println("REASONER_NAME = (flower|hermit|jfact|openllet)");
     }
 }
