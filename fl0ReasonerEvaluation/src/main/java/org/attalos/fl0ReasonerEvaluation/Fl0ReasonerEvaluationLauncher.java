@@ -235,9 +235,9 @@ public class Fl0ReasonerEvaluationLauncher {
         ReasoningTask task;
         int csvSize = taskCSV.split(",").length;
         switch (csvSize) {
-            case 3: task = new ClassificationReasoningTask(taskCSV); break;
-            case 4: task = new SuperClassesReasoningTask(taskCSV); break;
-            case 5: task = new SubsumptionReasoningTask(taskCSV); break;
+            case 4: task = new ClassificationReasoningTask(taskCSV); break;
+            case 5: task = new SuperClassesReasoningTask(taskCSV); break;
+            case 6: task = new SubsumptionReasoningTask(taskCSV); break;
             default: task = null;
         }
         assert  task != null;
