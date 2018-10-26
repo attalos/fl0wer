@@ -179,7 +179,8 @@ public class Fl0ReasonerEvaluationLauncher {
     }
 
     private static void translate(String inputDir, String outputDir) throws OWLOntologyCreationException, FileNotFoundException, OWLOntologyStorageException {
-        List<File> ontologyFiles = openAllOntologiesInDirectory(new File(inputDir));
+        File inputDirFile = new File(inputDir);
+        List<File> ontologyFiles = openAllOntologiesInDirectory(inputDirFile);
 
         for (File ontologyFile : ontologyFiles) {
             OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
@@ -189,7 +190,7 @@ public class Fl0ReasonerEvaluationLauncher {
             if (outputOntologyOwl == null) return;
 
             //save
-            String ontologyName = StringUtils.difference(inputDir, ontologyFile.getAbsolutePath());
+            String ontologyName = StringUtils.difference(inputDirFile.getAbsolutePath(), ontologyFile.getAbsolutePath());
             ontologyName = ontologyName.replace("/", "_").substring(1);
             System.out.println(ontologyName);
             OWLDocumentFormat owlxmlFormat = new OWLXMLDocumentFormat();
@@ -203,7 +204,8 @@ public class Fl0ReasonerEvaluationLauncher {
                                    Function<OntologyWrapper, Function<Integer, ReasoningTask>> reasoningTaskConstructor )
             throws OWLOntologyCreationException, FileNotFoundException {
 
-        List<File> ontologyFiles = openAllOntologiesInDirectory(new File(inputDir));
+        File inputDirFile = new File(inputDir);
+        List<File> ontologyFiles = openAllOntologiesInDirectory(inputDirFile);
         PrintStream outputStream = new PrintStream(new FileOutputStream(taskFile, false));
 
         for (File ontologyFile : ontologyFiles) {
@@ -211,7 +213,7 @@ public class Fl0ReasonerEvaluationLauncher {
             //open
             OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
             OWLOntology ontologyOwl = manager.loadOntologyFromOntologyDocument(ontologyFile);
-            String ontologyName = StringUtils.difference(inputDir, ontologyFile.getAbsolutePath()).substring(1);
+            String ontologyName = StringUtils.difference(inputDirFile.getAbsolutePath(), ontologyFile.getAbsolutePath()).substring(1);
             OntologyWrapper ontology = new OntologyWrapper(ontologyName, ontologyFile.getAbsolutePath(), ontologyOwl);
 
             for (int i = 0; i < taskCount; i++) {
