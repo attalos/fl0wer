@@ -44,7 +44,7 @@ You can use the .jar to create FL<sub>0</sub> ontologies using EL ontologies.
 $ java -jar evaluator.jar translate INPUT_DIR OUTPUT_DIR
 ```
 
-With your FL<sub>0</sub> ontologie, you can create taskfiles, which you will later use to benchmark the individual reasoners.
+With your FL<sub>0</sub> ontologies, you can create taskfiles, which you will later use to benchmark the individual reasoners.
 
 ```console
 $ java -jar evaluator.jar createClassification INPUT_DIR TASK_FILENAME TASK_COUNT TIMEOUT
@@ -65,8 +65,9 @@ of the task so it won't get interupted. This lowers the noise level.
 ```console
 $ ./execute.sh TASK_FILE evaluator.jar [-r]
 ```
+The output will always be written to output.txt.
 `-r` restarts the evaluation. The current content of `output.txt` will be lost. 
-You also have to use `-r` when you deletet the old `output.txt`. Otherwise the script
+You also have to use `-r` when you deleted the old `output.txt`. Otherwise the script
 will still continue at the last position and it also won't add the required headline.
 
 Plotting
