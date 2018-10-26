@@ -31,7 +31,7 @@ public class SuperClassesReasoningTask extends ReasoningTask {
         OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
         OWLDataFactory factory = manager.getOWLDataFactory();
 
-        classOwl = factory.getOWLClass(IRI.create(attributes[3]));
+        classOwl = factory.getOWLClass(IRI.create(attributes[4]));
     }
 
     @Override
@@ -41,6 +41,6 @@ public class SuperClassesReasoningTask extends ReasoningTask {
 
     @Override
     public String toString() {
-        return taskID + "," + ontology + "," + classOwl.toString().substring(1,classOwl.toString().length()-1);
+        return super.toString() + "," + classOwl.toString().substring(1,classOwl.toString().length()-1);
     }
 }

@@ -32,8 +32,8 @@ public class SubsumptionReasoningTask extends ReasoningTask {
         OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
         OWLDataFactory factory = manager.getOWLDataFactory();
 
-        subClassOwl = factory.getOWLClass(IRI.create(attributes[3]));
-        superClassOwl = factory.getOWLClass(IRI.create(attributes[4]));
+        subClassOwl = factory.getOWLClass(IRI.create(attributes[4]));
+        superClassOwl = factory.getOWLClass(IRI.create(attributes[5]));
     }
 
     @Override
@@ -43,6 +43,6 @@ public class SubsumptionReasoningTask extends ReasoningTask {
 
     @Override
     public String toString() {
-        return taskID + "," + ontology + "," + subClassOwl.toString().substring(1,subClassOwl.toString().length()-1) + "," + superClassOwl.toString().substring(1, superClassOwl.toString().length()-1);
+        return super.toString() + "," + subClassOwl.toString().substring(1,subClassOwl.toString().length()-1) + "," + superClassOwl.toString().substring(1, superClassOwl.toString().length()-1);
     }
 }

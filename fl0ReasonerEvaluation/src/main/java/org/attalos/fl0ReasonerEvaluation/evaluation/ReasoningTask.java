@@ -13,7 +13,7 @@ import java.io.File;
 public abstract  class ReasoningTask {
     protected int taskID;
     protected OntologyWrapper ontology;
-    protected long timeout = 30;            //TODO read it from csv
+    protected long timeout;            //TODO read it from csv
 
     ReasoningTask(int taskID, OntologyWrapper ontology, long timeout) {
         this.taskID = taskID;
@@ -42,10 +42,11 @@ public abstract  class ReasoningTask {
     ReasoningTask(String csvString) throws OWLOntologyCreationException {
         String[] attributes = csvString.split(",");
         this.taskID = Integer.parseInt(attributes[0]);
-        File ontologyFile = new File(attributes[2]);
+        this.timeout = Integer.parseInt(attributes[1]);
+        File ontologyFile = new File(attributes[3]);
         OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
         OWLOntology ontologyOwl = manager.loadOntologyFromOntologyDocument(ontologyFile);
-        this.ontology = new OntologyWrapper(attributes[1], attributes[2], ontologyOwl);
+        this.ontology = new OntologyWrapper(attributes[2], attributes[3], ontologyOwl);
     }
 
     public OntologyWrapper getOntology() {
@@ -53,4 +54,9 @@ public abstract  class ReasoningTask {
     }
 
     public abstract PerformanceResult evaluate(ReasonerEvaluator evaluator);
+
+    @Override
+    public String toString() {
+        return taskID + "," + timeout + "," + ontology;
+    }
 }

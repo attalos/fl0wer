@@ -13,11 +13,6 @@ public class ClassificationReasoningTask extends  ReasoningTask {
 
     public ClassificationReasoningTask(String csvString) throws OWLOntologyCreationException {
         super(csvString);
-
-        String[] attributes = csvString.split(",");
-
-        OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-        OWLDataFactory factory = manager.getOWLDataFactory();
     }
 
     @Override
@@ -25,8 +20,11 @@ public class ClassificationReasoningTask extends  ReasoningTask {
         return evaluator.classify(this.ontology, this.timeout);
     }
 
+    /*
+     * does not realy change what ReasoningTask already does, but this way i won't search for it later
+     */
     @Override
     public String toString() {
-        return taskID + "," + ontology;
+        return super.toString();
     }
 }
