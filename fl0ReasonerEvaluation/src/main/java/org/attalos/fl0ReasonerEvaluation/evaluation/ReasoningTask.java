@@ -9,11 +9,12 @@ import org.attalos.fl0ReasonerEvaluation.translation.OntologyTranslator;
 
 import java.io.File;
 
-
 public abstract  class ReasoningTask {
-    protected int taskID;
-    protected OntologyWrapper ontology;
-    protected long timeout;            //TODO read it from csv
+    private static final long MIN_CLASSCOUNT = 500;
+
+    private int taskID;
+    OntologyWrapper ontology;
+    long timeout;            //TODO read it from csv
 
     ReasoningTask(int taskID, OntologyWrapper ontology, long timeout) {
         this.taskID = taskID;
@@ -23,6 +24,12 @@ public abstract  class ReasoningTask {
 
         if (!OntologyTranslator.isRawFL0(this.ontology.getOntology())) {
             throw new IllegalArgumentException("all ontologies should be FL0 ontologies at this point, but " + ontology.getName() + "was not.");
+        }
+
+        long classesInOntology = this.ontology.getOntology().classesInSignature().count();
+        if (classesInOntology < MIN_CLASSCOUNT) {
+            throw new IllegalArgumentException("Ontologie " + ontology.getName() + " contained only " + classesInOntology +
+                    " classes and everything less than " + MIN_CLASSCOUNT + " gets sorted out.");
         }
         /*try {
             if (OntologyTranslator.fullfillsOwl2ElProfile(this.ontology.getOntology())) {

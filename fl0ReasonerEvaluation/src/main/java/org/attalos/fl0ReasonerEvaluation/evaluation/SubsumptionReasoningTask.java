@@ -17,6 +17,7 @@ public class SubsumptionReasoningTask extends ReasoningTask {
 
         //select classes randomly
         List<OWLClass> classesInOntology = this.ontology.getOntology().classesInSignature().collect(Collectors.toList());
+
         int index = ThreadLocalRandom.current().nextInt(0, classesInOntology.size());
         this.subClassOwl = classesInOntology.get(index);
 
