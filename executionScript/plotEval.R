@@ -1,5 +1,6 @@
 #!/usr/bin/Rscript
 require(data.table)
+require(getopt)
 X11()
 
 mean_f <- function(data) {
@@ -27,19 +28,33 @@ errorbar_f <- function(data, col) {
 }
 
 args = commandArgs(trailingOnly = TRUE)
-dt = fread(args[1], sep=",", header=TRUE)
+
+#read parameters
+spec = matrix(c(
+    "log",         "l", 0, "logical",
+    "jfactignore", "j", 0, "logical",
+    "out",         "o", 1, "character",
+    "input",       "i", 1, "character",
+    "help",        "h", 0, "logical"
+), byrow=TRUE, ncol=4);
+
+opt = getopt(spec);
+
+#print help
+if ( !is.null(opt$help) ) {
+  cat(getopt(spec, usage=TRUE));
+  q(status=1);
+}
+
+if ( is.null(opt$input  ) ) { print("-i is required"); quit();}
+if ( is.null(opt$log    ) ) { opt$log    = FALSE }
+if ( is.null(opt$jfactignore ) ) { opt$jfactignore = FALSE }
+if ( is.null(opt$out    ) ) { opt$out    = "" }
+
+dt = fread(opt$input, sep=",", header=TRUE)
 
 log_graph = ""
-ignore_jfact = FALSE
-if (length(args) == 2) {
-	if (args[2] %in% c("--log", "-l") ) {
-		log_graph = "yx"
-	}
-
-	if (args[2] %in% c("--ignore", "-i")) {
-		    ignore_jfact = TRUE
-	}
-}
+if (opt$log) { log_graph = "xy" }
 
 #ggplot(dt[reasoner=="Fl0wer", mean(time), .(ontology, classcount)][order(classcount)][,.(classcount,V1)], aes(x=classcount, y=V1)) + geom_point() + geom_line()
 #ylim=range(t[2],tt[2])
@@ -48,7 +63,7 @@ flowerData = reasonerData_f(dt, "Fl0wer")
 hermitData = reasonerData_f(dt, "Hermit")
 openlletData = reasonerData_f(dt, "Openllet")
 
-if (ignore_jfact) {
+if (opt$jfactignore) {
 	ylim = range(flowerData[,mean] + flowerData[,error], hermitData[,mean] + hermitData[,error], openlletData[,mean] + openlletData[,error])
 	plot(flowerData[,classcount], flowerData[,mean], type="b", pch="-", col="blue", ylim=ylim, log=log_graph, ylab="time [ms]", xlab="classcount")
 	
