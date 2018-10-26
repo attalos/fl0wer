@@ -1,6 +1,5 @@
 package org.attalos.fl0wer.rete;
 
-import com.sun.corba.se.impl.corba.ExceptionListImpl;
 import org.attalos.fl0wer.subsumption.ApplicableRule;
 import org.attalos.fl0wer.subsumption.HeadGCI;
 import org.attalos.fl0wer.subsumption.HeadOntology;
