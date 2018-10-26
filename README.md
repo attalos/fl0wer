@@ -62,10 +62,3 @@ To decide a subsumption relation use
 ```console
 $ java -jar fl0wer.jar -i <path_to_ontoloy> -c1 <classname> -c2 <classname>
 ```
-
-current Problems
-----------------
-* classification for /home/attalos/Documents/private/projects/fl0wer/ontologies/fl0_ontologies/ore2015/ore_ont_13482.owl
-	```concole
-	$ java -jar fl0wer.jar -i /home/attalos/Documents/private/projects/fl0wer/ontologies/fl0_ontologies/ore2015/ore_ont_13482.owl -C
-	```
