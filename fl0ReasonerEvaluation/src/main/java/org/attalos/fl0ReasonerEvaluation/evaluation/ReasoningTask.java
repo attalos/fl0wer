@@ -31,6 +31,12 @@ public abstract  class ReasoningTask {
             throw new IllegalArgumentException("Ontologie " + ontology.getName() + " contained only " + classesInOntology +
                     " classes and everything less than " + MIN_CLASSCOUNT + " gets sorted out.");
         }
+
+        boolean containsTop = this.ontology.getOntology().classesInSignature().anyMatch(x -> x.equals(OWLManager.getOWLDataFactory().getOWLThing()));
+        if (containsTop) {
+            throw new IllegalArgumentException("Ontologie " + ontology.getName() + " contained TOP class, which I filter at the moment " +
+                    "because I haven't implemented it yet.. i know that this is no nice solution...");
+        }
     }
 
     ReasoningTask(String csvString) throws OWLOntologyCreationException {
