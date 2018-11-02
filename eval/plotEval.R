@@ -31,11 +31,22 @@ args = commandArgs(trailingOnly = TRUE)
 
 #read parameters
 spec = matrix(c(
-    "log",         "l", 0, "logical",
-    "jfactignore", "j", 0, "logical",
-    "out",         "o", 1, "character",
-    "input",       "i", 1, "character",
-    "help",        "h", 0, "logical"
+    "input",           "i", 1, "character",
+    "out",             "o", 1, "character",
+    "outtype",         "" , 1, "character",
+    "log",             "l", 0, "logical",
+    "type",            "t", 1, "character",
+    "symbol",          "s", 1, "character",
+    "symbolFl0wer",    "0", 1, "character",
+    "symbolHermit",    "1", 1, "character",
+    "symbolOpenllet",  "2", 1, "character",
+    "symbolJFact",     "3", 1, "character",
+    "xupper",          "x", 1, "integer",
+    "yupper",          "y", 1, "integer",
+    "xlower",          "4", 1, "integer",
+    "ylower",          "5", 1, "integer",
+    "jfactignore",     "j", 0, "logical",
+    "help",            "h", 0, "logical"
 ), byrow=TRUE, ncol=4);
 
 opt = getopt(spec);
@@ -47,9 +58,20 @@ if ( !is.null(opt$help) ) {
 }
 
 if ( is.null(opt$input  ) ) { print("-i is required"); quit();}
-if ( is.null(opt$log    ) ) { opt$log    = FALSE }
-if ( is.null(opt$jfactignore ) ) { opt$jfactignore = FALSE }
 if ( is.null(opt$out    ) ) { opt$out    = "" }
+if ( is.null(opt$outtype) ) { opt$outtype= "display" }
+if ( is.null(opt$log    ) ) { opt$log    = FALSE }
+if ( is.null(opt$type   ) ) { opt$type   = "b" }
+if ( is.null(opt$symbol ) ) { opt$symbol = "-" }
+if ( is.null(opt$symbolFl0wer   ) ) { opt$symbolFl0wer   = opt$symbol }
+if ( is.null(opt$symbolHermit   ) ) { opt$symbolHermit   = opt$symbol }
+if ( is.null(opt$symbolOpenllet ) ) { opt$symbolOpenllet = opt$symbol }
+if ( is.null(opt$symbolJFact    ) ) { opt$symbolJFact    = opt$symbol }
+if ( is.null(opt$xupper   ) ) { opt$xupper   = -1 }
+if ( is.null(opt$yupper   ) ) { opt$yupper   = -1 }
+if ( is.null(opt$xlower   ) ) { opt$xlower   = 1 }
+if ( is.null(opt$ylower   ) ) { opt$ylower   = 1 }
+if ( is.null(opt$jfactignore ) ) { opt$jfactignore = FALSE }
 
 dt = fread(opt$input, sep=",", header=TRUE)
 
@@ -63,37 +85,74 @@ flowerData = reasonerData_f(dt, "Fl0wer")
 hermitData = reasonerData_f(dt, "Hermit")
 openlletData = reasonerData_f(dt, "Openllet")
 
+#write to file
+if (opt$out != "") {
+    pdf(opt$out)
+}
+
 if (opt$jfactignore) {
-	ylim = range(flowerData[,mean] + flowerData[,error], hermitData[,mean] + hermitData[,error], openlletData[,mean] + openlletData[,error])
-	plot(flowerData[,classcount], flowerData[,mean], type="b", pch="-", col="blue", ylim=ylim, log=log_graph, ylab="time [ms]", xlab="classcount")
+    # x limits
+    if (opt$xupper != -1) {
+        xlim = c(opt$xlower, opt$xupper)
+    } else {
+        xlim = range(flowerData[,classcount])
+    }
+    
+    # y limits
+    if (opt$yupper != -1) {
+        ylim = c(opt$ylower, opt$yupper)
+    } else {
+        ylim = range(flowerData[,mean] + flowerData[,error], hermitData[,mean] + hermitData[,error], openlletData[,mean] + openlletData[,error])
+    }
+
+	plot(flowerData[,classcount], flowerData[,mean], type=opt$type, pch=opt$symbolFl0wer, col="blue", xlim=xlim, ylim=ylim, log=log_graph, ylab="time [ms]", xlab="classcount")
 	
 	errorbar_f(flowerData, "blue")
 	errorbar_f(hermitData, "red")
 	errorbar_f(openlletData, "green")
 	
-	lines(hermitData, type="b", pch="-", col="red")
-	lines(openlletData, type="b", pch="-", col="green")
+	lines(hermitData, type=opt$type, pch=opt$symbolHermit, col="red")
+	lines(openlletData, type=opt$type, pch=opt$symbolOpenllet, col="green")
 	
 	legend("topleft", inset=.04, legend=c("Fl0wer", "Hermit", "Openllet"), col=c("blue", "red", "green"), lty=1)
 } else {
 	jfactData = reasonerData_f(dt, "JFact")
+
+    # x limits
+    if (opt$xupper != -1) {
+        xlim = c(opt$xlower, opt$xupper)
+    } else {
+        xlim = range(flowerData[,classcount])
+    }
+    
+    # y limits
+    if (opt$yupper != -1) {
+        ylim = c(opt$ylower, opt$yupper)
+    } else {
+	    ylim = range(flowerData[,mean] + flowerData[,error], hermitData[,mean] + hermitData[,error], openlletData[,mean] + openlletData[,error], jfactData[,mean] + jfactData[,error])
+    }
+    print(xlim)
+    print(ylim)
 	
-	ylim = range(flowerData[,mean] + flowerData[,error], hermitData[,mean] + hermitData[,error], openlletData[,mean] + openlletData[,error], jfactData[,mean] + jfactData[,error])
-	plot(flowerData[,classcount], flowerData[,mean], type="b", pch="-", col="blue", ylim=ylim, log=log_graph, ylab="time [ms]", xlab="classcount")
+	plot(flowerData[,classcount], flowerData[,mean], type=opt$type, pch=opt$symbolFl0wer, col="blue", xlim=xlim, ylim=ylim, log=log_graph, ylab="time [ms]", xlab="classcount")
 	
 	errorbar_f(flowerData, "blue")
 	errorbar_f(hermitData, "red")
 	errorbar_f(openlletData, "green")
 	errorbar_f(jfactData, "black")
 	
-	lines(hermitData, type="b", pch="-", col="red")
-	lines(openlletData, type="b", pch="-", col="green")
-	lines(jfactData, type="b", pch="-", col="black")
+	lines(hermitData, type=opt$type, pch=opt$symbolHermit, col="red")
+	lines(openlletData, type=opt$type, pch=opt$symbolOpenllet, col="green")
+	lines(jfactData, type=opt$type, pch=opt$symbolJFact, col="black")
 	
 	legend("topleft", inset=.04, legend=c("Fl0wer", "Hermit", "Openllet", "JFact"), col=c("blue", "red", "green", "black"), lty=1)
 }
 
 #arrows(bla, , xx, up, col = repcols, angle = 90, length = 0.03, code = 3)
 
-message("Press return to continue")
-invisible(readLines("stdin", n=1))
+if (opt$out != "") {
+    dev.off()
+} else {
+    message("Press return to continue")
+    invisible(readLines("stdin", n=1))
+}

@@ -61,12 +61,18 @@ The `execute.sh` script should have created an output.txt file.
 To plot this, you can use the `plotEval.R` script.
 
 ```
-./plotEval.R output.txt [OPTION]
+./plotEval.R -i output.txt [OPTION]
 
-OPTION (only one of them possible):
-    -l --log        for logarithmic scale
-    -i --ignore     to ignore jfact in the plotting
+OPTION:
+    -o --out            output file
+    -l --log            for logarithmic scale
+    -t --type           graph type (possible are `p` (points), `l` (lines), `both` (default))
+    -s --symbol         symbol used for the points (e.g. `x`, `o`, `-` (default))
+    -j --jfactignore    to ignore jfact in the plotting
+    -h --help           show help text
 ```
+
+To see all possible options try `./plotEval.R .h`.
 
 Problems & Fixes
 ----------------
