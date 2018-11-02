@@ -14,7 +14,7 @@ public abstract  class ReasoningTask {
 
     private int taskID;
     OntologyWrapper ontology;
-    long timeout;            //TODO read it from csv
+    long timeout;
 
     ReasoningTask(int taskID, OntologyWrapper ontology, long timeout) {
         this.taskID = taskID;
@@ -31,19 +31,6 @@ public abstract  class ReasoningTask {
             throw new IllegalArgumentException("Ontologie " + ontology.getName() + " contained only " + classesInOntology +
                     " classes and everything less than " + MIN_CLASSCOUNT + " gets sorted out.");
         }
-        /*try {
-            if (OntologyTranslator.fullfillsOwl2ElProfile(this.ontology.getOntology())) {
-                this.ontology.setOntology(OntologyTranslator.translateELtoFL0(this.ontology.getOntology()));
-            } else if (!OntologyTranslator.isRawFL0(this.ontology.getOntology())){
-                System.out.println("Ontology wasn't in EL or FL0");
-                this.ontology.setOntology(null);
-            }
-            if (!OntologyTranslator.isRawFL0(this.ontology.getOntology())) {
-                throw new RuntimeException("all ontologies should be FL0 ontologies at this point");
-            }
-        } catch (OWLOntologyCreationException e) {
-            this.ontology.setOntology(null);
-        }*/
     }
 
     ReasoningTask(String csvString) throws OWLOntologyCreationException {
