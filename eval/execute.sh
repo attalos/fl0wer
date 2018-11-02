@@ -3,7 +3,7 @@
 executeTask() {
 	#prepare system
 	sleep 2
-	sudo chrt -f 99 java -Xmx2048m -jar $1 execute $2 $3
+	sudo chrt -f 99 java -Xmx6g -jar $1 execute $2 $3
 	#echo "sudo chrt -f 99 java -jar $1 execute $2 $3"
 }
 
