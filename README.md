@@ -15,29 +15,10 @@ $ mvn package
 Usage
 -----
 
-I do recommend to create a new evaluation folder outside the cloned git repo and copy the three essential files there:
+For the evaluation use the `eval` directory. It contains three files. The `evaluator.jar` which is a symlink to the .jar you created by using `mvn package`, an `execute.sh` which helps running the actual evaluation and `plotEval.R` which plots the results. You can use this `eval` directory as you working directory and create subdirectorys to store the task files and evaluation files.
 
-```console
-$ cd ../..
-$ mkdir eval
-$ cp fl0ReasonerEvaluation.git/executionScript/execute.sh eval
-$ cp fl0ReasonerEvaluation.git/executionScript/plotEval.R eval
-$ cp fl0ReasonerEvaluation.git/fl0ReasonerEvaluation/target/fl0ReasonerEvaluation-1.0-SNAPSHOT-jar-with-dependencies.jar eval/evaluator.jar
-$ cd eval
-```
-
-If you plan to change the code rather use symlinks so you don't have to create a copy each time.
-
-```console
-$ cd ../..
-$ mkdir eval
-$ cd eval
-$ ln -s ../fl0ReasonerEvaluation.git/executionScript/execute.sh execute.sh
-$ ln -s ../fl0ReasonerEvaluation.git/executionScript/plotEval.R plotEval.R
-$ ln -s ../fl0ReasonerEvaluation.git/fl0ReasonerEvaluation/target/fl0ReasonerEvaluation-1.0-SNAPSHOT-jar-with-dependencies.jar evaluator.jar
-```
-
-You can use the .jar to create FL<sub>0</sub> ontologies using EL ontologies.
+You can use the `evaluator.jar` to create FL<sub>0</sub> ontologies using EL ontologies.
+Those are obviously not semantically equivalent, but have a similar structure. (Essentially &#8707; is replaced by &#8704; and not plane FL<sub>0</sub> stuff is droped)
 
 ```console
 $ java -jar evaluator.jar translate INPUT_DIR OUTPUT_DIR

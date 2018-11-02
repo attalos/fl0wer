@@ -7,5 +7,11 @@
 *.toc
 *.lol
 *.synctex.gz
-target/
 *.dot
+target/
+
+#organize eval dir
+eval/**
+!eval/execute.sh
+!eval/plotEval.R
+!eval/evaluator.jar
