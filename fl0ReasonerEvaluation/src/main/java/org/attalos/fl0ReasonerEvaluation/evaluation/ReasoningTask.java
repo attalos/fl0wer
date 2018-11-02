@@ -20,11 +20,6 @@ public abstract  class ReasoningTask {
         this.taskID = taskID;
         this.ontology = ontology;
         this.timeout = timeout;
-        //translate to FL0
-
-        if (!OntologyTranslator.isRawFL0(this.ontology.getOntology())) {
-            throw new IllegalArgumentException("all ontologies should be FL0 ontologies at this point, but " + ontology.getName() + "was not.");
-        }
 
         long classesInOntology = this.ontology.getOntology().classesInSignature().count();
         if (classesInOntology < MIN_CLASSCOUNT) {
