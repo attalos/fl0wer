@@ -3,10 +3,7 @@ package org.attalos.fl0ReasonerEvaluation.reasoner;
 import org.attalos.fl0ReasonerEvaluation.evaluation.PerformanceResult;
 import org.attalos.fl0ReasonerEvaluation.evaluation.ReasonerEvaluator;
 import org.attalos.fl0ReasonerEvaluation.evaluation.ReasoningTask;
-import org.attalos.fl0ReasonerEvaluation.evaluation.correctness.BooleanAnswer;
-import org.attalos.fl0ReasonerEvaluation.evaluation.correctness.MissingAnswer;
-import org.attalos.fl0ReasonerEvaluation.evaluation.correctness.SubsumersetAnswer;
-import org.attalos.fl0ReasonerEvaluation.evaluation.correctness.ReasonerAnswer;
+import org.attalos.fl0ReasonerEvaluation.evaluation.correctness.*;
 import org.attalos.fl0ReasonerEvaluation.helpers.OntologyWrapper;
 import org.attalos.fl0ReasonerEvaluation.helpers.Tuple;
 import org.semanticweb.owlapi.apibinding.OWLManager;
@@ -20,6 +17,9 @@ import org.semanticweb.owlapi.reasoner.OWLReasoner;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 public abstract class OwlReasonerEvaluator extends ReasonerEvaluator<OWLReasoner> {
 
@@ -31,8 +31,13 @@ public abstract class OwlReasonerEvaluator extends ReasonerEvaluator<OWLReasoner
         reasoner.precomputeInferences(InferenceType.CLASS_HIERARCHY);
         Instant finishTime = Instant.now();
 
+        Map<OWLClass, NodeSet<OWLClass>> answerValue = new HashMap<>();
+        reasoner.getRootOntology().classesInSignature().forEach(owlClass -> {       //todo maybe the getRootOntology ist the problem here
+            answerValue.put(owlClass, reasoner.getSuperClasses(owlClass));
+        });
+
         Duration duration = Duration.between(startingTime, finishTime);
-        ReasonerAnswer answer = MissingAnswer.getInstance(); //TODO change this!
+        ReasonerAnswer answer = new ClassificationAnswer(answerValue, null);
         return new Tuple<>(duration, answer);
 
     }

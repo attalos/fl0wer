@@ -3,10 +3,7 @@ package org.attalos.fl0ReasonerEvaluation.reasoner;
 import org.attalos.fl0ReasonerEvaluation.evaluation.PerformanceResult;
 import org.attalos.fl0ReasonerEvaluation.evaluation.ReasonerEvaluator;
 import org.attalos.fl0ReasonerEvaluation.evaluation.ReasoningTask;
-import org.attalos.fl0ReasonerEvaluation.evaluation.correctness.BooleanAnswer;
-import org.attalos.fl0ReasonerEvaluation.evaluation.correctness.MissingAnswer;
-import org.attalos.fl0ReasonerEvaluation.evaluation.correctness.ReasonerAnswer;
-import org.attalos.fl0ReasonerEvaluation.evaluation.correctness.SubsumersetAnswer;
+import org.attalos.fl0ReasonerEvaluation.evaluation.correctness.*;
 import org.attalos.fl0ReasonerEvaluation.helpers.OntologyWrapper;
 import org.attalos.fl0ReasonerEvaluation.helpers.Tuple;
 import org.attalos.fl0wer.FL0wer;
@@ -15,7 +12,9 @@ import org.semanticweb.owlapi.model.OWLClass;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public class Fl0werEvaluator extends ReasonerEvaluator<FL0wer> {
 
@@ -26,11 +25,11 @@ public class Fl0werEvaluator extends ReasonerEvaluator<FL0wer> {
     @Override
     protected Tuple<Duration, ReasonerAnswer> classificationMethod(FL0wer fl0wer) {
         Instant startingTime = Instant.now();
-        fl0wer.classify();
+        Map<OWLClass, Collection<OWLClass>> answerValue = fl0wer.classify();
         Instant finishTime = Instant.now();
 
         Duration duration = Duration.between(startingTime, finishTime);
-        ReasonerAnswer answer = MissingAnswer.getInstance(); //TODO change this!
+        ReasonerAnswer answer = new ClassificationAnswer(answerValue);
         return new Tuple<>(duration, answer);
     }
 
