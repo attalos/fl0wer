@@ -1,6 +1,8 @@
 package org.attalos.fl0ReasonerEvaluation.evaluation;
 
+import org.attalos.fl0ReasonerEvaluation.evaluation.correctness.ReasonerAnswer;
 import org.attalos.fl0ReasonerEvaluation.helpers.OntologyWrapper;
+import org.attalos.fl0ReasonerEvaluation.helpers.Tuple;
 import org.semanticweb.owlapi.model.OWLClass;
 
 import java.time.Duration;
@@ -9,9 +11,9 @@ import java.util.function.Function;
 
 public abstract class ReasonerEvaluator<T> {
 
-    protected abstract Duration classificationMethod(T reasoner);
-    protected abstract Duration superClassesMethod(T reasoner, OWLClass classOwl);
-    protected abstract Duration substumptionMethod(T reasoner, OWLClass subClassOwl, OWLClass superClassOwl);
+    protected abstract Tuple<Duration, ReasonerAnswer> classificationMethod(T reasoner);
+    protected abstract Tuple<Duration, ReasonerAnswer> superClassesMethod(T reasoner, OWLClass classOwl);
+    protected abstract Tuple<Duration, ReasonerAnswer> subsumptionMethod(T reasoner, OWLClass subClassOwl, OWLClass superClassOwl);
     protected abstract T init(OntologyWrapper ontWrp);
     protected abstract String getReasonerName();
 
@@ -21,42 +23,36 @@ public abstract class ReasonerEvaluator<T> {
      *
      * Classification org.attalos.fl0ReasonerEvaluation.evaluation
      *
-     * @param ontWrp
-     * @param timeout
-     * @return
      */
-    public final PerformanceResult classify(OntologyWrapper ontWrp, long timeout) {
-        return reason(ontWrp, timeout, (reasoner) -> classificationMethod(reasoner));
+    public final PerformanceResult classify(OntologyWrapper ontWrp,
+                                            int taskID,
+                                            long timeout) {
+        return reason(ontWrp, taskID, timeout, (reasoner) -> classificationMethod(reasoner));
     }
 
     /**
      *
      * SuperClasses calculation org.attalos.fl0ReasonerEvaluation.evaluation
      *
-     * @param ontWrp
-     * @param classOwl
-     * @param timeout
-     * @return
      */
-    public final PerformanceResult superClasses(OntologyWrapper ontWrp, OWLClass classOwl, long timeout) {
-        return reason(ontWrp, timeout, (reasoner) -> superClassesMethod(reasoner, classOwl));
+    public final PerformanceResult superClasses(OntologyWrapper ontWrp,
+                                                int taskID,
+                                                OWLClass classOwl,
+                                                long timeout) {
+        return reason(ontWrp, taskID, timeout, (reasoner) -> superClassesMethod(reasoner, classOwl));
     }
 
     /**
      *
      * Subsumption org.attalos.fl0ReasonerEvaluation.evaluation
      *
-     * @param ontWrp
-     * @param subClassOwl
-     * @param superClassOwl
-     * @param timeout
-     * @return
      */
     public final PerformanceResult subsumption(OntologyWrapper ontWrp,
+                                                  int taskID,
                                                   OWLClass subClassOwl,
                                                   OWLClass superClassOwl,
                                                   long timeout) {
-        return reason(ontWrp, timeout, (reasoner) -> substumptionMethod(reasoner, subClassOwl, superClassOwl));
+        return reason(ontWrp, taskID, timeout, (reasoner) -> subsumptionMethod(reasoner, subClassOwl, superClassOwl));
     }
 
 
@@ -64,41 +60,37 @@ public abstract class ReasonerEvaluator<T> {
      *
      * Generalised org.attalos.fl0ReasonerEvaluation.evaluation
      *
-     * @param ontWrp
-     * @param timeout
-     * @param reasoningExecution
-     * @return
      */
-    private PerformanceResult reason(OntologyWrapper ontWrp, long timeout, Function<T, Duration> reasoningExecution) {
+    private PerformanceResult reason(OntologyWrapper ontWrp, int taskID, long timeout, Function<T, Tuple<Duration, ReasonerAnswer>> reasoningExecution) {
         if (ontWrp.getOntology() != null) {
-            //get time data
-            Duration duration = Duration.ofSeconds(timeout);
 
-            T reasoner = null;
-            ExecutorService executor = null;
-            Future<Duration> timeoutTask = null;
+            PerformanceResult result = new PerformanceResult(taskID, this.getReasonerName(), ontWrp);
+
             try {
                 // init
-                reasoner = init(ontWrp);
-                T finalReasoner = reasoner;
+                T reasoner = init(ontWrp);
 
                 // prepare timeout method
-                executor = Executors.newCachedThreadPool();
-                timeoutTask = executor.submit(() -> reasoningExecution.apply(finalReasoner));
+                ExecutorService executor = Executors.newCachedThreadPool();
+                Future<Tuple<Duration, ReasonerAnswer>> timeoutTask = executor.submit(() -> reasoningExecution.apply(reasoner));
 
                 // run timeout method
-                duration = timeoutTask.get(timeout, TimeUnit.SECONDS);
+                Tuple<Duration, ReasonerAnswer> answer = timeoutTask.get(timeout, TimeUnit.SECONDS);
+                result.setDuration(answer.getLeft());
+                result.setAnswer(answer.getRight());
 
                 executor.shutdown();
 
             } catch (TimeoutException e) {
                 System.err.println("Task ran into timeout. It took longer than " + timeout + " seconds.");
+                result.ranIntoTimeout();
             } catch (Exception e) {
                 System.err.println("Error occured - wrote time = " + timeout + " (maxtime) to output file");
                 e.printStackTrace(System.err);
+                result.threwException();
             }
 
-            return new PerformanceResult(this.getReasonerName(), ontWrp, duration);
+            return result;
         } else {
             return null;
         }

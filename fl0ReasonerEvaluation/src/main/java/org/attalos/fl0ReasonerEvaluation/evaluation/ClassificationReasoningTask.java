@@ -17,7 +17,7 @@ public class ClassificationReasoningTask extends  ReasoningTask {
 
     @Override
     public PerformanceResult evaluate(ReasonerEvaluator evaluator) {
-        return evaluator.classify(this.ontology, this.timeout);
+        return evaluator.classify(this.ontology, this.taskID, this.timeout);
     }
 
     /*

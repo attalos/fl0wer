@@ -32,8 +32,17 @@ public class Fl0ReasonerEvaluationLauncher {
         org.apache.log4j.Logger.getRootLogger().setLevel(Level.OFF);
 
         //handle parameters
-        if (args.length <= 2 || !Arrays.asList("translate" , "execute", "createClassification", "createSubsumption", "createSubsumerset").contains(args[0])) {
+        if (args.length < 1 || !Arrays.asList("translate" , "execute", "createClassification", "createSubsumption", "createSubsumerset", "resultHeader").contains(args[0])) {
             showHelp();
+            return;
+        }
+
+        if (args[0].equals("resultHeader")) {
+            if (args.length != 1) {
+                showHelp();
+                return;
+            }
+            System.out.println(PerformanceResult.csvEntryHeader(","));
             return;
         }
 
@@ -190,6 +199,7 @@ public class Fl0ReasonerEvaluationLauncher {
                 .split("/");
         String executedFileName = executedFilePath[executedFilePath.length - 1];
         System.out.println("expected Syntax: ");
+        System.out.println("java -jar " + executedFileName + " resultHeader");
         System.out.println("java -jar " + executedFileName + " translate INPUT_DIR OUTPUT_DIR");
         System.out.println("java -jar " + executedFileName + " execute REASONER_NAME TASK_LINE");
         System.out.println("java -jar " + executedFileName + " createClassification INPUT_DIR TASK_FILENAME TASK_COUNT, TIMEOUT");

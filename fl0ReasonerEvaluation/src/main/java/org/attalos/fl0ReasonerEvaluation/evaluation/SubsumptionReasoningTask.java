@@ -18,11 +18,11 @@ public class SubsumptionReasoningTask extends ReasoningTask {
         //select classes randomly
         List<OWLClass> classesInOntology = this.ontology.getOntology().classesInSignature().collect(Collectors.toList());
 
-        int index = ThreadLocalRandom.current().nextInt(0, classesInOntology.size());
-        this.subClassOwl = classesInOntology.get(index);
+        int indexSub = ThreadLocalRandom.current().nextInt(0, classesInOntology.size());
+        this.subClassOwl = classesInOntology.get(indexSub);
 
-        index = ThreadLocalRandom.current().nextInt(0, classesInOntology.size());
-        this.superClassOwl = classesInOntology.get(index);
+        int indexSuper = ThreadLocalRandom.current().nextInt(0, classesInOntology.size());
+        this.superClassOwl = classesInOntology.get(indexSuper);
     }
 
     public SubsumptionReasoningTask(String csvString) throws OWLOntologyCreationException {
@@ -39,7 +39,7 @@ public class SubsumptionReasoningTask extends ReasoningTask {
 
     @Override
     public PerformanceResult evaluate(ReasonerEvaluator evaluator) {
-        return evaluator.subsumption(this.ontology, this.subClassOwl, this.superClassOwl, this.timeout);
+        return evaluator.subsumption(this.ontology, this.taskID, this.subClassOwl, this.superClassOwl, this.timeout);
     }
 
     @Override

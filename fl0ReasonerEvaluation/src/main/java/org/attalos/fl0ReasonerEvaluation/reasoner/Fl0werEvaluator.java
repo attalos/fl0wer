@@ -3,7 +3,11 @@ package org.attalos.fl0ReasonerEvaluation.reasoner;
 import org.attalos.fl0ReasonerEvaluation.evaluation.PerformanceResult;
 import org.attalos.fl0ReasonerEvaluation.evaluation.ReasonerEvaluator;
 import org.attalos.fl0ReasonerEvaluation.evaluation.ReasoningTask;
+import org.attalos.fl0ReasonerEvaluation.evaluation.correctness.BooleanAnswer;
+import org.attalos.fl0ReasonerEvaluation.evaluation.correctness.MissingAnswer;
+import org.attalos.fl0ReasonerEvaluation.evaluation.correctness.ReasonerAnswer;
 import org.attalos.fl0ReasonerEvaluation.helpers.OntologyWrapper;
+import org.attalos.fl0ReasonerEvaluation.helpers.Tuple;
 import org.attalos.fl0wer.FL0wer;
 import org.attalos.fl0wer.utils.ConstantValues;
 import org.semanticweb.owlapi.model.OWLClass;
@@ -18,27 +22,36 @@ public class Fl0werEvaluator extends ReasonerEvaluator<FL0wer> {
     }
 
     @Override
-    protected Duration classificationMethod(FL0wer fl0wer) {
+    protected Tuple<Duration, ReasonerAnswer> classificationMethod(FL0wer fl0wer) {
         Instant startingTime = Instant.now();
         fl0wer.classify();
         Instant finishTime = Instant.now();
-        return Duration.between(startingTime, finishTime);
+
+        Duration duration = Duration.between(startingTime, finishTime);
+        ReasonerAnswer answer = MissingAnswer.getInstance(); //TODO change this!
+        return new Tuple<>(duration, answer);
     }
 
     @Override
-    protected Duration superClassesMethod(FL0wer fl0wer, OWLClass classOwl) {
+    protected Tuple<Duration, ReasonerAnswer> superClassesMethod(FL0wer fl0wer, OWLClass classOwl) {
         Instant startingTime = Instant.now();
         fl0wer.calculate_subsumerset(classOwl);
         Instant finishTime = Instant.now();
-        return Duration.between(startingTime, finishTime);
+
+        Duration duration = Duration.between(startingTime, finishTime);
+        ReasonerAnswer answer = MissingAnswer.getInstance(); //TODO change this!
+        return new Tuple<>(duration, answer);
     }
 
     @Override
-    protected Duration substumptionMethod(FL0wer fl0wer, OWLClass subClassOwl, OWLClass superClassOwl) {
+    protected Tuple<Duration, ReasonerAnswer> subsumptionMethod(FL0wer fl0wer, OWLClass subClassOwl, OWLClass superClassOwl) {
         Instant startingTime = Instant.now();
-        fl0wer.decide_subsumption(subClassOwl, superClassOwl);
+        boolean answerValue = fl0wer.decide_subsumption(subClassOwl, superClassOwl);
         Instant finishTime = Instant.now();
-        return Duration.between(startingTime, finishTime);
+
+        Duration duration = Duration.between(startingTime, finishTime);
+        ReasonerAnswer answer = new BooleanAnswer(answerValue);
+        return new Tuple<>(duration, answer);
     }
 
     @Override

@@ -12,7 +12,7 @@ import java.io.File;
 public abstract  class ReasoningTask {
     private static final long MIN_CLASSCOUNT = 500;
 
-    private int taskID;
+    int taskID;
     OntologyWrapper ontology;
     long timeout;
 

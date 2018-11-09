@@ -10,6 +10,7 @@ executeTask() {
 helpMsg="usage: cmd taskFile jarFile [-r]"
 continueExecution=true
 currentLine=0
+resultHeader=$(java -jar $2 resultHeader)
 
 #correct num of param
 if [ "$#" -lt 2 ]; then
@@ -25,7 +26,7 @@ echo $1
 while getopts ":r" opt
 do
 	case $opt in
-		(r) continueExecution=false; echo "reasoner,ontology,classcount,time" > output.txt;;
+		(r) continueExecution=false; echo $resultHeader > output.txt;;
 		(\?) echo "invalid option: -$OPTARG"; echo $helpMsg; exit;;
 	esac
 done
@@ -33,9 +34,9 @@ done
 #get correct current line
 if [ $continueExecution = true ]; then
 	if [ ! -f .currentExecutionLine ] || [ ! -f output.txt ]; then
-		echo "File not found!"
+		echo "No file to continue found!\nStarting a new evaluation."
 		echo $currentLine > .currentExecutionLine
-        echo "reasoner,ontology,classcount,time" > output.txt
+        echo $resultHeader > output.txt
 	else
 		currentLine=$(cat .currentExecutionLine)
 	fi
@@ -59,8 +60,8 @@ do
 	echo $line
 	echo -n "fl0wer   -   ";  result_fl0wer=$(executeTask $2 fl0wer $line);     echo $result_fl0wer
 	echo -n "hermit   -   ";  result_hermit=$(executeTask $2 hermit $line);     echo $result_hermit
-	echo -n "openllet - ";    result_openllet=$(executeTask $2 openllet $line); echo $result_openllet
-	echo -n "jfact    -    "; result_jfact=$(executeTask $2 jfact $line);       echo $result_jfact
+	echo -n "openllet -   ";  result_openllet=$(executeTask $2 openllet $line); echo $result_openllet
+	echo -n "jfact    -   ";  result_jfact=$(executeTask $2 jfact $line);       echo $result_jfact
 
 	#write
 	echo $result_fl0wer >> output.txt
@@ -71,4 +72,3 @@ do
 	((i++))
 	echo $i > .currentExecutionLine
 done < "$1"
-

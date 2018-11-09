@@ -34,7 +34,7 @@ public class SuperClassesReasoningTask extends ReasoningTask {
 
     @Override
     public PerformanceResult evaluate(ReasonerEvaluator evaluator) {
-        return evaluator.superClasses(this.ontology, this.classOwl, this.timeout);
+        return evaluator.superClasses(this.ontology, this.taskID, this.classOwl, this.timeout);
     }
 
     @Override
