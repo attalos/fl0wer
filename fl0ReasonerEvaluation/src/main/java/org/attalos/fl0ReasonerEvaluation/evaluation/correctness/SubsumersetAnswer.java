@@ -2,14 +2,11 @@ package org.attalos.fl0ReasonerEvaluation.evaluation.correctness;
 
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLClass;
-import org.semanticweb.owlapi.reasoner.Node;
 import org.semanticweb.owlapi.reasoner.NodeSet;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.counting;
 
 public class SubsumersetAnswer implements ReasonerAnswer {
     private List<String> answer;
@@ -23,16 +20,18 @@ public class SubsumersetAnswer implements ReasonerAnswer {
                 .map(OWLClass::toString)
                 .sorted()
                 .collect(Collectors.toList());
+    }
 
-        System.out.println(answer);
+    public SubsumersetAnswer(List<OWLClass> answer, OWLClass baseClass) {
+        this.answer = answer.stream()
+                .filter(owlClass -> !owlClass.equals(baseClass))
+                .map(OWLClass::toString)
+                .sorted()
+                .collect(Collectors.toList());
     }
 
     @Override
     public String toRepresentativeShortForm() {
-        return "hierKoennteIhreWerbungStehen";
-    }
-
-    private static String nodeToString (Node node) {
-        return node.toString();
+        return "hash:" + Integer.toHexString(answer.hashCode());
     }
 }

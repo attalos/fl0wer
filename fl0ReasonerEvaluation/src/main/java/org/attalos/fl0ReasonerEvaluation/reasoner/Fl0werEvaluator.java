@@ -6,6 +6,7 @@ import org.attalos.fl0ReasonerEvaluation.evaluation.ReasoningTask;
 import org.attalos.fl0ReasonerEvaluation.evaluation.correctness.BooleanAnswer;
 import org.attalos.fl0ReasonerEvaluation.evaluation.correctness.MissingAnswer;
 import org.attalos.fl0ReasonerEvaluation.evaluation.correctness.ReasonerAnswer;
+import org.attalos.fl0ReasonerEvaluation.evaluation.correctness.SubsumersetAnswer;
 import org.attalos.fl0ReasonerEvaluation.helpers.OntologyWrapper;
 import org.attalos.fl0ReasonerEvaluation.helpers.Tuple;
 import org.attalos.fl0wer.FL0wer;
@@ -14,6 +15,7 @@ import org.semanticweb.owlapi.model.OWLClass;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 
 public class Fl0werEvaluator extends ReasonerEvaluator<FL0wer> {
 
@@ -35,11 +37,11 @@ public class Fl0werEvaluator extends ReasonerEvaluator<FL0wer> {
     @Override
     protected Tuple<Duration, ReasonerAnswer> superClassesMethod(FL0wer fl0wer, OWLClass classOwl) {
         Instant startingTime = Instant.now();
-        fl0wer.calculate_subsumerset(classOwl);
+        List<OWLClass> answerValue = fl0wer.calculate_subsumerset(classOwl);
         Instant finishTime = Instant.now();
 
         Duration duration = Duration.between(startingTime, finishTime);
-        ReasonerAnswer answer = MissingAnswer.getInstance(); //TODO change this!
+        ReasonerAnswer answer = new SubsumersetAnswer(answerValue, classOwl);
         return new Tuple<>(duration, answer);
     }
 
