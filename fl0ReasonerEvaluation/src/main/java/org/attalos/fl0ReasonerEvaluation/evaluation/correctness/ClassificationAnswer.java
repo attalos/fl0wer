@@ -8,7 +8,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ClassificationAnswer implements ReasonerAnswer {
-    private List<Tuple<String, SubsumersetAnswer>> answer;
+    private List<String> answer;
 
     /**
      *
@@ -19,9 +19,9 @@ public class ClassificationAnswer implements ReasonerAnswer {
                 .map(e -> {
                     String owlClass = e.getKey().toString();
                     SubsumersetAnswer subsumerset = new SubsumersetAnswer(e.getValue());
-                    return new Tuple<>(owlClass, subsumerset);
+                    return owlClass + ":  " + subsumerset.toRepresentativeShortForm();
                 })
-                .sorted(Comparator.comparing(Tuple::getLeft))
+                .sorted()
                 .collect(Collectors.toList());
 
     }
@@ -31,14 +31,15 @@ public class ClassificationAnswer implements ReasonerAnswer {
                 .map(e -> {
                     String owlClass = e.getKey().toString();
                     SubsumersetAnswer subsumerset = new SubsumersetAnswer(new ArrayList<>(e.getValue()), e.getKey());
-                    return new Tuple<>(owlClass, subsumerset);
+                    return owlClass + ":  " + subsumerset.toRepresentativeShortForm();
                 })
-                .sorted(Comparator.comparing(Tuple::getLeft))
+                .sorted()
                 .collect(Collectors.toList());
     }
 
     @Override
     public String toRepresentativeShortForm() {
+        String hash = "hash:" + Integer.toHexString(answer.hashCode());
         return "hash:" + Integer.toHexString(answer.hashCode());
     }
 }
