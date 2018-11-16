@@ -50,7 +50,7 @@ public class Ontology {
                 OWLSubClassOfAxiom sub_ax = (OWLSubClassOfAxiom) ax;
                 ConceptDescription subClass = owlClass_to_conceptDescription(sub_ax.getSubClass(), o2iTranslator);
                 ConceptDescription superClass = owlClass_to_conceptDescription(sub_ax.getSuperClass(), o2iTranslator);
-                assertions.add(new GCI(subClass, superClass));
+                addAssertion(new GCI(subClass, superClass));
                 //System.out.println(toString_expression(sub_ax.getSubClass()) + " \u2291 " + toString_expression(sub_ax.getSuperClass()));
             } else if (ax instanceof  OWLEquivalentClassesAxiom) {
                 OWLEquivalentClassesAxiom equ_ax = (OWLEquivalentClassesAxiom) ax;
@@ -76,8 +76,8 @@ public class Ontology {
                 }
 
 
-                assertions.add(new GCI(class_1_0, class_2_0));
-                assertions.add(new GCI(class_2_0, class_1_0));
+                addAssertion(new GCI(class_1_0, class_2_0));
+                addAssertion(new GCI(class_2_0, class_1_0));
             } else if (ax instanceof OWLDeclarationAxiom) {
                 //nothing
             } else {
@@ -92,9 +92,6 @@ public class Ontology {
     }
 
     public static ConceptDescription owlClass_to_conceptDescription(OWLClassExpression owl_exp, OwlToInternalTranslator o2iTranslator) {
-        //OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-        //OWLDataFactory factory = manager.getOWLDataFactory();
-
         if (owl_exp instanceof OWLClass) {
             if(owl_exp.equals(owl_top)) {
                 return Top.getInstance();
@@ -116,8 +113,12 @@ public class Ontology {
         return assertions.size();
     }
 
-    public void add_gci(GCI gci) {
+    void add_gci(GCI gci) {
         this.new_assertions.add(gci);
+    }
+
+    private synchronized void addAssertion(GCI gci) {
+        this.assertions.add(gci);
     }
 
     public void normalize() {
