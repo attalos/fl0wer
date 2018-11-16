@@ -61,8 +61,8 @@ if ( is.null(opt$input  ) ) { print("-i is required"); quit();}
 if ( is.null(opt$out    ) ) { opt$out    = "" }
 if ( is.null(opt$outtype) ) { opt$outtype= "display" }
 if ( is.null(opt$log    ) ) { opt$log    = FALSE }
-if ( is.null(opt$type   ) ) { opt$type   = "b" }
-if ( is.null(opt$symbol ) ) { opt$symbol = "-" }
+if ( is.null(opt$type   ) ) { opt$type   = "p" }
+if ( is.null(opt$symbol ) ) { opt$symbol = "x" }
 if ( is.null(opt$symbolFl0wer   ) ) { opt$symbolFl0wer   = opt$symbol }
 if ( is.null(opt$symbolHermit   ) ) { opt$symbolHermit   = opt$symbol }
 if ( is.null(opt$symbolOpenllet ) ) { opt$symbolOpenllet = opt$symbol }
