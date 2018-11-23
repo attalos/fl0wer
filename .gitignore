@@ -15,3 +15,4 @@ eval/**
 !eval/execute.sh
 !eval/plotEval.R
 !eval/evaluator.jar
+!eval/findMismatchingHashes.py
