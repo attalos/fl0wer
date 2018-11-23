@@ -39,7 +39,6 @@ public class ClassificationAnswer implements ReasonerAnswer {
 
     @Override
     public String toRepresentativeShortForm() {
-        String hash = "hash:" + Integer.toHexString(answer.hashCode());
         return "hash:" + Integer.toHexString(answer.hashCode());
     }
 }

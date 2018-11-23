@@ -19,8 +19,9 @@ filtered = (df[df.answerHash != "missingAnswer"].groupby(["ontology", "taskID"])
 keys_of_errors = (filtered[filtered != 1]).index.values
 
 # print those blocks
+print("##############################")
+print("### Mismatching answers at ###")
+print("##############################")
 for error_keys in keys_of_errors:
-    print("##############################")
-    print("### Mismatching answers at ###")
-    print("##############################")
+    print("\n")
     print(df[(df.ontology == error_keys[0]) & (df.taskID == error_keys[1])])
