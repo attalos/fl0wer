@@ -13,8 +13,8 @@ input_file = sys.argv[1]
 df = pandas.read_csv(input_file)
 
 # find keys where the hash has a mismatch
-# i actually hate the two following lines, because it think they are no as
-# simple as they could be, but the work...
+# i actually hate the two following lines, because it think they are not as
+# simple as they could be, but they work...
 filtered = (df[df.answerHash != "missingAnswer"].groupby(["ontology", "taskID"]).answerHash.nunique())
 keys_of_errors = (filtered[filtered != 1]).index.values
 

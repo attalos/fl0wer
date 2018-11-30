@@ -16,3 +16,4 @@ eval/**
 !eval/plotEval.R
 !eval/evaluator.jar
 !eval/findMismatchingHashes.py
+!eval/prettyPrintOutput.py
