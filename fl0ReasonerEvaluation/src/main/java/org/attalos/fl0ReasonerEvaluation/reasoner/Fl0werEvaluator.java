@@ -15,6 +15,8 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Fl0werEvaluator extends ReasonerEvaluator<FL0wer> {
 
@@ -29,7 +31,10 @@ public class Fl0werEvaluator extends ReasonerEvaluator<FL0wer> {
         Instant finishTime = Instant.now();
 
         Duration duration = Duration.between(startingTime, finishTime);
-        ReasonerAnswer answer = new ClassificationAnswer(answerValue);
+        //collection to stream
+        Map<OWLClass, Stream<OWLClass>> answerWithStreams = answerValue.entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().stream()));
+        ReasonerAnswer answer = new ClassificationAnswer(answerWithStreams);
         return new Tuple<>(duration, answer);
     }
 
@@ -40,7 +45,7 @@ public class Fl0werEvaluator extends ReasonerEvaluator<FL0wer> {
         Instant finishTime = Instant.now();
 
         Duration duration = Duration.between(startingTime, finishTime);
-        ReasonerAnswer answer = new SubsumersetAnswer(answerValue, classOwl);
+        ReasonerAnswer answer = new SubsumersetAnswer(answerValue.stream());
         return new Tuple<>(duration, answer);
     }
 
@@ -70,68 +75,4 @@ public class Fl0werEvaluator extends ReasonerEvaluator<FL0wer> {
         return reasoningTask.evaluate(this);
     }
 
-    /*@Override
-    public PerformanceResult classify(OntologyWrapper ontology) {
-        if (ontology.getOntology() != null) {
-            //get time data
-            Duration duration = Duration.ZERO;
-            try {
-                FL_0_subsumption fl0wer = new FL_0_subsumption(ontology.getOntology());
-
-
-                ExecutorService executor = Executors.newFixedThreadPool(1);
-                Future<Void> timeoutTask = executor.submit(() -> {
-                    Instant startingTime = Instant.now();
-                    fl0wer.classify();
-                    Instant finishTime = Instant.now();
-                    return null;
-                });
-
-
-                duration = Duration.between(startingTime, finishTime);
-            } catch (Exception e) {
-                System.err.println("Error occured - wrote time = 0 to output file");
-                e.printStackTrace(System.err);
-            }
-
-
-            return new PerformanceResult("Fl0wer", ontology, duration);
-        } else {
-            return null;
-        }
-    }*/
-
-    /*@Override
-    public PerformanceResult superClasses(OntologyWrapper ontology, OWLClass classOwl) {
-        if (ontology.getOntology() != null) {
-            FL_0_subsumption fl0wer = new FL_0_subsumption(ontology.getOntology());
-
-            //get time data
-            Instant startingTime = Instant.now();
-            fl0wer.calculate_subsumerset(classOwl);
-            Instant finishTime = Instant.now();
-
-            Duration duration = Duration.between(startingTime, finishTime);
-            return new PerformanceResult("Fl0wer", ontology, duration);
-        } else {
-            return null;
-        }
-    }*/
-
-    /*@Override
-    public PerformanceResult subsumption(OntologyWrapper ontology, OWLClass subClassOwl, OWLClass superClassOwl) {
-        if (ontology.getOntology() != null) {
-            FL_0_subsumption fl0wer = new FL_0_subsumption(ontology.getOntology());
-
-            //get time data
-            Instant startingTime = Instant.now();
-            fl0wer.decide_subsumption(subClassOwl, superClassOwl);
-            Instant finishTime = Instant.now();
-
-            Duration duration = Duration.between(startingTime, finishTime);
-            return new PerformanceResult("Fl0wer", ontology, duration);
-        } else {
-            return null;
-        }
-    }*/
 }

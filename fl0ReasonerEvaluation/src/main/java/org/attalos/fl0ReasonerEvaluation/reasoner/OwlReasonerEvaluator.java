@@ -20,6 +20,7 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 public abstract class OwlReasonerEvaluator extends ReasonerEvaluator<OWLReasoner> {
 
@@ -31,13 +32,15 @@ public abstract class OwlReasonerEvaluator extends ReasonerEvaluator<OWLReasoner
         reasoner.precomputeInferences(InferenceType.CLASS_HIERARCHY);
         Instant finishTime = Instant.now();
 
-        Map<OWLClass, NodeSet<OWLClass>> answerValue = new HashMap<>();
+        Map<OWLClass, Stream<OWLClass>> answerValue = new HashMap<>();
         reasoner.getRootOntology().classesInSignature().forEach(owlClass -> {       //todo maybe the getRootOntology ist the problem here
-            answerValue.put(owlClass, reasoner.getSuperClasses(owlClass));
+            Stream<OWLClass> equivalent = reasoner.getEquivalentClasses(owlClass).entities();
+            Stream<OWLClass> superClasses = reasoner.getSuperClasses(owlClass).entities();
+            answerValue.put(owlClass, Stream.concat(superClasses, equivalent));
         });
 
         Duration duration = Duration.between(startingTime, finishTime);
-        ReasonerAnswer answer = new ClassificationAnswer(answerValue, null);
+        ReasonerAnswer answer = new ClassificationAnswer(answerValue);
         return new Tuple<>(duration, answer);
 
     }
@@ -45,11 +48,13 @@ public abstract class OwlReasonerEvaluator extends ReasonerEvaluator<OWLReasoner
     @Override
     protected Tuple<Duration, ReasonerAnswer> superClassesMethod(OWLReasoner reasoner, OWLClass classOwl) {
         Instant startingTime = Instant.now();
-        NodeSet answerValue = reasoner.getSuperClasses(classOwl);
+        NodeSet<OWLClass> answerValue = reasoner.getSuperClasses(classOwl);
         Instant finishTime = Instant.now();
 
         Duration duration = Duration.between(startingTime, finishTime);
-        ReasonerAnswer answer = new SubsumersetAnswer(answerValue);
+        Stream<OWLClass> equivalent = reasoner.getEquivalentClasses(classOwl).entities();
+        Stream<OWLClass> superClasses = answerValue.entities();
+        ReasonerAnswer answer = new SubsumersetAnswer(Stream.concat(superClasses, equivalent));
         return new Tuple<>(duration, answer);
 
     }

@@ -11,17 +11,9 @@ import java.util.stream.Stream;
 public class SubsumersetAnswer implements ReasonerAnswer {
     private List<String> answer;
 
-    public SubsumersetAnswer(NodeSet<OWLClass> answer) {
-        this.answer = answer.entities()
+    public SubsumersetAnswer(Stream<OWLClass> answer) {
+        this.answer = answer
                 .filter(owlClass -> !owlClass.equals(OWLManager.getOWLDataFactory().getOWLThing()))
-                .map(OWLClass::toString)
-                .sorted()
-                .collect(Collectors.toList());
-    }
-
-    public SubsumersetAnswer(List<OWLClass> answer, OWLClass baseClass) {
-        this.answer = answer.stream()
-                .filter(owlClass -> !owlClass.equals(baseClass))
                 .map(OWLClass::toString)
                 .sorted()
                 .collect(Collectors.toList());
