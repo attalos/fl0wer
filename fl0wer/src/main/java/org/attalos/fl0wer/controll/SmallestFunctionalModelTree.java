@@ -220,6 +220,58 @@ public class SmallestFunctionalModelTree {
         }
     }
 
+    public String toDotGraph() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("digraph g {\n");
+        sb.append("node [shape=box]\n");
+
+        StringBuilder blocked = new StringBuilder();
+        blocked.append("subgraph blocked {\n");
+        blocked.append("node [style=filled, shape=box, color=red]\n");
+
+        StringBuilder indirectlyBlocked = new StringBuilder();
+        indirectlyBlocked.append("subgraph indirectlyBlocked {\n");
+        indirectlyBlocked.append("node [shape=box, color=red]\n");
+
+        StringBuilder main = new StringBuilder();
+        toDotSubgraph(main, blocked, indirectlyBlocked, BigInteger.ZERO);
+
+        blocked.append("}\n");
+        indirectlyBlocked.append("}\n");
+        sb
+                .append(blocked)
+                .append(indirectlyBlocked)
+                .append(main)
+                .append("}");
+
+        return sb.toString();
+    }
+
+    private void toDotSubgraph(StringBuilder main, StringBuilder blocked, StringBuilder indirectlyBlocked, BigInteger elem) {
+        ElementChildIdIterator it = new ElementChildIdIterator(this.num_of_roles, elem);
+        FunctionalElement current = this.model_tree.get(elem);
+
+        String curStr = "\"id:" + elem.toString() + "\\n" + current.getConcepts().toString() + "\"";
+        if (current.is_directly_blocked()) blocked.append(curStr).append("\n");
+        if (current.is_indirectly_blocked()) indirectlyBlocked.append(curStr).append("\n");
+
+        while (it.hasNext()) {
+            BigInteger childIdx = it.next();
+            FunctionalElement child = this.model_tree.get(childIdx);
+            if (child == null) continue;
+            main
+                    .append(curStr)
+                    .append(" -> ")
+                    .append("\"id:")
+                    .append(childIdx)
+                    .append("\\n")
+                    .append(child.getConcepts().toString())
+                    .append("\";\n");
+            toDotSubgraph(main, blocked, indirectlyBlocked, childIdx);
+        }
+    }
+
+
     /*
     private void use_function_on_all_successors(Callable<Long> function, Long elem_id) {
         Iterator<Map.Entry<Long, FunctionalElement>> iterator = model_tree.tailMap(4 * elem_id + 1).entrySet().iterator();

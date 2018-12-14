@@ -122,8 +122,10 @@ public class Ontology {
     }
 
     public void normalize() {
-        assertions.forEach(gci -> gci.normalize(this, o2iTranslator));
-        assertions.addAll(new_assertions);
+        for (GCI gci : assertions) {
+            gci.normalize(this, o2iTranslator);
+        }
+        this.assertions.addAll(this.new_assertions);
     }
 
     @Override

@@ -128,6 +128,14 @@ public class FL0wer {
                 continue;
             }
 
+            //temp debug:
+            //System.out.print(applicable_rule.get_node_id().toString() + ", [");
+            //for (int i : applicable_rule.get_rule_right_side().get_not_null_successor_rolenames()) {
+            //    String classes = owlToInternalTranslator.translate_reverse(applicable_rule.get_rule_right_side().get_concept_set_at(i+1)).toString();
+            //    System.out.print(" (" + i + " -> " + classes + ") ");
+            //}
+            //System.out.println("]");
+
             if (successors_with_changes.get(0) == -1) {             //update current node
                 add_concepts_to_elem(elem_id, new_concepts.get_concept_set_at(0), subsumption_tree, workingmemory);
                 successors_with_changes.remove(0);
@@ -150,6 +158,7 @@ public class FL0wer {
 //            }
             //LOGGER.finer("Applied rule: " + Long.toString(elem_id) + "\t-\t" + new_concepts.toString());
         }
+        //System.out.println(subsumption_tree.toDotGraph());
 
         return break_condition.apply(subsumption_tree.get_concepts_of_elem(BigInteger.ZERO));
 
