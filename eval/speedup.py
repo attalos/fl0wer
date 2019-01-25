@@ -2,6 +2,7 @@
 
 import pandas
 import sys
+import statistics
 
 # get input
 if len(sys.argv) != 3:
@@ -52,7 +53,7 @@ for index, key in keys.iterrows():
 print("\n\n#############################")
 print(    "########## AVERAGE ##########")
 print(    "#############################\n")
-print("fl0wer:   " + str(sum(speedups[0])/float(len(speedups[0]))))
-print("hermit:   " + str(sum(speedups[1])/float(len(speedups[1]))))
-print("openllet: " + str(sum(speedups[2])/float(len(speedups[2]))))
-print("jfact:    " + str(sum(speedups[3])/float(len(speedups[3]))))
+print("fl0wer:   mean = " + "{:.3f}".format(statistics.mean(speedups[0])) + "  median = " + "{:.3f}".format(statistics.median(speedups[0])))
+print("hermit:   mean = " + "{:.3f}".format(statistics.mean(speedups[1])) + "  median = " + "{:.3f}".format(statistics.median(speedups[1])))
+print("openllet: mean = " + "{:.3f}".format(statistics.mean(speedups[2])) + "  median = " + "{:.3f}".format(statistics.median(speedups[2])))
+print("jfact:    mean = " + "{:.3f}".format(statistics.mean(speedups[3])) + "  median = " + "{:.3f}".format(statistics.median(speedups[3])))
