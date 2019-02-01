@@ -78,7 +78,7 @@ public class ReteNetwork {
     }
 
     public WorkingMemory generate_new_WorkingMemory() {
-        return new WorkingMemory(num_of_multipleInputNodes, num_of_finalNodes);
+        return new WorkingMemory(num_of_multipleInputNodes);
     }
 
     /**
@@ -86,10 +86,10 @@ public class ReteNetwork {
      * @return the applicable rule with the highest priority or null if no rule is applicable
      */
     public ApplicableRule get_next_rule_to_fire(WorkingMemory wm) {
-        return wm.poll_rule();
+        return wm.pollRule();
     }
 
-    public void reenter_rule_to_queue(ApplicableRule ar, WorkingMemory wm) { wm.offer_rule(ar); }
+    public void reenter_rule_to_queue(ApplicableRule ar, WorkingMemory wm) { wm.offerRule(ar); }
 
     private String to_dot_graph() {
         StringBuilder dot_string = new StringBuilder("digraph g {\n");

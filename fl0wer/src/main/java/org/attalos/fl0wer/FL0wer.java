@@ -1,5 +1,6 @@
 package org.attalos.fl0wer;
 
+import com.google.common.collect.Iterables;
 import org.attalos.fl0wer.controll.FunctionalElement;
 import org.attalos.fl0wer.controll.SmallestFunctionalModelTree;
 import org.attalos.fl0wer.normalization.Ontology;
@@ -17,6 +18,9 @@ import org.semanticweb.owlapi.model.OWLOntology;
 
 import java.math.BigInteger;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -220,12 +224,49 @@ public class FL0wer {
             i++;
             classificatoin_map.put(class_owl, calculate_subsumerset(class_owl));
         }*/
-        input_owl_classes.parallelStream().forEach(class_owl -> {
+
+        /*ExecutorService es = Executors.newFixedThreadPool(8);
+        //System.out.println("gogogo");
+        Iterable<List<OWLClass>> inputClasses = Iterables.partition(input_owl_classes, 32);
+        for (List<OWLClass> ic : inputClasses) {
+            es.submit(() -> {
+                for (OWLClass class_owl : ic) {
+                    List<OWLClass> subsumerset = calculate_subsumerset(class_owl);
+                    synchronized (this) {
+                        classificatoin_map.put(class_owl, subsumerset);
+                    }
+                }
+            });
+        }
+        try {
+            es.shutdown();
+            es.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }*/
+
+        /*input_owl_classes.parallelStream().forEach(class_owl -> {
             List<OWLClass> subsumerset = calculate_subsumerset(class_owl);
             synchronized (this) {
                 classificatoin_map.put(class_owl, subsumerset);
             }
-        });
+        });*/
+
+        int i = 0;
+        int class_count = input_owl_classes.size();
+        long start_time = System.currentTimeMillis();
+        for (OWLClass class_owl : input_owl_classes) {
+            List<OWLClass> subsumerset = calculate_subsumerset(class_owl);
+            synchronized (this) {
+                classificatoin_map.put(class_owl, subsumerset);
+            }
+
+            if (i % 1000 == 0) {
+                System.out.println("status: " + Integer.toString(i) + " of " + Integer.toString(class_count) + " (average time per superclass calculation: " + Double.toString(((double)(System.currentTimeMillis() - start_time)) / ((double) i)) + "ms)");
+            }
+            i++;
+        }
+
 
         return classificatoin_map;
     }

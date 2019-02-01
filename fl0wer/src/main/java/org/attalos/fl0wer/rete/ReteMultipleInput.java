@@ -44,7 +44,7 @@ public class ReteMultipleInput implements  ReteNode {
         }
 
         //if all incomming pathes are fullfilled propagate to next node
-        if (wm.get_multipleInputNode_memory_at(this.node_id, this.predecessor_identifier.size()).elem_came_from(elem_index, index_of_role)) {
+        if (wm.getMultipleInputNodeMemoryAt(this.node_id, this.predecessor_identifier.size()).elem_came_from(elem_index, index_of_role)) {
             successor.propagate_domain_elem(elem_index, -1, null, num_of_roles, wm);
         }
     }

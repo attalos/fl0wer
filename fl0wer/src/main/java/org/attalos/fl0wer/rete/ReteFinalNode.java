@@ -32,9 +32,9 @@ public class ReteFinalNode implements ReteNode {
     @Override
     public void propagate_domain_elem(BigInteger elem_index, int rolename, Collection<Integer> domain_elem, int num_of_roles, WorkingMemory wm) {
                 //if rule is new add it to queue in WorkingMemory
-        if (wm.get_finalNode_memory_at(this.node_id).ruleFirstTimeFired(elem_index)) {
+        if (wm.getFinalNodeMemoryAt(this.node_id).ruleFirstTimeFired(elem_index)) {
             ApplicableRule resulting_applicable_rule = new ApplicableRule(elem_index, fired_result);
-            wm.offer_rule(resulting_applicable_rule);
+            wm.offerRule(resulting_applicable_rule);
         }
     }
 
