@@ -66,7 +66,12 @@ public class Application {
         if (decide_subsumption_relation) {
             fl_0_wer.decide_subsumption(root_concept_owl, subsumer_owl);
         } else if (calculate_subsumerset) {
+            Timer subsumersetTimer = new Timer();
+            subsumersetTimer.start();
             fl_0_wer.calculate_subsumerset(root_concept_owl);
+            subsumersetTimer.stop();
+            System.out.print("subsumerset calculation time: ");
+            System.out.println(subsumersetTimer.get_total_time());
         } else {
             Timer classificationTimer = new Timer();
             classificationTimer.start();

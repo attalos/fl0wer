@@ -224,6 +224,12 @@ public class SmallestFunctionalModelTree {
         StringBuilder sb = new StringBuilder();
         sb.append("digraph g {\n");
         sb.append("node [shape=box]\n");
+        //handle root separately
+        sb.append("\"id:")
+                .append(BigInteger.ZERO.toString())
+                .append("\\n")
+                .append(this.model_tree.get(BigInteger.ZERO).getConcepts().toString())
+                .append("\"\n");
 
         StringBuilder blocked = new StringBuilder();
         blocked.append("subgraph blocked {\n");
@@ -231,7 +237,7 @@ public class SmallestFunctionalModelTree {
 
         StringBuilder indirectlyBlocked = new StringBuilder();
         indirectlyBlocked.append("subgraph indirectlyBlocked {\n");
-        indirectlyBlocked.append("node [shape=box, color=red]\n");
+        indirectlyBlocked.append("node [style=filled, shape=box, color=orange]\n");
 
         StringBuilder main = new StringBuilder();
         toDotSubgraph(main, blocked, indirectlyBlocked, BigInteger.ZERO);

@@ -16,6 +16,7 @@ import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.OWLClass;
 import org.semanticweb.owlapi.model.OWLOntology;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
@@ -133,12 +134,12 @@ public class FL0wer {
             }
 
             //temp debug:
-            //System.out.print(applicable_rule.get_node_id().toString() + ", [");
-            //for (int i : applicable_rule.get_rule_right_side().get_not_null_successor_rolenames()) {
-            //    String classes = owlToInternalTranslator.translate_reverse(applicable_rule.get_rule_right_side().get_concept_set_at(i+1)).toString();
-            //    System.out.print(" (" + i + " -> " + classes + ") ");
-            //}
-            //System.out.println("]");
+            System.out.print(applicable_rule.get_node_id().toString() + ", [");
+            for (int i : applicable_rule.get_rule_right_side().get_not_null_successor_rolenames()) {
+                String classes = owlToInternalTranslator.translate_reverse(applicable_rule.get_rule_right_side().get_concept_set_at(i+1)).toString();
+                System.out.print(" (" + i + " -> " + classes + ") ");
+            }
+            System.out.println("]");
 
             if (successors_with_changes.get(0) == -1) {             //update current node
                 add_concepts_to_elem(elem_id, new_concepts.get_concept_set_at(0), subsumption_tree, workingmemory);
@@ -155,6 +156,8 @@ public class FL0wer {
                         subsumption_tree,
                         workingmemory);
             }
+
+            //showCurrentFunctionalModelTree(subsumption_tree,500);
 
 //            // debug info - applied rule
 //            if (ConstantValues.debug(1)) {
@@ -200,6 +203,15 @@ public class FL0wer {
 
         //main part
         general_subsumerset_calculation_with_break_condition(subsumption_tree, func_elem -> false);
+        //System.out.println("/bin/bash -c $(xdot <( echo '" + subsumption_tree.toDotGraph() + "'))");
+        //showCurrentFunctionalModelTree(subsumption_tree, 20000);
+
+        /*try {
+            Process p = Runtime.getRuntime().exec("/bin/bash -c $(xdot <( echo '" + subsumption_tree.toDotGraph() + "'))");
+            p.waitFor();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }*/
 
         //backtranslation
         ConstantValues.start_timer("backtranslation");
@@ -282,6 +294,26 @@ public class FL0wer {
     private void reenter_rules_to_queue(Collection<ApplicableRule> applicable_rules, WorkingMemory wm) {
         for (ApplicableRule applicable_rule : applicable_rules) {
             this.rete_network.reenter_rule_to_queue(applicable_rule, wm);
+        }
+    }
+
+    private void showCurrentFunctionalModelTree(SmallestFunctionalModelTree subsumptionTree, int showForXMilliSeconds) {
+        try {
+            /*System.out.println("/bin/bash -c \"(xdot <( echo '" +
+                    subsumptionTree.toDotGraph().replace("\"", "\\\"") +
+                    "') & trap 'kill \\$!' EXIT)\"");*/
+            /*System.out.println("/bin/bash -c \"trap 'kill \\$!' EXIT; xdot <( echo '" +
+                    subsumptionTree.toDotGraph().replace("\"", "\\\"") +
+                    "')\"");
+
+             */
+            String showForXSeconds = Integer.toString((showForXMilliSeconds / 1000) + 2);
+            String xdotStarter = "xdot -g 1920x1080 <( echo '" + subsumptionTree.toDotGraph() + "') & sleep " + showForXSeconds + "; kill $!";
+            Process p = new ProcessBuilder("/bin/bash", "-c", xdotStarter).start();
+            p.waitFor(showForXMilliSeconds, TimeUnit.MILLISECONDS);
+            //p.destroy();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }
