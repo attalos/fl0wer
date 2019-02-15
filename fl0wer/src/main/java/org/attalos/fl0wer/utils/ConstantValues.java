@@ -5,91 +5,91 @@ import java.util.Map;
 
 public class ConstantValues {
     private static boolean initialised = false;
-    private static boolean time_information = true;
+    private static boolean timeInformation = true;
     private static boolean dots = false;
+    private static boolean progress = false;
+    private static boolean animateFunctionalModelTree = false;
+    private static boolean showAppliedRules = false;
     private static boolean subsumption = false;
-    private static Integer debug_level = 0;
-    private static Map<String, Timer> timer_map = new HashMap<String, Timer>();
+    private static Integer debugLevel = 0;
+    private static Map<String, Timer> timerMap = new HashMap<String, Timer>();
 
     /**
      *
-     * @param debug_level select how detailed the debug info should be
-     * @param time_information true if time information should get display
+     * @param debugLevel select how detailed the debug info should be
+     * @param timeInformation true if time information should get display
      * @param dots true if at dots graph of rete network should get created (only do so if the ontology is very small)
      * @param subsumption true if subsumption relation should get decided, false if subsumerset should get created
      */
-    public static void initialise(Integer debug_level, boolean time_information, boolean dots, boolean subsumption) {
-        if (initialised) {
+    public static void initialise(Integer debugLevel, boolean timeInformation, boolean dots, boolean subsumption) {
+        if (initialised)
             throw new RuntimeException("ConstantValues could only be initialized once");
-        }
+        else
+            initialised = true;
 
-        ConstantValues.time_information = time_information;
+        ConstantValues.timeInformation = timeInformation;
         ConstantValues.dots = dots;
-        ConstantValues.debug_level = debug_level;
+        ConstantValues.progress = false;
+        ConstantValues.animateFunctionalModelTree = false;
+        ConstantValues.debugLevel = debugLevel;
         ConstantValues.subsumption = subsumption;
 
-        initialised = true;
+
     }
 
     public static void purge() {
         initialised = false;
-        timer_map = new HashMap<>();
+        timerMap = new HashMap<>();
     }
 
-//    public static boolean debug(Integer debug_level) {
+//    public static boolean debug(Integer debugLevel) {
 //        if (!initialised) {
 //            throw new RuntimeException("ConstantValues accessed before initialisation");
 //        }
 //
-//        return debug_level <= ConstantValues.debug_level ;
+//        return debugLevel <= ConstantValues.debugLevel ;
 //    }
 
-    public static boolean time_information() {
+    /*public static boolean timeInformation() {
         if (!initialised) {
             throw new RuntimeException("ConstantValues accessed before initialisation");
         }
 
-        return time_information;
-    }
+        return timeInformation;
+    }*/
 
-    public static void start_timer(String timer_name) {
-        if (!time_information) {
-            return;
-        }
+    public static void startTimer(String timerName) {
+        if (!timeInformation) return;
 
-        Timer timer = timer_map.get(timer_name);
-
-        if (timer == null) {
-            timer = new Timer();
-            timer_map.put(timer_name, timer);
-        }
+        Timer timer = getTimer(timerName);
 
         timer.start();
     }
 
-    public static void stop_timer(String timer_name) {
-        if (!time_information) {
-            return;
-        }
+    public static void stopTimer(String timerName) {
+        if (!timeInformation) return;
 
-        Timer timer = timer_map.get(timer_name);
-
-        if (timer == null) {
-            timer = new Timer();
-            timer_map.put(timer_name, timer);
-        }
+        Timer timer = getTimer(timerName);
 
         timer.stop();
     }
 
-    public static void print_times() {
-        if (!time_information) {
-            return;
+    private static Timer getTimer(String timerName) {
+        Timer timer = timerMap.get(timerName);
+
+        if (timer == null) {
+            timer = new Timer();
+            timerMap.put(timerName, timer);
         }
+        return timer;
+    }
+
+    public static void printTimes() {
+        if (!timeInformation) return;
 
         System.out.println("timer results - start");
 
-        for (Map.Entry<String, Timer> mapentry : timer_map.entrySet()) {
+        for (Map.Entry<String, Timer> mapentry : timerMap.entrySet()) {
             System.out.println(mapentry.getKey() + "\t\t" + mapentry.getValue().get_total_time());
         }
 
@@ -97,35 +97,50 @@ public class ConstantValues {
     }
 
     public static boolean dots() {
-        if (!initialised) {
-            throw new RuntimeException("ConstantValues accessed before initialisation");
-        }
-
+        ready();
         return dots;
     }
 
-    public static boolean is_subsumption() {
-        if (!initialised) {
-            throw new RuntimeException("ConstantValues accessed before initialisation");
-        }
+    public static boolean progress() {
+        ready();
+        return progress;
+    }
 
+    public static boolean animateFunctionalModelTree() {
+        ready();
+        return animateFunctionalModelTree;
+    }
+
+    public static boolean showAppliedRules() {
+        ready();
+        return showAppliedRules;
+    }
+
+    public static boolean isSubsumption() {
+        ready();
         return subsumption;
     }
 
-//    public static Integer debug_level() {
+    private static void ready() {
+        if (!initialised) {
+            throw new RuntimeException("ConstantValues accessed before initialisation");
+        }
+    }
+
+//    public static Integer debugLevel() {
 //        if (!initialised) {
 //            throw new RuntimeException("ConstantValues accessed before initialisation");
 //        }
 //
-//        return debug_level;
+//        return debugLevel;
 //    }
 //
-//    public static void debug_info(String debug_info, Integer debug_level){
+//    public static void debug_info(String debug_info, Integer debugLevel){
 //        if (!initialised) {
 //            throw new RuntimeException("ConstantValues accessed before initialisation");
 //        }
 //
-//        if(debug_level <= ConstantValues.debug_level) {
+//        if(debugLevel <= ConstantValues.debugLevel) {
 //            System.out.println(debug_info);
 //        }
 //    }

@@ -5,7 +5,6 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.attalos.fl0wer.utils.ConstantValues;
 
-import org.attalos.fl0wer.utils.Timer;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.*;
 
@@ -37,7 +36,7 @@ public class Application {
         try {
             ontology_owl = open_ontology();
         } catch (Exception e) {
-            System.out.println("Something went wrong and an Exception was thrown: " + e.getMessage());
+            System.out.println("Something went wrong while opening the ontology and an Exception was thrown: " + e.getMessage());
             e.printStackTrace();
             return;
         }
@@ -57,42 +56,22 @@ public class Application {
             subsumer_owl = null;
         }
 
-        //the important part :)
-        ConstantValues.start_timer("initialisation");
-        FL0wer fl_0_wer = new FL0wer(ontology_owl);
-        ConstantValues.stop_timer("initialisation");
+        /* the important part :) */
+        ConstantValues.startTimer("initialisation");
+        FL0wer fl0wer = new FL0wer(ontology_owl);
+        ConstantValues.stopTimer("initialisation");
 
-        ConstantValues.start_timer("main_task");
+        ConstantValues.startTimer("main task");
         if (decide_subsumption_relation) {
-            fl_0_wer.decide_subsumption(root_concept_owl, subsumer_owl);
+            fl0wer.decide_subsumption(root_concept_owl, subsumer_owl);
         } else if (calculate_subsumerset) {
-            Timer subsumersetTimer = new Timer();
-            subsumersetTimer.start();
-            fl_0_wer.calculate_subsumerset(root_concept_owl);
-            subsumersetTimer.stop();
-            System.out.print("subsumerset calculation time: ");
-            System.out.println(subsumersetTimer.get_total_time());
+            fl0wer.calculate_subsumerset(root_concept_owl);
         } else {
-            Timer classificationTimer = new Timer();
-            classificationTimer.start();
-            fl_0_wer.classify();
-            classificationTimer.stop();
-
-            System.out.print("classification time: ");
-            System.out.println(classificationTimer.get_total_time());
+            fl0wer.classify();
         }
-        ConstantValues.stop_timer("main_task");
+        ConstantValues.stopTimer("main task");
 
-        ConstantValues.print_times();
-
-//        fl_0_subsumption.classify().forEach((subsumed_class, subsumer_classes) -> {
-//            System.out.println(subsumed_class + " is subsumed by:");
-//            subsumer_classes.forEach(subsumer_class -> {
-//                System.out.println("\t\t" + subsumer_class.toString());
-//            });
-//            System.out.println("");
-//        });
-
+        ConstantValues.printTimes();
     }
 
 
@@ -102,7 +81,7 @@ public class Application {
      * @return success status - if false, most likely the input parsing went wrong
      */
     private static boolean init(String[] args) {
-        ConstantValues.start_timer("program_init");
+        ConstantValues.startTimer("program_init");
 
         /*
          * read commandline parameters
@@ -170,7 +149,11 @@ public class Application {
             }
         }
 
-        if ( !(decide_subsumption_relation ^ calculate_subsumerset ^ classify) || (decide_subsumption_relation && calculate_subsumerset && decide_subsumption_relation) ) {
+        //if ( !(decide_subsumption_relation ^ calculate_subsumerset ^ classify) ||
+        //        (decide_subsumption_relation && calculate_subsumerset) ) {
+        if ((decide_subsumption_relation && calculate_subsumerset) ||
+                (decide_subsumption_relation && classify) ||
+                (calculate_subsumerset && classify)) {
             System.out.println("You can only use one of -c1, -c2 and -S and -C at the same time");
             System.out.println("This program either decides subsumption between two given concepts (-c1, -c2) or calculates the subsumer set of a single given concept (-S) or classifies the ontology (-C)");
             return false;
@@ -191,7 +174,7 @@ public class Application {
         Logger.getRootLogger().setLevel(Level.OFF);
 
 
-        ConstantValues.stop_timer("program_init");
+        ConstantValues.stopTimer("program_init");
 
         return true;
     }
@@ -203,7 +186,7 @@ public class Application {
      * originating from OWLOntologyManager.loadOntologyFromOntologyDocument(...)
      */
     private static OWLOntology open_ontology() throws org.semanticweb.owlapi.model.OWLOntologyCreationException {
-        ConstantValues.start_timer("open_ontology");
+        ConstantValues.startTimer("open_ontology");
 
         /* owl init */
         OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
@@ -211,12 +194,12 @@ public class Application {
 
         /* open ontology */
 //        ConstantValues.debug_info("opening ontologie with the owl-api", 0);
-        LOGGER.info("opening ontologie with the owl-api");
+        LOGGER.info("opening ontology with the owl-api");
 
         File ontology_file = new File(inputFilePath);
         OWLOntology ontology_owl = manager.loadOntologyFromOntologyDocument(ontology_file);
 
-        ConstantValues.stop_timer("open_ontology");
+        ConstantValues.stopTimer("open_ontology");
 
         return ontology_owl;
     }

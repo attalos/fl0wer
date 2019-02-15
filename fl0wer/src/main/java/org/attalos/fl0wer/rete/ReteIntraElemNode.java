@@ -68,7 +68,7 @@ public class ReteIntraElemNode implements ReteNode{
     @Override
     public void propagate_domain_elem(BigInteger elem_index, int rolename, Collection<Integer> domain_elem, int num_of_roles, WorkingMemory wm) {
         if (domain_elem.contains(needed_concept)) {
-            //successors.forEach(successor -> successor.propagate_domain_elem(elem_index, rolename, domain_elem, num_of_roles));
+            //successors.forEach(successor -> successor.propagateDomainElem(elem_index, rolename, domain_elem, num_of_roles));
             for (ReteNode successor : successors) {
                 successor.propagate_domain_elem(elem_index, rolename, domain_elem, num_of_roles, wm);
             }

@@ -32,17 +32,18 @@ public class SmallestFunctionalModelTree {
 
     }
 
-    public FunctionalElement get_concepts_of_elem(BigInteger elem_id) {
+    public FunctionalElement getConceptsOfElem(BigInteger elem_id) {
         return this.model_tree.get(elem_id);
     }
 
     /**
+     * Update a single node, including an update of the blocking condition
      *
      * @param node which should get modified
      * @param new_concepts which should get added
      * @return true, if something changed. False otherwise
      */
-    public boolean update_node(BigInteger node, ArrayList<Integer> new_concepts, Consumer<List<ApplicableRule>> rule_release_function) {
+    public boolean updateNode(BigInteger node, ArrayList<Integer> new_concepts, Consumer<List<ApplicableRule>> rule_release_function) {
         FunctionalElement elem_to_change = model_tree.get(node);
 
         if (elem_to_change != null) {
@@ -53,12 +54,12 @@ public class SmallestFunctionalModelTree {
             /*
              * remove from previous blocking conditions
              */
-            ConstantValues.start_timer("blocking");
+            ConstantValues.startTimer("blocking");
             SortedSet<BigInteger> blocking_element = this.blocking_condition.get_blocking_elements(elem_to_change.getConcepts());
             if (this.blocking_condition.remove_blocking_element(node, elem_to_change.getConcepts())) {
                 this.handle_blocking_element(blocking_element, rule_release_function);
             }
-            ConstantValues.stop_timer("blocking");
+            ConstantValues.stopTimer("blocking");
         } else {
             elem_to_change = new FunctionalElement(new_concepts);
             this.model_tree.put(node, elem_to_change);
@@ -85,12 +86,12 @@ public class SmallestFunctionalModelTree {
         /*
          * add to new blocking conditions
          */
-        ConstantValues.start_timer("blocking");
+        ConstantValues.startTimer("blocking");
         if (this.blocking_condition.insert_blocking_element(node, elem_to_change.getConcepts())) {
             SortedSet<BigInteger> blocking_element = this.blocking_condition.get_blocking_elements(elem_to_change.getConcepts());
             this.handle_blocking_element(blocking_element, rule_release_function);
         }
-        ConstantValues.stop_timer("blocking");
+        ConstantValues.stopTimer("blocking");
 
         return true;
     }

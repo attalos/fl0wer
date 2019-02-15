@@ -1,6 +1,5 @@
 package org.attalos.fl0wer;
 
-import com.google.common.collect.Iterables;
 import org.attalos.fl0wer.controll.FunctionalElement;
 import org.attalos.fl0wer.controll.SmallestFunctionalModelTree;
 import org.attalos.fl0wer.normalization.Ontology;
@@ -19,9 +18,8 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -31,38 +29,28 @@ import java.util.stream.Collectors;
  */
 public class FL0wer {
     private final static Logger LOGGER = Logger.getLogger(FL0wer.class.getName());
-    private ReteNetwork rete_network;
-    private Collection<OWLClass> input_owl_classes;
+    private ReteNetwork reteNetwork;
+    private Collection<OWLClass> inputOwlClasses;
     private OwlToInternalTranslator owlToInternalTranslator = new OwlToInternalTranslator();
 
 
     public FL0wer(OWLOntology owl_ontology) {
         //get input classes
         OWLClass owl_top = OWLManager.createOWLOntologyManager().getOWLDataFactory().getOWLThing();
-        input_owl_classes = owl_ontology.classesInSignature().filter(class_owl -> !class_owl.equals(owl_top)).collect(Collectors.toList());
-        owlToInternalTranslator.initialize_original_owl_classes(input_owl_classes.stream());
+        inputOwlClasses = owl_ontology.classesInSignature().filter(class_owl -> !class_owl.equals(owl_top)).collect(Collectors.toList());
+        owlToInternalTranslator.initialize_original_owl_classes(inputOwlClasses.stream());
 
         //internal ontology representation
-//        ConstantValues.debug_info("creating internal ontology representation", 0);
         LOGGER.info("creating internal ontology representation");
-        ConstantValues.start_timer("internal_representation");
+        ConstantValues.startTimer("internal_representation");
         Ontology ontology = new Ontology(owl_ontology, owlToInternalTranslator);
-        ConstantValues.stop_timer("internal_representation");
-        //LOGGER.finest(ontology.toString() + "\n" + "###################");
-//        if (ConstantValues.debug(2)) {
-//            ConstantValues.debug_info(ontology.toString() + "\n" + "###################", 2);
-//        }
+        ConstantValues.stopTimer("internal_representation");
 
         //normalize
-//        ConstantValues.debug_info("normalizing ontology", 0);
         LOGGER.info("normalizing ontology");
-        ConstantValues.start_timer("normalisation");
+        ConstantValues.startTimer("normalisation");
         ontology.normalize();
-        ConstantValues.stop_timer("normalisation");
-        //LOGGER.finest(ontology.toString() + "\n" + "###################");
-//        if (ConstantValues.debug(2)) {
-//            ConstantValues.debug_info(ontology.toString() + "\n" + "###################", 2);
-//        }
+        ConstantValues.stopTimer("normalisation");
 
         //lock OwlToInternalTranslator
         owlToInternalTranslator.lock();
@@ -72,109 +60,110 @@ public class FL0wer {
 //        }
 
         //head ontology representation
-//        ConstantValues.debug_info("creating headontology out of normalized ontology", 0);
         LOGGER.info("creating headontology out of normalized ontology");
-        ConstantValues.start_timer("head_ontology");
+        ConstantValues.startTimer("head_ontology");
         HeadOntology head_ontology = new HeadOntology(ontology, owlToInternalTranslator.get_role_count());
-        ConstantValues.stop_timer("head_ontology");
+        ConstantValues.stopTimer("head_ontology");
 
         //rete network
-        //ConstantValues.debug_info("creating rete network out of normalized ontology", 0);
         LOGGER.info("create_rete_network");
-        ConstantValues.start_timer("create_rete_network");
-        this.rete_network = new ReteNetwork(head_ontology, owlToInternalTranslator.get_concept_count(), owlToInternalTranslator.get_role_count());
-        ConstantValues.stop_timer("create_rete_network");
+        ConstantValues.startTimer("create_rete_network");
+        this.reteNetwork = new ReteNetwork(head_ontology, owlToInternalTranslator.get_concept_count(), owlToInternalTranslator.get_role_count());
+        ConstantValues.stopTimer("create_rete_network");
 
         //dot graph of rete network
         if (ConstantValues.dots()) {
             LOGGER.info("writing dot graph");
-//            ConstantValues.debug_info("writing dot graph", 0);
-            ConstantValues.start_timer("create_dots");
-            this.rete_network.write_dot_graph();
-            ConstantValues.stop_timer("create_dots");
+            ConstantValues.startTimer("create_dots");
+            this.reteNetwork.write_dot_graph();
+            ConstantValues.stopTimer("create_dots");
         }
 
     }
 
-    private boolean general_subsumerset_calculation_with_break_condition(SmallestFunctionalModelTree subsumption_tree, Function<FunctionalElement, Boolean> break_condition) {
+    private boolean generalSubsumersetCalculationWithBreakCondition(SmallestFunctionalModelTree subsumption_tree, Function<FunctionalElement, Boolean> break_condition) {
         //create workingmemory
-        WorkingMemory workingmemory = rete_network.generate_new_WorkingMemory();
+        WorkingMemory workingmemory = reteNetwork.generate_new_WorkingMemory();
 
         //propagate first element
-//        ConstantValues.debug_info("propagating root throw rete netwrok", 0);
         LOGGER.fine("propagating root throw rete network");
-        this.rete_network.propagate_domain_elem(BigInteger.ZERO, subsumption_tree.get_concepts_of_elem(BigInteger.ZERO).getConcepts(), workingmemory);
+        this.reteNetwork.propagateDomainElem(BigInteger.ZERO, subsumption_tree.getConceptsOfElem(BigInteger.ZERO).getConcepts(), workingmemory);
 
-        //mainloop which build functional model tree stump
+        //mainloop which builds functional model tree stump
         while (true) {
-            //check break condition
-            if (break_condition.apply(subsumption_tree.get_concepts_of_elem(BigInteger.ZERO))) {
+            /*
+             * check break condition
+             */
+            if (break_condition.apply(subsumption_tree.getConceptsOfElem(BigInteger.ZERO))) {
                 return true;
             }
 
-            //get next rule
-            ApplicableRule applicable_rule = this.rete_network.get_next_rule_to_fire(workingmemory);
+            /*
+             * get next rule
+             */
+            ApplicableRule applicable_rule = this.reteNetwork.get_next_rule_to_fire(workingmemory);
             if (applicable_rule == null) {
                 break;
             }
             BigInteger elem_id = applicable_rule.get_node_id();
-            FunctionalElement elem = subsumption_tree.get_concepts_of_elem(elem_id);
+            FunctionalElement elem = subsumption_tree.getConceptsOfElem(elem_id);
 
-            //check blocking
+            /*
+             * check blocking
+             */
             if (elem.is_blocked()) {
                 elem.insert_rule_to_hold_back(applicable_rule);
                 continue;
             }
 
-            //update subsumption_tree, blocking condition and propagate throw rete network
-            ConceptHead new_concepts = applicable_rule.get_rule_right_side(); //TODO successor function instead of math magic everywhere
+            /*
+             * update subsumption_tree, blocking condition and propagate throw rete network
+             */
+            ConceptHead new_concepts = applicable_rule.get_rule_right_side();
             ArrayList<Integer> successors_with_changes = new_concepts.get_not_null_successor_rolenames();
-            if (successors_with_changes.size() == 0) {
+            if (successors_with_changes.size() == 0)
                 continue;
-            }
-
-            //temp debug:
-            System.out.print(applicable_rule.get_node_id().toString() + ", [");
-            for (int i : applicable_rule.get_rule_right_side().get_not_null_successor_rolenames()) {
-                String classes = owlToInternalTranslator.translate_reverse(applicable_rule.get_rule_right_side().get_concept_set_at(i+1)).toString();
-                System.out.print(" (" + i + " -> " + classes + ") ");
-            }
-            System.out.println("]");
-
-            if (successors_with_changes.get(0) == -1) {             //update current node
-                add_concepts_to_elem(elem_id, new_concepts.get_concept_set_at(0), subsumption_tree, workingmemory);
+            //update current node
+            if (successors_with_changes.get(0) == -1) {
+                addConceptsToElem(elem_id, new_concepts.get_concept_set_at(0), subsumption_tree, workingmemory);
                 successors_with_changes.remove(0);
             }
-
-            //BigInteger first_successor = owlToInternalTranslator.get_role_count() * elem_id + 1; //TODO remove math "magic"
+            //update direct successors
             BigInteger first_successor = HelperFunctions.calculateFirstChildId(elem_id,
                     BigInteger.valueOf(owlToInternalTranslator.get_role_count()));
-            for (Integer rolename : successors_with_changes) {      //update direct successors
-                add_concepts_to_elem(
+            for (Integer rolename : successors_with_changes) {
+                addConceptsToElem(
                         first_successor.add(BigInteger.valueOf(rolename)),
                         new_concepts.get_concept_set_at(rolename + 1),
                         subsumption_tree,
                         workingmemory);
             }
 
-            //showCurrentFunctionalModelTree(subsumption_tree,500);
+            /*
+             * feedback
+             */
+            // print applied rules
+            if (ConstantValues.showAppliedRules()) {
+                System.out.print(applicable_rule.get_node_id().toString() + ", [");
+                for (int i : applicable_rule.get_rule_right_side().get_not_null_successor_rolenames()) {
+                    String classes = owlToInternalTranslator.translate_reverse(applicable_rule.get_rule_right_side().get_concept_set_at(i + 1)).toString();
+                    System.out.print(" (" + i + " -> " + classes + ") ");
+                }
+                System.out.println("]");
+            }
 
-//            // debug info - applied rule
-//            if (ConstantValues.debug(1)) {
-//                ConstantValues.debug_info("Applied rule: " + Long.toString(elem_id) + "\t-\t" + new_concepts.toString(), 1);
-//            }
-            //LOGGER.finer("Applied rule: " + Long.toString(elem_id) + "\t-\t" + new_concepts.toString());
+            // animate functional model tree
+            if (ConstantValues.animateFunctionalModelTree())
+                showCurrentFunctionalModelTree(subsumption_tree,500);
         }
-        //System.out.println(subsumption_tree.toDotGraph());
 
-        return break_condition.apply(subsumption_tree.get_concepts_of_elem(BigInteger.ZERO));
+        return break_condition.apply(subsumption_tree.getConceptsOfElem(BigInteger.ZERO));
 
     }
 
-    @SuppressWarnings("UnusedReturnValue")
+    @SuppressWarnings({"UnusedReturnValue", "WeakerAccess"})
     public boolean decide_subsumption(OWLClass subsumed, OWLClass subsumer) {
         //get some needed values
-        //TODO do not use Concept_Factory directly!
         int subsumer_int = owlToInternalTranslator.translate(subsumer).getConcept_name();
         int subsumed_int = owlToInternalTranslator.translate(subsumed).getConcept_name();
         if (subsumed_int == -1 || subsumer_int == -1) {
@@ -185,14 +174,13 @@ public class FL0wer {
         SmallestFunctionalModelTree subsumption_tree = new SmallestFunctionalModelTree(subsumed_int, owlToInternalTranslator.get_role_count());
 
         //main part
-        return general_subsumerset_calculation_with_break_condition(subsumption_tree, func_elem ->
+        return generalSubsumersetCalculationWithBreakCondition(subsumption_tree, func_elem ->
                 func_elem.getConcepts().contains(subsumer_int));
     }
 
     @SuppressWarnings("UnusedReturnValue")
     public List<OWLClass> calculate_subsumerset(OWLClass subsumed) {
         //get some needed values
-        //TODO do not use Concept_Factory directly!
         int subsumed_int = owlToInternalTranslator.translate(subsumed).getConcept_name();
         if (subsumed_int == -1) {
             throw new RuntimeException("given concept not found");
@@ -202,50 +190,59 @@ public class FL0wer {
         SmallestFunctionalModelTree subsumption_tree = new SmallestFunctionalModelTree(subsumed_int, owlToInternalTranslator.get_role_count());
 
         //main part
-        general_subsumerset_calculation_with_break_condition(subsumption_tree, func_elem -> false);
-        //System.out.println("/bin/bash -c $(xdot <( echo '" + subsumption_tree.toDotGraph() + "'))");
-        //showCurrentFunctionalModelTree(subsumption_tree, 20000);
-
-        /*try {
-            Process p = Runtime.getRuntime().exec("/bin/bash -c $(xdot <( echo '" + subsumption_tree.toDotGraph() + "'))");
-            p.waitFor();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }*/
+        generalSubsumersetCalculationWithBreakCondition(subsumption_tree, func_elem -> false);
+        if (ConstantValues.animateFunctionalModelTree())
+            showCurrentFunctionalModelTree(subsumption_tree, 40000);
 
         //backtranslation
-        ConstantValues.start_timer("backtranslation");
+        ConstantValues.startTimer("backtranslation");
         List<OWLClass> subsumerset = owlToInternalTranslator.translate_reverse(
-                subsumption_tree.get_concepts_of_elem(BigInteger.ZERO).getConcepts());
-        ConstantValues.stop_timer("backtranslation");
+                subsumption_tree.getConceptsOfElem(BigInteger.ZERO).getConcepts());
+        ConstantValues.stopTimer("backtranslation");
 
         return subsumerset;
     }
 
-    @SuppressWarnings("UnusedReturnValue")
+    /**
+     *
+     * Classify the ontology given to the constructor of this class
+     * @return A mapping of owl classes to all subsumers
+     */
+    @SuppressWarnings({"UnusedReturnValue", "WeakerAccess"})
     public Map<OWLClass, Collection<OWLClass>> classify() {
-        Map<OWLClass, Collection<OWLClass>> classificatoin_map = new HashMap<>();
+        Map<OWLClass, Collection<OWLClass>> classificationMap = new HashMap<>();
 
-        /*int class_count = input_owl_classes.size();
-        int i = 0;
-        long start_time = System.currentTimeMillis();
-        for (OWLClass class_owl : input_owl_classes) {
-            if (i % 1000 == 0) {
-                System.out.println("status: " + Integer.toString(i) + " of " + Integer.toString(class_count) + " (average time per superclass calculation: " + Double.toString(((double)(System.currentTimeMillis() - start_time)) / ((double) i)) + "ms)");
+        /* progress info */
+        final AtomicInteger i = new AtomicInteger();
+        long startTime = System.currentTimeMillis();
+        int classCount = inputOwlClasses.size();
+
+        inputOwlClasses.parallelStream().forEach(class_owl -> {
+            /* calculate */
+            List<OWLClass> subsumerset = calculate_subsumerset(class_owl);
+            synchronized (this) {
+                /* write */
+                classificationMap.put(class_owl, subsumerset);
+
+                /* print progress */
+                if (ConstantValues.progress()) {
+                    if (i.getAndIncrement() % 1000 == 0) {
+                        System.out.println("status: " + i + " of " + classCount + " (average time per superclass calculation: " +
+                                ((double) (System.currentTimeMillis() - startTime)) / ((double) i.get()) + "ms)");
+                    }
+                }
             }
-            i++;
-            classificatoin_map.put(class_owl, calculate_subsumerset(class_owl));
-        }*/
+        });
 
         /*ExecutorService es = Executors.newFixedThreadPool(8);
         //System.out.println("gogogo");
-        Iterable<List<OWLClass>> inputClasses = Iterables.partition(input_owl_classes, 32);
+        Iterable<List<OWLClass>> inputClasses = Iterables.partition(inputOwlClasses, 32);
         for (List<OWLClass> ic : inputClasses) {
             es.submit(() -> {
                 for (OWLClass class_owl : ic) {
                     List<OWLClass> subsumerset = calculate_subsumerset(class_owl);
                     synchronized (this) {
-                        classificatoin_map.put(class_owl, subsumerset);
+                        classificationMap.put(class_owl, subsumerset);
                     }
                 }
             });
@@ -257,61 +254,56 @@ public class FL0wer {
             e.printStackTrace();
         }*/
 
-        /*input_owl_classes.parallelStream().forEach(class_owl -> {
-            List<OWLClass> subsumerset = calculate_subsumerset(class_owl);
-            synchronized (this) {
-                classificatoin_map.put(class_owl, subsumerset);
-            }
-        });*/
-
-        int i = 0;
-        int class_count = input_owl_classes.size();
+        /*int i = 0;
+        int class_count = inputOwlClasses.size();
         long start_time = System.currentTimeMillis();
-        for (OWLClass class_owl : input_owl_classes) {
+        for (OWLClass class_owl : inputOwlClasses) {
             List<OWLClass> subsumerset = calculate_subsumerset(class_owl);
             synchronized (this) {
-                classificatoin_map.put(class_owl, subsumerset);
+                classificationMap.put(class_owl, subsumerset);
             }
 
             if (i % 1000 == 0) {
-                System.out.println("status: " + Integer.toString(i) + " of " + Integer.toString(class_count) + " (average time per superclass calculation: " + Double.toString(((double)(System.currentTimeMillis() - start_time)) / ((double) i)) + "ms)");
+                System.out.println("status: " + i + " of " + class_count + " (average time per superclass calculation: " +
+                        ((double) (System.currentTimeMillis() - start_time)) / ((double) i) + "ms)");
             }
             i++;
-        }
+        }*/
 
 
-        return classificatoin_map;
+        return classificationMap;
     }
 
-    private void add_concepts_to_elem(BigInteger elem_id, ArrayList<Integer> new_concepts, SmallestFunctionalModelTree subsumption_tree, WorkingMemory wm) {
-        if (subsumption_tree.update_node(elem_id, new_concepts, applicable_rules -> reenter_rules_to_queue(applicable_rules, wm))) {
-            ConstantValues.start_timer("rete_propagation");
-            this.rete_network.propagate_domain_elem(elem_id, subsumption_tree.get_concepts_of_elem(elem_id).getConcepts(), wm);
-            ConstantValues.stop_timer("rete_propagation");
+
+    /**
+     * Changes a node inside the subsumption tree, including an update of the blocking condition and a propagation through
+     * the rete network.
+     *
+     * @param elemId element in question
+     * @param newConcepts concepts, that will get added to the element described by elemId
+     * @param subsumptionTree smallest functional model tree
+     * @param wm current workingmemory
+     */
+    private void addConceptsToElem(BigInteger elemId, ArrayList<Integer> newConcepts, SmallestFunctionalModelTree subsumptionTree, WorkingMemory wm) {
+        if (subsumptionTree.updateNode(elemId, newConcepts, applicableRules -> reenterRulesToQueue(applicableRules, wm))) {
+            ConstantValues.startTimer("rete_propagation");
+            this.reteNetwork.propagateDomainElem(elemId, subsumptionTree.getConceptsOfElem(elemId).getConcepts(), wm);
+            ConstantValues.stopTimer("rete_propagation");
         }
     }
 
-    private void reenter_rules_to_queue(Collection<ApplicableRule> applicable_rules, WorkingMemory wm) {
+    private void reenterRulesToQueue(Collection<ApplicableRule> applicable_rules, WorkingMemory wm) {
         for (ApplicableRule applicable_rule : applicable_rules) {
-            this.rete_network.reenter_rule_to_queue(applicable_rule, wm);
+            this.reteNetwork.reenter_rule_to_queue(applicable_rule, wm);
         }
     }
 
     private void showCurrentFunctionalModelTree(SmallestFunctionalModelTree subsumptionTree, int showForXMilliSeconds) {
         try {
-            /*System.out.println("/bin/bash -c \"(xdot <( echo '" +
-                    subsumptionTree.toDotGraph().replace("\"", "\\\"") +
-                    "') & trap 'kill \\$!' EXIT)\"");*/
-            /*System.out.println("/bin/bash -c \"trap 'kill \\$!' EXIT; xdot <( echo '" +
-                    subsumptionTree.toDotGraph().replace("\"", "\\\"") +
-                    "')\"");
-
-             */
             String showForXSeconds = Integer.toString((showForXMilliSeconds / 1000) + 2);
             String xdotStarter = "xdot -g 1920x1080 <( echo '" + subsumptionTree.toDotGraph() + "') & sleep " + showForXSeconds + "; kill $!";
             Process p = new ProcessBuilder("/bin/bash", "-c", xdotStarter).start();
             p.waitFor(showForXMilliSeconds, TimeUnit.MILLISECONDS);
-            //p.destroy();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }

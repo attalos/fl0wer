@@ -64,8 +64,8 @@ public class ReteNetwork {
         }
     }
 
-    public void propagate_domain_elem(BigInteger elem_id, Set<Integer> elem_concepts, WorkingMemory wm) {
-        //void propagate_domain_elem(Long elem_index, int rolename, ArrayList<Long> domain_elem, int num_of_roles);
+    public void propagateDomainElem(BigInteger elem_id, Set<Integer> elem_concepts, WorkingMemory wm) {
+        //void propagateDomainElem(Long elem_index, int rolename, ArrayList<Long> domain_elem, int num_of_roles);
 
         int rolename = HelperFunctions.calculateRolename(elem_id, BigInteger.valueOf(num_of_roles));
 
