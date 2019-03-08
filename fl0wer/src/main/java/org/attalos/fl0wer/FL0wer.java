@@ -1,5 +1,6 @@
 package org.attalos.fl0wer;
 
+import com.google.common.collect.Iterables;
 import org.attalos.fl0wer.controll.FunctionalElement;
 import org.attalos.fl0wer.controll.SmallestFunctionalModelTree;
 import org.attalos.fl0wer.normalization.Ontology;
@@ -18,6 +19,8 @@ import org.semanticweb.owlapi.model.OWLOntology;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
@@ -217,26 +220,26 @@ public class FL0wer {
         long startTime = System.currentTimeMillis();
         int classCount = inputOwlClasses.size();
 
-        inputOwlClasses.parallelStream().forEach(class_owl -> {
+/*        inputOwlClasses.parallelStream().forEach(class_owl -> {
             /* calculate */
-            List<OWLClass> subsumerset = calculate_subsumerset(class_owl);
-            synchronized (this) {
+/*            List<OWLClass> subsumerset = calculate_subsumerset(class_owl);
+/*            synchronized (this) {
                 /* write */
-                classificationMap.put(class_owl, subsumerset);
+/*                classificationMap.put(class_owl, subsumerset);
 
                 /* print progress */
-                if (ConstantValues.progress()) {
+/*                if (ConstantValues.progress()) {
                     if (i.getAndIncrement() % 1000 == 0) {
                         System.out.println("status: " + i + " of " + classCount + " (average time per superclass calculation: " +
                                 ((double) (System.currentTimeMillis() - startTime)) / ((double) i.get()) + "ms)");
                     }
                 }
             }
-        });
+        });*/
 
-        /*ExecutorService es = Executors.newFixedThreadPool(8);
+        ExecutorService es = Executors.newFixedThreadPool(4);
         //System.out.println("gogogo");
-        Iterable<List<OWLClass>> inputClasses = Iterables.partition(inputOwlClasses, 32);
+        Iterable<List<OWLClass>> inputClasses = Iterables.partition(inputOwlClasses, 48);
         for (List<OWLClass> ic : inputClasses) {
             es.submit(() -> {
                 for (OWLClass class_owl : ic) {
@@ -252,7 +255,7 @@ public class FL0wer {
             es.awaitTermination(Long.MAX_VALUE, TimeUnit.NANOSECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }*/
+        }
 
         /*int i = 0;
         int class_count = inputOwlClasses.size();
