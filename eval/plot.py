@@ -64,7 +64,13 @@ for filename in args.filenames:
     row += 1
 
     df = pandas.read_csv(filename)
+
+    # mean of all reasoners, that where able to complete the task
     df["mean_time"] = df["time"].groupby(df["ontology"]).transform(mean_of_valid)
+
+    # filter time -1
+    # TODO is there a good other way?
+    df = df[df.time != -1]
 
     robj.pandas2ri.activate()
     plotting_data_R = robj.conversion.py2ri(df)
