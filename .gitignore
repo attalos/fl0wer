@@ -18,3 +18,5 @@ eval/**
 !eval/findMismatchingHashes.py
 !eval/prettyPrintOutput.py
 !eval/speedup.py
+!eval/plot.py
+!eval/README.md
