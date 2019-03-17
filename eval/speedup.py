@@ -17,7 +17,7 @@ df1 = pandas.read_csv(input1)
 df2 = pandas.read_csv(input2)
 
 # get key list (ontology + taskID)
-keys = df1[["ontology", "taskID"]].drop_duplicates(keep="first")
+keys = df1[["ontology", "taskID", "classcount"]].drop_duplicates(keep="first")
 
 # print
 speedups = [[], [], [], []]
@@ -35,6 +35,7 @@ for index, key in keys.iterrows():
     print("\n#############################\n")
     print("ontology: " + str(key.ontology))
     print("taskID:   " + str(key.taskID))
+    print("size:     " + str(key.classcount))
     print()
     if time1[0] != -1 and time2[0] != -1:
         print("fl0wer:   " + str(quotient[0]))
