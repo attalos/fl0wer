@@ -14,7 +14,7 @@ public class OntologyTranslatorTest {
     OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
     OWLDataFactory factory = manager.getOWLDataFactory();
 
-    @Test
+    /*@Test
     public void fullfillsOwl2ElProfile() throws Exception{
         File ontology_file = new File("src/main/resources/gene_ontology.ont");
         OWLOntology ontology_owl = manager.loadOntologyFromOntologyDocument(ontology_file);
@@ -31,7 +31,7 @@ public class OntologyTranslatorTest {
         assertNotNull(ontology_owl_fl0);
 
         assertTrue("resulting Ontology either wasn't FL_0 or the FL_0 check doesn't work properly", OntologyTranslator.isRawFL0(ontology_owl_fl0));
-    }
+    }*/
 
     @Test
     public void isRawFL0() throws Exception {
@@ -40,9 +40,9 @@ public class OntologyTranslatorTest {
 
         assertTrue("Wrongly decided that Ontology isn't FL_0", OntologyTranslator.isRawFL0(ontology_owl_fl0));
 
-        File ontology_file_el = new File("src/main/resources/gene_ontology.ont");
+        /*File ontology_file_el = new File("src/main/resources/gene_ontology.ont");
         OWLOntology ontology_owl_el = manager.loadOntologyFromOntologyDocument(ontology_file_el);
 
-        assertFalse("Wrongly decided that Ontology is FL_0", OntologyTranslator.isRawFL0(ontology_owl_el));
+        assertFalse("Wrongly decided that Ontology is FL_0", OntologyTranslator.isRawFL0(ontology_owl_el));*/
     }
 }
