@@ -7,5 +7,17 @@
 *.toc
 *.lol
 *.synctex.gz
+
 target/
 *.dot
+
+#organize eval dir
+eval/**
+!eval/execute.sh
+!eval/plotEval.R
+!eval/evaluator.jar
+!eval/findMismatchingHashes.py
+!eval/prettyPrintOutput.py
+!eval/speedup.py
+!eval/plot.py
+!eval/README.md
