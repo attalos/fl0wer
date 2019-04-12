@@ -21,3 +21,5 @@ eval/**
 !eval/speedup.py
 !eval/plot.py
 !eval/README.md
+
+build/
