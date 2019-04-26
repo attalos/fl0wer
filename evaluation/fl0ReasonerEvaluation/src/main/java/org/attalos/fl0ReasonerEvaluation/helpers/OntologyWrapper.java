@@ -18,12 +18,14 @@ public class OntologyWrapper {
     private String ontologyPath;
     private OWLOntology ontology;
     private final long size;
+    private final long rolecount;
 
     public OntologyWrapper(String name, String ontologyPath, OWLOntology ontology) {
         this.name = name;
         this.ontologyPath = ontologyPath;
         this.ontology = ontology;
         this.size = this.ontology.classesInSignature().count();
+        this.rolecount = this.ontology.objectPropertiesInSignature().count();
 
 //        System.out.println(name);
 //        System.out.println(size);
@@ -45,6 +47,10 @@ public class OntologyWrapper {
 
     public long getSize() {
         return size;
+    }
+
+    public long getRolecount() {
+        return rolecount;
     }
 
     @Override

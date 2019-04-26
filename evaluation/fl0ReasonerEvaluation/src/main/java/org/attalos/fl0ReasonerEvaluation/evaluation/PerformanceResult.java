@@ -49,7 +49,8 @@ public class PerformanceResult {
                 .add(Long.toString(duration.toMillis()))
                 .add(booleanToString(threwException))
                 .add(booleanToString(ranIntoTimeout))
-                .add(answer.toRepresentativeShortForm());
+                .add(answer.toRepresentativeShortForm())
+                .add(Long.toString(ontology.getRolecount()));
         return joiner.toString();
     }
 
@@ -63,7 +64,8 @@ public class PerformanceResult {
                 .add("time")
                 .add("threwException")
                 .add("ranIntoTimeout")
-                .add("answerHash");
+                .add("answerHash")
+                .add("rolecount");
         return joiner.toString();
     }
 
